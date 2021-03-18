@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
+import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
 import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/journal/fm_journal_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_screen.dart';
@@ -31,6 +32,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
   void initState() {
     super.initState();
     _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+    _fmPurchaseBloc.add(GetFieldList());
     isVisible = true;
     showDrawer = true;
     _selectedIndex = 0;
