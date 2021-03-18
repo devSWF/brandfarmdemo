@@ -10,7 +10,7 @@ abstract class FMPurchaseEvent extends Equatable{
 
 class LoadFMPurchase extends FMPurchaseEvent{}
 
-// class GetFieldList extends FMPurchaseEvent {}
+class GetFieldList extends FMPurchaseEvent {}
 //
 // class SetField extends FMPurchaseEvent {
 //   final Field field;

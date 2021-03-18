@@ -1,9 +1,12 @@
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/fm_purchase/fm_purchase_material_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class FMRequestPurchaseScreen extends StatefulWidget {
   @override
@@ -13,22 +16,25 @@ class FMRequestPurchaseScreen extends StatefulWidget {
 
 class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
   FMPurchaseBloc _fmPurchaseBloc;
+  Timestamp _currDate = Timestamp.now();
+  DateTime now;
   TextEditingController _memoController;
   FocusNode _memoNode;
   String _memo;
   String _datetime;
-  List<Material> materialList;
+  List<FMPurchaseMaterial> materialList;
 
   @override
   void initState() {
     super.initState();
     _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+    now = DateTime.fromMicrosecondsSinceEpoch(_currDate.microsecondsSinceEpoch);
+    _datetime = _getDateTimeString(now);
     _memoController = TextEditingController();
     _memoNode = FocusNode();
     _memo = '';
-    _datetime = DateTime.now().toIso8601String();
     materialList = [
-      Material(
+      FMPurchaseMaterial(
           num: 1,
           name: '',
           amount: '',
@@ -37,6 +43,19 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
           marketUrl: '',
           field: null),
     ];
+  }
+
+  String _getDateTimeString(DateTime now) {
+    bool isBeforeNoon;
+    String hhmm = DateFormat('h:mm').format(now);
+    if(DateFormat('a').format(now) == 'AM') {
+      isBeforeNoon = true;
+    } else {
+      isBeforeNoon = false;
+    }
+    return (isBeforeNoon)
+        ? '${now.year}년 ${now.month}월 ${now.day}일 오전 ${hhmm}'
+        : '${now.year}년 ${now.month}월 ${now.day}일 오후 ${hhmm}';
   }
 
   @override
@@ -54,9 +73,9 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24, 18, 24, 18),
                 child: Container(
-                  width: 897,
+                  width: 814,
                   color: Colors.white,
-                  padding: EdgeInsets.fromLTRB(55, 31, 55, 0),
+                  padding: EdgeInsets.fromLTRB(54, 40, 54, 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,50 +90,32 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
                       SizedBox(
                         height: 40,
                       ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 747,
-                            padding: EdgeInsets.fromLTRB(54, 34, 27, 30),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2,
-                                color: Color(0xFF15B85B),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                _date(),
-                                SizedBox(
-                                  height: 37,
-                                ),
-                                _material(context),
-                                SizedBox(
-                                  height: 44,
-                                ),
-                                _writeMemo(),
-                                SizedBox(
-                                  height: 27,
-                                ),
-                                _button(),
-                              ],
-                            ),
+                      Container(
+                        width: 747,
+                        padding: EdgeInsets.fromLTRB(44, 39, 44, 30),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2,
+                            color: Color(0xFF15B85B),
                           ),
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Color(0xFF15B85B),
-                                borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(10),
-                                  bottomRight: Radius.circular(10),
-                                )),
-                            child: Icon(
-                              Icons.close,
+                        ),
+                        child: Column(
+                          children: [
+                            _date(),
+                            SizedBox(
+                              height: 37,
                             ),
-                          ),
-                        ],
+                            _material(context),
+                            SizedBox(
+                              height: 44,
+                            ),
+                            _writeMemo(),
+                            SizedBox(
+                              height: 27,
+                            ),
+                            _button(),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 40,
@@ -155,23 +156,6 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
             ),
           ],
         ),
-        Container(
-            width: 139,
-            height: 31,
-            decoration: BoxDecoration(
-              color: Color(0xFF15B85B),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: TextButton(
-              onPressed: () {},
-              child: Text(
-                '구매정보 불러오기',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white,
-                    ),
-              ),
-            ))
       ],
     );
   }
@@ -191,46 +175,25 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '자재${materialList[index].num}',
+                      '자재',
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
                             fontWeight: FontWeight.w200,
                             color: Colors.black,
                           ),
                     ),
                     SizedBox(
-                      width: 61,
+                      width: 44,
                     ),
                     _materialContent(materialList[index], index),
                   ],
                 );
               }),
         ),
-        SizedBox(height: 18,),
-        Row(
-          children: [
-            SizedBox(width: 78,),
-            Container(
-              width: 28,
-              height: 28,
-              decoration: BoxDecoration(
-                color: Color(0xFF15B85B),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.add, color: Colors.white,),
-            ),
-            SizedBox(width: 5,),
-            Text('자재 추가하기',
-              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                color: Color(0x4D000000),
-              ),
-            ),
-          ],
-        )
       ],
     );
   }
 
-  Widget _materialContent(Material obj, int index) {
+  Widget _materialContent(FMPurchaseMaterial obj, int index) {
     return Container(
       height: 100,
       child: Row(
@@ -246,7 +209,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
               _materialPrice(obj, index),
             ],
           ),
-          SizedBox(width: 87,),
+          SizedBox(width: 44,),
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,7 +224,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialName(Material obj, int index) {
+  Widget _materialName(FMPurchaseMaterial obj, int index) {
     return Row(
       children: [
         Container(
@@ -283,7 +246,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
           ),
           child: TextField(
             onChanged: (text) {
-              Material changedVal = Material(
+              FMPurchaseMaterial changedVal = FMPurchaseMaterial(
                 num: obj.num,
                 name: text,
                 amount: obj.amount,
@@ -307,7 +270,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialAmount(Material obj, int index) {
+  Widget _materialAmount(FMPurchaseMaterial obj, int index) {
     return Row(
       children: [
         Container(
@@ -329,7 +292,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
           ),
           child: TextField(
             onChanged: (text) {
-              Material changedVal = Material(
+              FMPurchaseMaterial changedVal = FMPurchaseMaterial(
                 num: obj.num,
                 name: obj.name,
                 amount: text,
@@ -353,7 +316,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialPrice(Material obj, int index) {
+  Widget _materialPrice(FMPurchaseMaterial obj, int index) {
     return Row(
       children: [
         Container(
@@ -375,7 +338,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
           ),
           child: TextField(
             onChanged: (text) {
-              Material changedVal = Material(
+              FMPurchaseMaterial changedVal = FMPurchaseMaterial(
                 num: obj.num,
                 name: obj.name,
                 amount: obj.amount,
@@ -399,17 +362,17 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialUrl(Material obj, int index) {
+  Widget _materialUrl(FMPurchaseMaterial obj, int index) {
     return Container(
       height: 23,
-      width: 267,
+      width: 287,
       decoration: BoxDecoration(
         color: Color(0x0A000000),
         borderRadius: BorderRadius.circular(5),
       ),
       child: TextField(
         onChanged: (text) {
-          Material changedVal = Material(
+          FMPurchaseMaterial changedVal = FMPurchaseMaterial(
             num: obj.num,
             name: obj.name,
             amount: obj.amount,
@@ -432,7 +395,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialField(Material obj, int index) {
+  Widget _materialField(FMPurchaseMaterial obj, int index) {
     return Row(
       children: [
         Container(
@@ -454,7 +417,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
           ),
           child: TextField(
             onChanged: (text) {
-              Material changedVal = Material(
+              FMPurchaseMaterial changedVal = FMPurchaseMaterial(
                 num: obj.num,
                 name: obj.name,
                 amount: obj.amount,
@@ -494,32 +457,32 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
         ),
         Container(
           height: 95,
-          width: 554,
-          child: Theme(
-            data: ThemeData(
-              primaryColor: Color(0xFF15B85B),
+          width: 542,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(width: 1, color: Color(0xFF15B85B),),
+          ),
+          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+          child: TextField(
+            controller: _memoController,
+            focusNode: _memoNode,
+            onTap: () {
+              _memoNode.requestFocus();
+            },
+            onChanged: (text) {
+              _memo = text;
+            },
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+              color: Colors.black,
             ),
-            child: TextField(
-              controller: _memoController,
-              focusNode: _memoNode,
-              onTap: () {
-                _memoNode.requestFocus();
-              },
-              onChanged: (text) {
-                _memo = text;
-              },
-              keyboardType: TextInputType.text,
-              maxLength: 6,
-              minLines: null,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 1,
-                    color: Color(0xFF15B85B),
-                  ),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            minLines: null,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+              isDense: true,
             ),
           ),
         ),
@@ -528,66 +491,23 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
   }
 
   Widget _button() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          width: 60,
-          height: 31,
-          decoration: BoxDecoration(
-            color: Color(0xFF15B85B),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: TextButton(
-            onPressed: () {},
-            child: Icon(
-              Icons.save,
-              color: Colors.white,
-            ),
-          ),
+    return Container(
+      width: 100,
+      height: 31,
+      decoration: BoxDecoration(
+        color: Color(0xFF15B85B),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: TextButton(
+        onPressed: () {},
+        child: Text(
+          '등록',
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
         ),
-        SizedBox(
-          width: 10,
-        ),
-        Container(
-          width: 100,
-          height: 31,
-          decoration: BoxDecoration(
-            color: Color(0xFF15B85B),
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: TextButton(
-            onPressed: () {},
-            child: Text(
-              '등록',
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
-}
-
-class Material {
-  int num;
-  String name;
-  String amount;
-  String unit;
-  String price;
-  String marketUrl;
-  Field field;
-
-  Material({
-    @required this.num,
-    @required this.name,
-    @required this.amount,
-    @required this.unit,
-    @required this.price,
-    @required this.marketUrl,
-    @required this.field,
-  });
 }

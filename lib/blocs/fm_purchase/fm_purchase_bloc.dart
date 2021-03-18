@@ -1,6 +1,9 @@
 
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
+import 'package:BrandFarm/models/farm/farm_model.dart';
+import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/repository/fm_purchase/fm_purchase_repository.dart';
 import 'package:bloc/bloc.dart';
 
 class FMPurchaseBloc
@@ -12,6 +15,8 @@ class FMPurchaseBloc
       FMPurchaseEvent event) async* {
     if (event is LoadFMPurchase) {
       yield* _mapLoadFMPurchaseToState();
+    } else if (event is GetFieldList) {
+      yield* _mapGetFieldListToState();
     }
   }
 
@@ -19,33 +24,33 @@ class FMPurchaseBloc
     yield state.update(isLoading: true);
   }
 
-//   Stream<FMPurchaseState> _mapGetFieldListToState() async* {
-//     Farm farm = await FMNotificationRepository().getFarmInfo();
-//     List<Field> currFieldList = [
-//       Field(
-//           fieldCategory: farm.fieldCategory,
-//           fid: '',
-//           sfmid: '',
-//           lat: '',
-//           lng: '',
-//           city: '',
-//           province: '',
-//           name: '모든 필드')
-//     ];
-//     List<Field> newFieldList =
-//     await FMNotificationRepository().getFieldList(farm.fieldCategory);
-//     List<Field> totalFieldList = [
-//       ...currFieldList,
-//       ...newFieldList,
-//     ];
-//
-//     yield state.update(
-//       farm: farm,
-//       fieldList: totalFieldList,
-//       field: totalFieldList[0],
-//     );
-//   }
-//
+  Stream<FMPurchaseState> _mapGetFieldListToState() async* {
+    Farm farm = await FMPurchaseRepository().getFarmInfo();
+    List<Field> currFieldList = [
+      Field(
+          fieldCategory: farm.fieldCategory,
+          fid: '',
+          sfmid: '',
+          lat: '',
+          lng: '',
+          city: '',
+          province: '',
+          name: '모든 필드')
+    ];
+    List<Field> newFieldList =
+    await FMPurchaseRepository().getFieldList(farm.fieldCategory);
+    List<Field> totalFieldList = [
+      ...currFieldList,
+      ...newFieldList,
+    ];
+
+    yield state.update(
+      farm: farm,
+      fieldList: totalFieldList,
+      field: totalFieldList[0],
+    );
+  }
+
 //   Stream<FMPurchaseState> _mapSetFieldToState(Field field) async* {
 //     yield state.update(field: field);
 //   }
