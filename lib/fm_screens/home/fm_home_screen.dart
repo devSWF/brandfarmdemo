@@ -3,10 +3,14 @@ import 'dart:ui';
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
 import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/journal/fm_journal_screen.dart';
+import 'package:BrandFarm/fm_screens/plan/fm_plan_screen.dart';
+import 'package:BrandFarm/fm_screens/plan/fm_plan_setting_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_request_purchase_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
@@ -22,6 +26,7 @@ class FMHomeScreen extends StatefulWidget {
 
 class _FMHomeScreenState extends State<FMHomeScreen> {
   FMPurchaseBloc _fmPurchaseBloc;
+  FMPlanBloc _fmPlanBloc;
   bool isVisible;
   bool showDrawer;
   int _selectedIndex;
@@ -32,7 +37,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
   void initState() {
     super.initState();
     _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
-    _fmPurchaseBloc.add(GetFieldList());
+    _fmPurchaseBloc.add(GetFieldListForFMPurchase());
+    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc.add(GetFieldListForFMPlan());
     isVisible = true;
     showDrawer = true;
     _selectedIndex = 0;
@@ -120,6 +127,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
               BlocProvider.value(
                 value: _fmPurchaseBloc,
               ),
+              BlocProvider.value(
+                value: _fmPlanBloc,
+              ),
             ],
             child: GetPage(
               index: _selectedIndex,
@@ -141,6 +151,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
             providers: [
               BlocProvider.value(
                 value: _fmPurchaseBloc,
+              ),
+              BlocProvider.value(
+                value: _fmPlanBloc,
               ),
             ],
             child: GetPage(
@@ -299,7 +312,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                           width: 76,
                         ),
                         Text(
-                          '테스트',
+                          '전체일정',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontSize: 13,
                                 color: (pageIndex == 2 && subPageIndex == 1)
@@ -323,7 +336,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                           width: 76,
                         ),
                         Text(
-                          '테스트',
+                          '영농계획 설정',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontSize: 13,
                                 color: (pageIndex == 2 && subPageIndex == 2)
@@ -665,11 +678,13 @@ class GetPage extends StatefulWidget {
 
 class _GetPageState extends State<GetPage> {
   FMPurchaseBloc _fmPurchaseBloc;
+  FMPlanBloc _fmPlanBloc;
 
   @override
   void initState() {
     super.initState();
     _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
   }
 
   @override
@@ -677,17 +692,29 @@ class _GetPageState extends State<GetPage> {
     switch (widget.index) {
       case 1:
         {
-          return EmptyScreen();
+          return EmptyScreen(); // 공지사항
         }
         break;
       case 2:
         {
-          return EmptyScreen();
+          if (widget.subIndex == 1) {
+            return BlocProvider.value(
+              value: _fmPlanBloc,
+              child: FMPlanScreen(),
+            );
+          } else if (widget.subIndex == 2) {
+            return BlocProvider.value(
+              value: _fmPlanBloc,
+              child: FMPlanSettingScreen(),
+            );
+          } else {
+            return EmptyScreen();
+          }
         }
         break;
       case 3:
         {
-          return EmptyScreen();
+          return EmptyScreen(); // 연락처
         }
         break;
       case 4:
@@ -730,7 +757,7 @@ class _GetPageState extends State<GetPage> {
         break;
       case 6:
         {
-          return EmptyScreen();
+          return EmptyScreen(); // 설정 화면
         }
         break;
       default:

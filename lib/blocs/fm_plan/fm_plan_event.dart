@@ -1,16 +1,16 @@
 
 import 'package:equatable/equatable.dart';
 
-abstract class FMPurchaseEvent extends Equatable{
-  const FMPurchaseEvent();
+abstract class FMPlanEvent extends Equatable{
+  const FMPlanEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LoadFMPurchase extends FMPurchaseEvent{}
+class LoadFMPlan extends FMPlanEvent{}
 
-class GetFieldListForFMPurchase extends FMPurchaseEvent {}
+class GetFieldListForFMPlan extends FMPlanEvent {}
 //
 // class SetField extends FMPurchaseEvent {
 //   final Field field;

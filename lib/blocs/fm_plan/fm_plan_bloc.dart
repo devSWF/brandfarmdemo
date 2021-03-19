@@ -1,31 +1,30 @@
-
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
-import 'package:BrandFarm/repository/fm_purchase/fm_purchase_repository.dart';
+import 'package:BrandFarm/repository/fm_plan/fm_plan_repository.dart';
 import 'package:bloc/bloc.dart';
 
-class FMPurchaseBloc
-    extends Bloc<FMPurchaseEvent, FMPurchaseState> {
-  FMPurchaseBloc() : super(FMPurchaseState.empty());
+class FMPlanBloc
+    extends Bloc<FMPlanEvent, FMPlanState> {
+  FMPlanBloc() : super(FMPlanState.empty());
 
   @override
-  Stream<FMPurchaseState> mapEventToState(
-      FMPurchaseEvent event) async* {
-    if (event is LoadFMPurchase) {
-      yield* _mapLoadFMPurchaseToState();
-    } else if (event is GetFieldListForFMPurchase) {
-      yield* _mapGetFieldListForFMPurchaseToState();
+  Stream<FMPlanState> mapEventToState(
+      FMPlanEvent event) async* {
+    if (event is LoadFMPlan) {
+      yield* _mapLoadFMPlanToState();
+    } else if (event is GetFieldListForFMPlan) {
+      yield* _mapGetFieldListForFMPlanToState();
     }
   }
 
-  Stream<FMPurchaseState> _mapLoadFMPurchaseToState() async* {
+  Stream<FMPlanState> _mapLoadFMPlanToState() async* {
     yield state.update(isLoading: true);
   }
 
-  Stream<FMPurchaseState> _mapGetFieldListForFMPurchaseToState() async* {
-    Farm farm = await FMPurchaseRepository().getFarmInfo();
+  Stream<FMPlanState> _mapGetFieldListForFMPlanToState() async* {
+    Farm farm = await FMPlanRepository().getFarmInfo();
     List<Field> currFieldList = [
       Field(
           fieldCategory: farm.fieldCategory,
@@ -35,10 +34,10 @@ class FMPurchaseBloc
           lng: '',
           city: '',
           province: '',
-          name: '모든 필드')
+          name: '전체일정')
     ];
     List<Field> newFieldList =
-    await FMPurchaseRepository().getFieldList(farm.fieldCategory);
+    await FMPlanRepository().getFieldList(farm.fieldCategory);
     List<Field> totalFieldList = [
       ...currFieldList,
       ...newFieldList,
