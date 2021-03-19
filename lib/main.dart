@@ -1,6 +1,7 @@
 //screens
 import 'dart:io';
 
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
@@ -128,7 +129,10 @@ class _AppState extends State<App> {
                     providers: [
                       BlocProvider<FMPurchaseBloc>(
                         create: (BuildContext context) => FMPurchaseBloc(),
-                      )
+                      ),
+                      BlocProvider<FMPlanBloc>(
+                        create: (BuildContext context) => FMPlanBloc(),
+                      ),
                     ],
                     child: FMHomeScreen(),
                 );
