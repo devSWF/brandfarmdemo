@@ -1,5 +1,6 @@
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
+import 'package:BrandFarm/fm_screens/plan/fm_add_plan.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_calendar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -140,13 +141,25 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
           ],
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () async {
+            await _showAddPlanDialog();
+          },
           icon: Icon(
             Icons.add,
             color: Colors.black,
           ),
         ),
       ],
+    );
+  }
+
+  Future<void> _showAddPlanDialog() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return FMAddPlan();
+        }
     );
   }
 }
