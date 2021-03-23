@@ -1,12 +1,10 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 
 class FMCalendar extends StatefulWidget {
-  const FMCalendar({Key key, this.onTap}) : super(key: key);
-
-  // final GestureTapCallback? onTap;
-  final GestureTapCallback onTap;
+  // const FMCalendar({Key key, this.onTap}) : super(key: key);
+  //
+  // // final GestureTapCallback? onTap;
+  // final GestureTapCallback onTap;
 
   @override
   _FMCalendarState createState() => _FMCalendarState();
@@ -23,10 +21,10 @@ class _FMCalendarState extends State<FMCalendar> {
     'FRI',
     'SAT',
   ];
+
   List<CalendarDate> monthList;
   int year;
   int month;
-
   int selectedIndex;
 
   @override
@@ -50,26 +48,55 @@ class _FMCalendarState extends State<FMCalendar> {
     int firstWeekDayOfMonth = DateTime(date.year, date.month, 1).weekday;
     int lastWeekDayOfMonth =
         DateTime(date.year, date.month, daysInCurrentMonth).weekday;
+    print('firstWeekDayOfMonth: ${firstWeekDayOfMonth} // daysInPrevMonth: ${daysInPrevMonth}');
+    print('lastWeekDayOfMonth: ${lastWeekDayOfMonth}');
+    print('daysInCurrentMonth: ${daysInCurrentMonth}');
 
-    List<CalendarDate> prevMonthList = List.generate(
-        firstWeekDayOfMonth,
-        (index) => CalendarDate(
-            date:
-                DateTime(date.year, date.month - 1, daysInPrevMonth - index)));
-    List<CalendarDate> nextMonthList = List.generate(
-        6 - lastWeekDayOfMonth,
-        (index) =>
-            CalendarDate(date: DateTime(date.year, date.month + 1, index + 1)));
+    // get previous month
+    List<CalendarDate> prevMonthList;
+    if(firstWeekDayOfMonth < 7) {
+      List<CalendarDate> prev = List.generate(
+          firstWeekDayOfMonth,
+          (index) => CalendarDate(
+              date: DateTime(
+                  date.year, date.month - 1, daysInPrevMonth - index)));
+      prevMonthList = List.from(prev.reversed);
+    } else {
+      ;
+    }
+    // get next month
+    List<CalendarDate> nextMonthList;
+    if (lastWeekDayOfMonth < 7) {
+      nextMonthList = List.generate(
+          6 - lastWeekDayOfMonth,
+          (index) => CalendarDate(
+              date: DateTime(date.year, date.month + 1, index + 1)));
+    } else {
+      nextMonthList = List.generate(
+          6,
+          (index) => CalendarDate(
+              date: DateTime(date.year, date.month + 1, index + 1)));
+    }
+    // get current month
     List<CalendarDate> currMonthList = List.generate(
         daysInCurrentMonth,
         (index) =>
             CalendarDate(date: DateTime(date.year, date.month, index + 1)));
-    ;
-    List<CalendarDate> monthList = [
-      ...prevMonthList,
-      ...currMonthList,
-      ...nextMonthList
-    ];
+    // get total month list
+    List<CalendarDate> monthList;
+    if(firstWeekDayOfMonth < 7){
+      monthList = [
+        ...prevMonthList,
+        ...currMonthList,
+        ...nextMonthList
+      ];
+    } else {
+      monthList = [
+        ...currMonthList,
+        ...nextMonthList
+      ];
+    }
+
     return monthList;
   }
 
@@ -94,12 +121,15 @@ class _FMCalendarState extends State<FMCalendar> {
           children: [
             IconButton(
               onPressed: () {
+                List<CalendarDate> mList =
+                    getMonth(date: DateTime(year, month - 1, 1));
                 setState(() {
-                  monthList = getMonth(
-                      date: DateTime(year, month - 1, 1));
+                  monthList = mList;
                   year = DateTime(year, month - 1, 1).year;
                   month = DateTime(year, month - 1, 1).month;
+                  selectedIndex = 100;
                 });
+                print('year: ${year} // month: ${month}');
               },
               icon: Icon(
                 Icons.arrow_back_ios,
@@ -116,12 +146,15 @@ class _FMCalendarState extends State<FMCalendar> {
             ),
             IconButton(
               onPressed: () {
+                List<CalendarDate> mList =
+                    getMonth(date: DateTime(year, month + 1, 1));
                 setState(() {
-                  monthList = getMonth(
-                      date: DateTime(year, month + 1, 1));
+                  monthList = mList;
                   year = DateTime(year, month + 1, 1).year;
                   month = DateTime(year, month + 1, 1).month;
+                  selectedIndex = 100;
                 });
+                print('year: ${year} // month: ${month}');
               },
               icon: Icon(
                 Icons.arrow_forward_ios,
@@ -154,8 +187,21 @@ class _FMCalendarState extends State<FMCalendar> {
                     7,
                     (index2) => InkResponse(
                       onTap: () {
-                        // first check current index
-                        if (selectedIndex != index2 + current) {
+                        if (selectedIndex == 100) {
+                          setState(() {
+                            // update selected date
+                            CalendarDate curr = CalendarDate(
+                              date: monthList[index2 + current].date,
+                              isSelected:
+                                  !monthList[index2 + current].isSelected,
+                            );
+                            monthList.removeAt(index2 + current);
+                            monthList.insert(index2 + current, curr);
+                            // update selected index
+                            selectedIndex = index2 + current;
+                          });
+                        } else if (selectedIndex != index2 + current) {
+                          // first check current index
                           setState(() {
                             // return previous selectedDate back to before
                             CalendarDate prev = CalendarDate(

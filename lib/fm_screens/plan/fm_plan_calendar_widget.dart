@@ -20,7 +20,7 @@ class _FMPlanCalendarWidgetState extends State<FMPlanCalendarWidget> {
   Widget build(BuildContext context) {
     return Container(
       child: FMCalendar(
-        onTap: (){},
+        // onTap: (){},
 
       ),
     );
