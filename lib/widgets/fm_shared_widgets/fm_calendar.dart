@@ -35,9 +35,10 @@ class _FMCalendarState extends State<FMCalendar> {
     month = now.month;
     selectedIndex = monthList.indexWhere(
         (element) => element.date == DateTime(now.year, now.month, now.day));
+    DateTime today = monthList[selectedIndex].date;
     monthList.removeAt(selectedIndex);
     monthList.insert(selectedIndex,
-        CalendarDate(date: monthList[selectedIndex].date, isSelected: true));
+        CalendarDate(date: today, isSelected: true));
   }
 
   List<CalendarDate> getMonth({DateTime date}) {
