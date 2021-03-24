@@ -36,7 +36,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
     return AlertDialog(
       contentPadding: EdgeInsets.zero,
       content: Container(
-        height: 454,
+        height: 464,
         width: 493,
         padding: EdgeInsets.fromLTRB(20, 18, 18, 0),
         decoration: BoxDecoration(
@@ -47,7 +47,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
           children: [
             _titleBar(),
             Divider(
-              height: 24,
+              height: 22,
               thickness: 1,
               color: Color(0xFFE1E1E1),
             ),
@@ -111,7 +111,10 @@ class _FMAddPlanState extends State<FMAddPlan> {
                 children: [
                   TextButton(
                     onPressed: () async {
-                      await _showDatePicker();
+                      DateTime pickedDate = await _showDatePicker(1) ?? startDate;
+                      setState(() {
+                        startDate = pickedDate;
+                      });
                     },
                     child: Text('${startDate.year}년 ${startDate.month}월 ${startDate.day}일',
                       style: Theme.of(context).textTheme.bodyText1.copyWith(
@@ -124,8 +127,11 @@ class _FMAddPlanState extends State<FMAddPlan> {
                       color: Color(0xFF15B85B),
                     ),),
                   TextButton(
-                    onPressed: () async {
-                      await _showDatePicker();
+                    onPressed: () async{
+                      DateTime pickedDate = await _showDatePicker(2) ?? endDate;
+                      setState(() {
+                        endDate = pickedDate;
+                      });
                     },
                     child: Text('${endDate.year}년 ${endDate.month}월 ${endDate.day}일',
                       style: Theme.of(context).textTheme.bodyText1.copyWith(
@@ -147,12 +153,12 @@ class _FMAddPlanState extends State<FMAddPlan> {
     );
   }
 
-  Future<void> _showDatePicker() async {
+  Future<DateTime> _showDatePicker(int category) {
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return FMSmallCalendar();
+          return FMSmallCalendar(category: category,);
         }
     );
   }
