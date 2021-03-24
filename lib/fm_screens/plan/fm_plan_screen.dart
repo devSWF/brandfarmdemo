@@ -66,7 +66,7 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
         Stack(
           children: [
             Container(
-              width: 84 * forTest.length.toDouble(),
+              width: 84 * state.fieldList.length.toDouble(),
               height: 28,
               padding: EdgeInsets.zero,
               decoration: BoxDecoration(
@@ -94,13 +94,13 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
               ),
             ),
             Container(
-              width: 84 * forTest.length.toDouble(),
+              width: 84 * state.fieldList.length.toDouble(),
               height: 28,
               padding: EdgeInsets.zero,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(
-                  forTest.length,
+                  state.fieldList.length,
                   (index) => Row(
                     children: [
                       InkResponse(
@@ -115,7 +115,7 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
                           padding: EdgeInsets.zero,
                           child: Center(
                             child: Text(
-                              '${forTest[index]}',
+                              '${state.fieldList[index].name}',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText2
@@ -158,7 +158,10 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return FMAddPlan();
+          return BlocProvider.value(
+              value: _fmPlanBloc,
+            child: FMAddPlan(selectedField: _selectedField),
+          );
         }
     );
   }

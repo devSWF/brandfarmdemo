@@ -1,5 +1,7 @@
 
+import 'package:BrandFarm/models/field_model.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 abstract class FMPlanEvent extends Equatable{
   const FMPlanEvent();
@@ -11,21 +13,37 @@ abstract class FMPlanEvent extends Equatable{
 class LoadFMPlan extends FMPlanEvent{}
 
 class GetFieldListForFMPlan extends FMPlanEvent {}
-//
-// class SetField extends FMPurchaseEvent {
-//   final Field field;
-//
-//   const SetField({
-//     @required this.field,
-//   });
-//
-//   // @override
-//   // List<Object> get props => [navTo];
-//
-//   @override
-//   String toString() => 'SetField { field : $field}';
-// }
-//
+
+class GetPlanList extends FMPlanEvent {}
+
+class PostNewPlan extends FMPlanEvent {
+  final DateTime startDate;
+  final DateTime endDate;
+  final String title;
+  final String content;
+  final int selectedField;
+
+  const PostNewPlan({
+    @required this.startDate,
+    @required this.endDate,
+    @required this.title,
+    @required this.content,
+    @required this.selectedField,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''PostNewPlan { 
+    startDate : $startDate,
+    endDate : $endDate,
+    title : $title,
+    content : $content,
+    selectedField : $selectedField,
+  }''';
+}
+
 // class PostNotification extends FMPurchaseEvent{
 //   final NotificationNotice obj;
 //

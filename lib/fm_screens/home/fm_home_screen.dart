@@ -40,6 +40,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     _fmPurchaseBloc.add(GetFieldListForFMPurchase());
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
     _fmPlanBloc.add(GetFieldListForFMPlan());
+    _fmPlanBloc.add(GetPlanList());
     isVisible = true;
     showDrawer = true;
     _selectedIndex = 0;
