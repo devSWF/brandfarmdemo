@@ -2,6 +2,7 @@
 
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -36,11 +37,25 @@ class FMPlanRepository {
     return fieldList;
   }
 
-// Future<void> postNotification(NotificationNotice notice,) async {
-//   DocumentReference reference =
-//   _firestore.collection('Notification').doc(notice.notid);
-//   await reference.set(notice.toDocument());
-// }
+  Future<void> postPlan(FMPlan plan,) async {
+    DocumentReference reference =
+    _firestore.collection('Plan').doc(plan.planID);
+    await reference.set(plan.toDocument());
+  }
+
+  Future<List<FMPlan>> getPlanList(String farmID) async {
+    List<FMPlan> plist = [];
+    QuerySnapshot _plist = await _firestore
+        .collection('Plan')
+        .where('farmID', isEqualTo: farmID)
+        .get();
+
+    _plist.docs.forEach((ds) {
+      plist.add(FMPlan.fromSnapshot(ds));
+    });
+
+    return plist;
+  }
 
 // Future<User> getDetailUserInfo(uid) async {
 //   User user;
