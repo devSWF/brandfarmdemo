@@ -49,7 +49,10 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
                   SizedBox(
                     height: 43,
                   ),
-                  FMPlanCalendarWidget(),
+                  BlocProvider.value(
+                    value: _fmPlanBloc,
+                    child: FMPlanCalendarWidget(),
+                  ),
                 ],
               ),
             ),
@@ -159,10 +162,9 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return BlocProvider.value(
-              value: _fmPlanBloc,
+            value: _fmPlanBloc,
             child: FMAddPlan(selectedField: _selectedField),
           );
-        }
-    );
+        });
   }
 }
