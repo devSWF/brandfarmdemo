@@ -27,6 +27,8 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
         event.content,
         event.selectedField,
       );
+    } else if (event is SetDate) {
+      yield* _mapSetDateToState(event.date);
     }
   }
 
@@ -92,7 +94,8 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
       isReadByFM: true,
       isReadByOffice: false,
       isReadBySFM: false,
-      from: 2, // 1 : office, 2 : FM
+      from: 2,
+      // 1 : office, 2 : FM
       fid: (selectedField > 0) ? state.fieldList[selectedField].fid : '',
       farmID: state.farm.farmID,
     );
@@ -108,6 +111,22 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
 
     yield state.update(
       planList: plist,
+    );
+  }
+
+  Stream<FMPlanState> _mapSetDateToState(DateTime date) async* {
+    // set date and show detail plan
+    List<FMPlan> detailList = [];
+    detailList = state.planList.where((element) {
+      return ((element.startDate.toDate().isBefore(date) &&
+              element.endDate.toDate().isAfter(date)) ||
+          (element.startDate.toDate().isAtSameMomentAs(date) &&
+              element.endDate.toDate().isAtSameMomentAs(date)));
+    }).toList();
+
+    yield state.update(
+      selectedDate: date,
+      detailList: detailList,
     );
   }
 }

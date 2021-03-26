@@ -44,15 +44,15 @@ class PostNewPlan extends FMPlanEvent {
   }''';
 }
 
-// class PostNotification extends FMPurchaseEvent{
-//   final NotificationNotice obj;
-//
-//   const PostNotification({
-//     @required this.obj,
-//   });
-//
-//   @override
-//   String toString() => '''PostNotification {
-//     obj: $obj,
-//   }''';
-// }
+class SetDate extends FMPlanEvent{
+  final DateTime date;
+
+  const SetDate({
+    @required this.date,
+  });
+
+  @override
+  String toString() => '''SetDate {
+    date: $date,
+  }''';
+}

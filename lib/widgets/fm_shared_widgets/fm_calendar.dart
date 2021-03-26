@@ -1,4 +1,5 @@
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +23,13 @@ class _FMCalendarState extends State<FMCalendar> {
   ];
   DateTime now = DateTime.now();
   List<String> weekDays = [
-    'SUN',
-    'MON',
-    'TUE',
-    'WED',
-    'THU',
-    'FRI',
-    'SAT',
+    'S',
+    'M',
+    'T',
+    'W',
+    'T',
+    'F',
+    'S',
   ];
 
   List<CalendarDate> monthList;
@@ -40,6 +41,7 @@ class _FMCalendarState extends State<FMCalendar> {
   void initState() {
     super.initState();
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc.add(SetDate(date: now));
     monthList = getMonth(date: now);
     year = now.year;
     month = now.month;
@@ -191,10 +193,20 @@ class _FMCalendarState extends State<FMCalendar> {
         SizedBox(
           height: 50,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children:
-          List.generate(weekDays.length, (index) => Text(weekDays[index])),
+        Row(children: List.generate(weekDays.length, (index) =>
+              Container(
+                width: 108,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(weekDays[index],
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Color(0xFF219653),
+                        ),),
+                      SizedBox(width: 10,),
+                    ],
+                  ))),
         ),
         SizedBox(
           height: 20,
@@ -352,6 +364,7 @@ class _FMCalendarState extends State<FMCalendar> {
                 (index2) =>
                 InkResponse(
                   onTap: () {
+                    _fmPlanBloc.add(SetDate(date: monthList[index2 + current].date));
                     if (selectedIndex == 100) {
                       setState(() {
                         // update selected date
