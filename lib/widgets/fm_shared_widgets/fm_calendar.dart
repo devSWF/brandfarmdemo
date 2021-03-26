@@ -60,10 +60,9 @@ class _FMCalendarState extends State<FMCalendar> {
     int firstWeekDayOfMonth = DateTime(date.year, date.month, 1).weekday;
     int lastWeekDayOfMonth =
         DateTime(date.year, date.month, daysInCurrentMonth).weekday;
-    print(
-        'firstWeekDayOfMonth: ${firstWeekDayOfMonth} // daysInPrevMonth: ${daysInPrevMonth}');
-    print('lastWeekDayOfMonth: ${lastWeekDayOfMonth}');
-    print('daysInCurrentMonth: ${daysInCurrentMonth}');
+    // print('firstWeekDayOfMonth: ${firstWeekDayOfMonth} // daysInPrevMonth: ${daysInPrevMonth}');
+    // print('lastWeekDayOfMonth: ${lastWeekDayOfMonth}');
+    // print('daysInCurrentMonth: ${daysInCurrentMonth}');
 
     // get previous month
     List<CalendarDate> prevMonthList;
@@ -151,7 +150,7 @@ class _FMCalendarState extends State<FMCalendar> {
                   month = DateTime(year, month - 1, 1).month;
                   selectedIndex = 100;
                 });
-                print('year: ${year} // month: ${month}');
+                // print('year: ${year} // month: ${month}');
               },
               icon: Icon(
                 Icons.arrow_back_ios,
@@ -180,7 +179,7 @@ class _FMCalendarState extends State<FMCalendar> {
                   month = DateTime(year, month + 1, 1).month;
                   selectedIndex = 100;
                 });
-                print('year: ${year} // month: ${month}');
+                // print('year: ${year} // month: ${month}');
               },
               icon: Icon(
                 Icons.arrow_forward_ios,
@@ -202,8 +201,9 @@ class _FMCalendarState extends State<FMCalendar> {
         ),
         Stack(
           children: [
-            _tableBody(state),
-            // Positioned(top: 0, right: 0, left: 0, child: _planBody(state, plist)),
+            _tableLayout(state),
+            Positioned(top: 0, right: 0, left: 0, child: _planBody(state, plist),),
+            Positioned(top: 0, right: 0, left: 0, child: _tableBody(state),),
           ],
         ),
       ],
@@ -276,6 +276,63 @@ class _FMCalendarState extends State<FMCalendar> {
     return plist;
   }
 
+  Widget _tableLayout(FMPlanState state) {
+    return Table(
+      // border: TableBorder.all(width: 1, color: Color(0xFFD8D8D8)),
+      children: List.generate(5, (index1) {
+        int current = (index1 == 0)
+            ? 0
+            : (index1 == 1)
+            ? 7
+            : (index1 == 2)
+            ? 14
+            : (index1 == 3)
+            ? 21
+            : 28;
+        return TableRow(
+          children: List.generate(
+            7,
+                (index2) =>
+                Container(
+                  width: 96,
+                  height: 71,
+                  decoration: BoxDecoration(
+                    color: (monthList[index2 + current].date ==
+                        DateTime(now.year, now.month, now.day))
+                        ? Colors.grey[200]
+                        : Colors.white,
+                    border: Border.all(
+                        width: 1,
+                        color: Color(0xFFD8D8D8)),
+                  ),
+                  padding: EdgeInsets.fromLTRB(0, 3, 3, 0),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      height: 19,
+                      width: 19,
+                      decoration: BoxDecoration(
+                        color: (monthList[index2 + current].isSelected)
+                            ? Color(0xFF15B85B) : Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text('${monthList[index2 + current].date.day}',
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: (monthList[index2 + current].isSelected)
+                                ? Colors.white : Colors.black,
+                          ),),
+                      ),
+                    ),
+                  ),
+                ),
+          ),
+        );
+      }),
+    );
+  }
+
   Widget _tableBody(FMPlanState state) {
     return Table(
       // border: TableBorder.all(width: 1, color: Color(0xFFD8D8D8)),
@@ -333,22 +390,14 @@ class _FMCalendarState extends State<FMCalendar> {
                     width: 96,
                     height: 71,
                     decoration: BoxDecoration(
-                      color: (monthList[index2 + current].date ==
-                          DateTime(now.year, now.month, now.day))
-                          ? Colors.grey[200]
-                          : Colors.white,
+                      color: Colors.transparent,
                       border: Border.all(
                           width: (monthList[index2 + current].isSelected)
-                              ? 2
-                              : 1,
+                              ? 3
+                              : 0,
                           color: (monthList[index2 + current].isSelected)
                               ? Color(0xFF15B85B)
-                              : Color(0xFFD8D8D8)),
-                    ),
-                    padding: EdgeInsets.fromLTRB(0, 3, 3, 0),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: Text('${monthList[index2 + current].date.day}'),
+                              : Colors.transparent),
                     ),
                   ),
                 ),
@@ -375,25 +424,39 @@ class _FMCalendarState extends State<FMCalendar> {
           children: List.generate(
             7,
                 (index2) {
-              int all = plist.indexWhere((element) =>
+              int all;
+              int f1;
+              int f2;
+              int f3;
+              int f4;
+              all = plist.indexWhere((element) =>
               element.fid.isEmpty && element.date.isAtSameMomentAs(
-                  monthList[index2 + current].date));
-              int f1 = plist.indexWhere((element) =>
-              element.fid == state.fieldList[1].fid &&
-                  element.date.isAtSameMomentAs(
-                      monthList[index2 + current].date));
-              int f2 = plist.indexWhere((element) =>
-              element.fid == state.fieldList[2].fid &&
-                  element.date.isAtSameMomentAs(
-                      monthList[index2 + current].date));
-              // int f3 = plist.indexWhere((element) =>
-              // element.fid == state.fieldList[3].fid &&
-              //     element.date.isAtSameMomentAs(
-              //         monthList[index2 + current].date));
-              // int f4 = plist.indexWhere((element) =>
-              // element.fid == state.fieldList[4].fid &&
-              //     element.date.isAtSameMomentAs(
-              //         monthList[index2 + current].date));
+                  monthList[index2 + current].date)) ?? -1;
+              if(state.fieldList.length >= 2){
+                f1 = plist.indexWhere((element) =>
+                    element.fid == state.fieldList[1].fid &&
+                    element.date
+                        .isAtSameMomentAs(monthList[index2 + current].date)) ?? -1;
+              } else {f1 = -1;}
+              if(state.fieldList.length >= 3){
+                f2 = plist.indexWhere((element) =>
+                    element.fid == state.fieldList[2].fid &&
+                    element.date
+                        .isAtSameMomentAs(monthList[index2 + current].date)) ?? -1;
+              } else {f2 = -1;}
+              if(state.fieldList.length >= 4){
+                f3 = plist.indexWhere((element) =>
+                    element.fid == state.fieldList[3].fid &&
+                    element.date
+                        .isAtSameMomentAs(monthList[index2 + current].date)) ?? -1;
+              } else {f3 = -1;}
+              if(state.fieldList.length >= 5){
+                f4 = plist.indexWhere((element) =>
+                    element.fid == state.fieldList[4].fid &&
+                    element.date
+                        .isAtSameMomentAs(monthList[index2 + current].date)) ?? -1;
+              } else {f4 = -1;}
+              // print('${all} // ${f1} // ${f2} // ${f3} // ${f4}');
               return Container(
                 width: 96,
                 height: 71,
@@ -403,58 +466,71 @@ class _FMCalendarState extends State<FMCalendar> {
                 padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                 child: Column(
                   children: [
-                    (state.fieldList.length >= 1) ? Column(
-                      children: [
-                        (true) ? Container(
-                          height: 5,
-                          width: 130,
-                          padding: EdgeInsets.zero,
-                          color: Colors.red,
-                        ) : Container(),
-                        SizedBox(
-                          height: 3,
-                        ),
-                      ],
-                    ) : Container(),
-                    (state.fieldList.length >= 2) ? Column(
+                    Column(
                       children: [
                         Container(
                           height: 5,
                           width: 130,
                           padding: EdgeInsets.zero,
-                          color: Colors.red,
+                          color: (all != -1) ? Colors.green : Colors.transparent,
                         ),
                         SizedBox(
                           height: 3,
                         ),
                       ],
-                    ) : Container(),
-                    (state.fieldList.length >= 3) ? Column(
+                    ),
+                    Column(
                       children: [
                         Container(
                           height: 5,
                           width: 130,
                           padding: EdgeInsets.zero,
-                          color: Colors.red,
+                          color: (f1 != -1) ? Colors.orange : Colors.transparent,
                         ),
                         SizedBox(
                           height: 3,
                         ),
                       ],
-                    ) : Container(),
-                    (state.fieldList.length >= 4) ? Column(
+                    ),
+                    Column(
                       children: [
                         Container(
                           height: 5,
                           width: 130,
                           padding: EdgeInsets.zero,
-                          color: Colors.red,
+                          color: (f2 != -1) ? Colors.yellow : Colors.transparent,
                         ),
                         SizedBox(
                           height: 3,
                         ),
                       ],
-                    ) : Container(),
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          height: 5,
+                          width: 130,
+                          padding: EdgeInsets.zero,
+                          color: (f3 != -1) ? Colors.blue : Colors.transparent,
+                        ),
+                        SizedBox(
+                          height: 3,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          height: 5,
+                          width: 130,
+                          padding: EdgeInsets.zero,
+                          color: (f4 != -1) ? Colors.purple : Colors.transparent,
+                        ),
+                        SizedBox(
+                          height: 3,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               );
