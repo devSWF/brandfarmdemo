@@ -2,6 +2,7 @@ import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_add_plan.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_calendar_widget.dart';
+import 'package:BrandFarm/fm_screens/plan/fm_plan_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,22 +40,44 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
           backgroundColor: Color(0xFFEEEEEE),
           body: Padding(
             padding: const EdgeInsets.fromLTRB(24, 18, 24, 18),
-            child: Container(
-              width: 814,
-              color: Colors.white,
-              padding: const EdgeInsets.fromLTRB(32, 27, 21, 0),
-              child: Column(
-                children: [
-                  _fieldSelectionMenu(state: state),
-                  SizedBox(
-                    height: 43,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 814,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  BlocProvider.value(
+                  padding: const EdgeInsets.fromLTRB(32, 27, 21, 0),
+                  child: Column(
+                    children: [
+                      _fieldSelectionMenu(state: state),
+                      SizedBox(
+                        height: 43,
+                      ),
+                      BlocProvider.value(
+                        value: _fmPlanBloc,
+                        child: FMPlanCalendarWidget(),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10,),
+                Container(
+                  width: 253,
+                  height: 361,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 17, 19, 0),
+                  child: BlocProvider.value(
                     value: _fmPlanBloc,
-                    child: FMPlanCalendarWidget(),
+                    child: FMPlanDetailScreen(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );
