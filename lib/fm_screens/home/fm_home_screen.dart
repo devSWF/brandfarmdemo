@@ -209,7 +209,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                   }
                 },
                 leading: Icon(
-                  Icons.notification_important_outlined,
+                  Icons.view_agenda_outlined,
                   color: (pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
                   size: 18,
                 ),
@@ -274,81 +274,25 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                 ],
               ),
             ),
-            Theme(
-              data: theme,
-              child: MyExpansionTile(
-                onExpansionChanged: (value) {
-                  if (value) {
-                    setState(() {
-                      pageIndex = 2;
-                      subPageIndex = 1;
-                    });
-                  }
-                },
-                leading: Icon(
-                  Icons.mail_outline,
-                  color: (pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
-                  size: 18,
+            ListTile(
+              onTap: () {
+                setState(() {
+                  pageIndex = 2;
+                });
+              },
+              leading: Icon(
+                Icons.calendar_today_outlined,
+                color: (pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
+                size: 18,
+              ),
+              title: Text(
+                '영농계획',
+                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                  color:
+                  (pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
                 ),
-                title: Text(
-                  '영농계획',
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 13,
-                        color:
-                            (pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
-                      ),
-                ),
-                children: [
-                  ListTile(
-                    onTap: () {
-                      setState(() {
-                        pageIndex = 2;
-                        subPageIndex = 1;
-                      });
-                    },
-                    title: Row(
-                      children: [
-                        SizedBox(
-                          width: 76,
-                        ),
-                        Text(
-                          '전체일정',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 13,
-                                color: (pageIndex == 2 && subPageIndex == 1)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    onTap: () {
-                      setState(() {
-                        pageIndex = 2;
-                        subPageIndex = 2;
-                      });
-                    },
-                    title: Row(
-                      children: [
-                        SizedBox(
-                          width: 76,
-                        ),
-                        Text(
-                          '영농계획 설정',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 13,
-                                color: (pageIndex == 2 && subPageIndex == 2)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ),
             ),
             ListTile(
@@ -698,19 +642,10 @@ class _GetPageState extends State<GetPage> {
         break;
       case 2:
         {
-          if (widget.subIndex == 1) {
-            return BlocProvider.value(
-              value: _fmPlanBloc,
-              child: FMPlanScreen(),
-            );
-          } else if (widget.subIndex == 2) {
-            return BlocProvider.value(
-              value: _fmPlanBloc,
-              child: FMPlanSettingScreen(),
-            );
-          } else {
-            return EmptyScreen();
-          }
+          return BlocProvider.value(
+            value: _fmPlanBloc,
+            child: FMPlanScreen(),
+          );
         }
         break;
       case 3:

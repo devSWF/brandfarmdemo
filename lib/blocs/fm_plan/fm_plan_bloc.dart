@@ -5,6 +5,7 @@ import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/repository/fm_plan/fm_plan_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
+import 'package:BrandFarm/utils/weather/weather_icons.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -116,13 +117,34 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
 
   Stream<FMPlanState> _mapSetDateToState(DateTime date) async* {
     // set date and show detail plan
+    print('//////////////////${date}');
     List<FMPlan> detailList = [];
-    detailList = state.planList.where((element) {
-      return ((element.startDate.toDate().isBefore(date) &&
-              element.endDate.toDate().isAfter(date)) ||
-          (element.startDate.toDate().isAtSameMomentAs(date) &&
-              element.endDate.toDate().isAtSameMomentAs(date)));
-    }).toList();
+    detailList = (state.planList.length > 0)
+        ? state.planList.where((element) {
+            // print('${element.startDate.toDate()}');
+            // print(
+            //     'date is after start date : ${date.isAfter(element.startDate.toDate())}');
+            // print(
+            //     'date is before end date : ${date.isBefore(element.endDate.toDate())}');
+            // print(
+            //     'date is equal to start date : ${DateTime.utc(date.year, date.month, date.day).isAtSameMomentAs(DateTime.utc(element.startDate.toDate().year, element.startDate.toDate().month, element.startDate.toDate().day))}');
+            // print(
+            //     'date is equal to end date : ${DateTime.utc(date.year, date.month, date.day).isAtSameMomentAs(DateTime.utc(element.endDate.toDate().year, element.endDate.toDate().month, element.endDate.toDate().day))}');
+            // print('${element.endDate.toDate()}');
+            return ((element.startDate.toDate().isBefore(date) ||
+                    DateTime.utc(date.year, date.month, date.day)
+                        .isAtSameMomentAs(DateTime.utc(
+                            element.startDate.toDate().year,
+                            element.startDate.toDate().month,
+                            element.startDate.toDate().day))) &&
+                (element.endDate.toDate().isAfter(date) ||
+                    DateTime.utc(date.year, date.month, date.day)
+                        .isAtSameMomentAs(DateTime.utc(
+                            element.endDate.toDate().year,
+                            element.endDate.toDate().month,
+                            element.endDate.toDate().day))));
+          }).toList()
+        : [];
 
     yield state.update(
       selectedDate: date,
