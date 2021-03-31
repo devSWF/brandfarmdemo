@@ -69,3 +69,29 @@ class SetSelectedField extends FMPlanEvent{
     selectedField: $selectedField,
   }''';
 }
+
+class SetStartDate extends FMPlanEvent{
+  final DateTime startDate;
+
+  const SetStartDate({
+    @required this.startDate,
+  });
+
+  @override
+  String toString() => '''SetStartDate {
+    startDate: $startDate,
+  }''';
+}
+
+class SetEndDate extends FMPlanEvent{
+  final DateTime endDate;
+
+  const SetEndDate({
+    @required this.endDate,
+  });
+
+  @override
+  String toString() => '''SetEndDate {
+    endDate: $endDate,
+  }''';
+}

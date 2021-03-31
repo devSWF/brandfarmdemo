@@ -32,6 +32,10 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
       yield* _mapSetDateToState(event.date);
     } else if (event is SetSelectedField) {
       yield* _mapSetSelectedFieldToState(event.selectedField);
+    } else if (event is SetStartDate) {
+      yield* _mapSetStartDateToState(event.startDate);
+    } else if (event is SetEndDate) {
+      yield* _mapSetEndDateToState(event.endDate);
     }
   }
 
@@ -158,6 +162,20 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     // set selected field
     yield state.update(
       selectedField: selectedField,
+    );
+  }
+
+  Stream<FMPlanState> _mapSetStartDateToState(DateTime start) async* {
+    // set start date
+    yield state.update(
+      startDate: start,
+    );
+  }
+
+  Stream<FMPlanState> _mapSetEndDateToState(DateTime end) async* {
+    // set end date
+    yield state.update(
+      endDate: end,
     );
   }
 }
