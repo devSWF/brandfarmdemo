@@ -492,7 +492,7 @@ class _FMCalendarState extends State<FMCalendar> {
                         ),
                       ],
                     ),
-                    Column(
+                    (state.selectedField == 0 || state.selectedField == 1) ? Column(
                       children: [
                         Container(
                           height: 5,
@@ -504,8 +504,8 @@ class _FMCalendarState extends State<FMCalendar> {
                           height: 3,
                         ),
                       ],
-                    ),
-                    Column(
+                    ) : Container(),
+                    (state.selectedField == 0 || state.selectedField == 2) ? Column(
                       children: [
                         Container(
                           height: 5,
@@ -517,8 +517,8 @@ class _FMCalendarState extends State<FMCalendar> {
                           height: 3,
                         ),
                       ],
-                    ),
-                    Column(
+                    ) : Container(),
+                    (state.selectedField == 0 || state.selectedField == 3) ? Column(
                       children: [
                         Container(
                           height: 5,
@@ -530,8 +530,8 @@ class _FMCalendarState extends State<FMCalendar> {
                           height: 3,
                         ),
                       ],
-                    ),
-                    Column(
+                    ) : Container(),
+                    (state.selectedField == 0 || state.selectedField == 4) ? Column(
                       children: [
                         Container(
                           height: 5,
@@ -543,7 +543,7 @@ class _FMCalendarState extends State<FMCalendar> {
                           height: 3,
                         ),
                       ],
-                    ),
+                    ) : Container(),
                   ],
                 ),
               );

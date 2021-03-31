@@ -56,3 +56,16 @@ class SetDate extends FMPlanEvent{
     date: $date,
   }''';
 }
+
+class SetSelectedField extends FMPlanEvent{
+  final int selectedField;
+
+  const SetSelectedField({
+    @required this.selectedField,
+  });
+
+  @override
+  String toString() => '''SetSelectedField {
+    selectedField: $selectedField,
+  }''';
+}

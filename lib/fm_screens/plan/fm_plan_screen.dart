@@ -16,15 +16,15 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
   FMPlanBloc _fmPlanBloc;
 
   // for test
-  List<String> forTest = List.generate(4, (index) {
-    if (index == 0) {
-      return '전체일정';
-    } else {
-      return '필드${index}';
-    }
-  });
+  // List<String> forTest = List.generate(4, (index) {
+  //   if (index == 0) {
+  //     return '전체일정';
+  //   } else {
+  //     return '필드${index}';
+  //   }
+  // });
 
-  int _selectedField = 0;
+  // int _selectedField = 0;
 
   @override
   void initState() {
@@ -103,11 +103,11 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
             ),
             AnimatedPositioned(
               duration: Duration(milliseconds: 300),
-              left: (_selectedField == 0)
+              left: (state.selectedField == 0)
                   ? 0
-                  : (_selectedField == 1)
+                  : (state.selectedField == 1)
                       ? 84
-                      : (_selectedField == 2)
+                      : (state.selectedField == 2)
                           ? 168
                           : 252,
               child: Container(
@@ -115,7 +115,15 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
                 height: 28,
                 padding: EdgeInsets.zero,
                 decoration: BoxDecoration(
-                  color: Color(0xFF15B85B),
+                  color: (state.selectedField == 0)
+                      ? Color(0xFF15B85B)
+                      : (state.selectedField == 1)
+                      ? Colors.orange
+                      : (state.selectedField == 2)
+                      ? Colors.yellow
+                      : (state.selectedField == 3)
+                      ? Colors.blue
+                      : Colors.purple,
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -132,9 +140,10 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
                     children: [
                       InkResponse(
                         onTap: () {
-                          setState(() {
-                            _selectedField = index;
-                          });
+                          // setState(() {
+                          //   _selectedField = index;
+                          // });
+                          _fmPlanBloc.add(SetSelectedField(selectedField: index));
                         },
                         child: Container(
                           width: 84,
@@ -148,10 +157,10 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
                                   .bodyText2
                                   .copyWith(
                                     fontSize: 15,
-                                    fontWeight: (_selectedField == index)
+                                    fontWeight: (state.selectedField == index)
                                         ? FontWeight.w600
                                         : FontWeight.w300, // normal
-                                    color: (_selectedField == index)
+                                    color: (state.selectedField == index)
                                         ? Colors.white
                                         : Color(
                                             0x4D000000), // Color(0x4D000000) or white
@@ -187,7 +196,7 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
         builder: (BuildContext context) {
           return BlocProvider.value(
             value: _fmPlanBloc,
-            child: FMAddPlan(selectedField: _selectedField),
+            child: FMAddPlan(),
           );
         });
   }
