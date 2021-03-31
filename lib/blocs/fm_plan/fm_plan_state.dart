@@ -16,6 +16,8 @@ class FMPlanState {
   List<FMPlan> detailList;
 
   int selectedField;
+  DateTime startDate;
+  DateTime endDate;
 
   FMPlanState({
     @required this.isLoading,
@@ -26,6 +28,8 @@ class FMPlanState {
     @required this.detailList,
     @required this.selectedDate,
     @required this.selectedField,
+    @required this.startDate,
+    @required this.endDate,
   });
 
   factory FMPlanState.empty() {
@@ -46,6 +50,8 @@ class FMPlanState {
       detailList: [],
       selectedDate: DateTime.now(),
       selectedField: 0,
+      startDate: DateTime.now(),
+      endDate: DateTime.now(),
     );
   }
 
@@ -58,6 +64,8 @@ class FMPlanState {
     List<FMPlan> detailList,
     DateTime selectedDate,
     int selectedField,
+    DateTime startDate,
+    DateTime endDate,
   }) {
     return FMPlanState(
       isLoading: isLoading ?? this.isLoading,
@@ -68,6 +76,8 @@ class FMPlanState {
       detailList: detailList ?? this.detailList,
       selectedDate: selectedDate ?? this.selectedDate,
       selectedField: selectedField ?? this.selectedField,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
     );
   }
 
@@ -80,6 +90,8 @@ class FMPlanState {
     List<FMPlan> detailList,
     DateTime selectedDate,
     int selectedField,
+    DateTime startDate,
+    DateTime endDate,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -90,6 +102,8 @@ class FMPlanState {
       detailList: detailList,
       selectedDate: selectedDate,
       selectedField: selectedField,
+      startDate: startDate,
+      endDate: endDate,
     );
   }
 
@@ -104,6 +118,8 @@ class FMPlanState {
     detailList: ${detailList.length},
     selectedDate: ${selectedDate},
     selectedField: ${selectedField},
+    startDate: ${startDate},
+    endDate: ${endDate},
     }
     ''';
   }

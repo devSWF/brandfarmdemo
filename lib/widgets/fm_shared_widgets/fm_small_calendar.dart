@@ -1,4 +1,8 @@
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FMSmallCalendar extends StatefulWidget {
   final int category;
@@ -13,6 +17,7 @@ class FMSmallCalendar extends StatefulWidget {
 }
 
 class _FMSmallCalendarState extends State<FMSmallCalendar> {
+  FMPlanBloc _fmPlanBloc;
   DateTime now = DateTime.now();
   List<String> weekDays = [
     'S',
@@ -32,6 +37,7 @@ class _FMSmallCalendarState extends State<FMSmallCalendar> {
   @override
   void initState() {
     super.initState();
+    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
     if (widget.category == 1) {
       title = '시작';
     } else {
@@ -52,7 +58,9 @@ class _FMSmallCalendarState extends State<FMSmallCalendar> {
           isPrev: monthList[selectedIndex].isPrev,
           isNext: monthList[selectedIndex].isNext,
         ));
-    monthList.forEach((element) {print(element.date);});
+    monthList.forEach((element) {
+      print(element.date);
+    });
   }
 
   List<CalendarDate> getMonth({DateTime date}) {
@@ -128,37 +136,42 @@ class _FMSmallCalendarState extends State<FMSmallCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      contentPadding: EdgeInsets.zero,
-      content: Container(
-        height: 454,
-        width: 493,
-        padding: EdgeInsets.fromLTRB(20, 18, 20, 0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _titleBar(),
-            Divider(
-              height: 22,
-              thickness: 1,
-              color: Color(0xFFE1E1E1),
+    return BlocConsumer<FMPlanBloc, FMPlanState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          content: Container(
+            height: 464,
+            width: 493,
+            padding: EdgeInsets.fromLTRB(20, 18, 20, 0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
             ),
-            SizedBox(
-              height: 10,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _titleBar(),
+                Divider(
+                  height: 22,
+                  thickness: 1,
+                  color: Color(0xFFE1E1E1),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                _dateBar(),
+                SizedBox(
+                  height: 34,
+                ),
+                _smallCalendar(),
+              ],
             ),
-            _dateBar(),
-            SizedBox(
-              height: 34,
-            ),
-            _smallCalendar(),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -301,8 +314,15 @@ class _FMSmallCalendarState extends State<FMSmallCalendar> {
                 children: List.generate(
                     7,
                     (row) => InkResponse(
-                          onDoubleTap: () {
-                            Navigator.pop(context, monthList[row + current].date);
+                          onDoubleTap: () async {
+                            if(widget.category == 1) {
+                              _fmPlanBloc.add(SetStartDate(startDate: monthList[row + current].date));
+                              Navigator.pop(context);
+                              await _showDatePicker(2);
+                            } else {
+                              _fmPlanBloc.add(SetEndDate(endDate: monthList[row + current].date));
+                              Navigator.pop(context);
+                            }
                           },
                           onTap: () {
                             if (selectedIndex == 100) {
@@ -388,6 +408,20 @@ class _FMSmallCalendarState extends State<FMSmallCalendar> {
         ],
       ),
     );
+  }
+
+  Future<DateTime> _showDatePicker(int category) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return BlocProvider.value(
+            value: _fmPlanBloc,
+            child: FMSmallCalendar(
+              category: category,
+            ),
+          );
+        });
   }
 }
 

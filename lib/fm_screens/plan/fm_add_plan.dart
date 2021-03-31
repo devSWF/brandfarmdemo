@@ -17,8 +17,9 @@ class FMAddPlan extends StatefulWidget {
 
 class _FMAddPlanState extends State<FMAddPlan> {
   FMPlanBloc _fmPlanBloc;
-  DateTime startDate;
-  DateTime endDate;
+
+  // DateTime startDate;
+  // DateTime endDate;
   bool isDateOrderCorrect;
   bool isEverythingFilledOut;
 
@@ -33,8 +34,8 @@ class _FMAddPlanState extends State<FMAddPlan> {
   void initState() {
     super.initState();
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
-    startDate = DateTime.now();
-    endDate = DateTime.now();
+    // startDate = DateTime.now();
+    // endDate = DateTime.now();
     isDateOrderCorrect = true;
     isEverythingFilledOut = false;
     _titleController = TextEditingController();
@@ -47,30 +48,30 @@ class _FMAddPlanState extends State<FMAddPlan> {
 
   @override
   Widget build(BuildContext context) {
-    if (startDate != null &&
-        endDate != null &&
-        _title.isNotEmpty &&
-        _content.isNotEmpty) {
-      setState(() {
-        isEverythingFilledOut = true;
-      });
-    } else {
-      setState(() {
-        isEverythingFilledOut = false;
-      });
-    }
-    if (startDate.isBefore(endDate) || startDate.isAtSameMomentAs(endDate)) {
-      setState(() {
-        isDateOrderCorrect = true;
-      });
-    } else {
-      setState(() {
-        isDateOrderCorrect = false;
-      });
-    }
     return BlocConsumer<FMPlanBloc, FMPlanState>(
       listener: (context, state) {},
       builder: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_title.isNotEmpty &&
+              _content.isNotEmpty) {
+            setState(() {
+              isEverythingFilledOut = true;
+            });
+          } else {
+            setState(() {
+              isEverythingFilledOut = false;
+            });
+          }
+          if (state.startDate.isBefore(state.endDate) || state.startDate.isAtSameMomentAs(state.endDate)) {
+            setState(() {
+              isDateOrderCorrect = true;
+            });
+          } else {
+            setState(() {
+              isDateOrderCorrect = false;
+            });
+          }
+        });
         return AlertDialog(
           contentPadding: EdgeInsets.zero,
           content: Container(
@@ -92,7 +93,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
                 SizedBox(
                   height: 10,
                 ),
-                _pickDate(),
+                _pickDate(state),
                 SizedBox(
                   height: 19,
                 ),
@@ -119,7 +120,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
         Align(
           alignment: Alignment.center,
           child: Text(
-            '영농계획 추가요청',
+            '영농계획 추가',
             style: Theme.of(context).textTheme.bodyText2.copyWith(
                   fontWeight: FontWeight.w500,
                   fontSize: 18,
@@ -143,73 +144,61 @@ class _FMAddPlanState extends State<FMAddPlan> {
     );
   }
 
-  Widget _pickDate() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 10,
-            ),
-            Container(
-              width: 255,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () async {
-                      DateTime pickedDate =
-                          await _showDatePicker(1) ?? startDate;
-                      setState(() {
-                        startDate = pickedDate;
-                      });
-                    },
-                    child: Text(
-                      '${startDate.year}년 ${startDate.month}월 ${startDate.day}일',
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            color: Color(0xFF15B85B),
-                          ),
-                    ),
-                  ),
-                  Text(
-                    '-',
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF15B85B),
-                        ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      DateTime pickedDate = await _showDatePicker(2) ?? endDate;
-                      setState(() {
-                        endDate = pickedDate;
-                      });
-                    },
-                    child: Text(
-                      '${endDate.year}년 ${endDate.month}월 ${endDate.day}일',
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(
-                            color: Color(0xFF15B85B),
-                          ),
-                    ),
-                  ),
-                ],
+  Widget _pickDate(FMPlanState state) {
+    return InkResponse(
+      onTap: () async {
+        await _showDatePicker(1);
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: 10,
               ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Icon(
-              Icons.calendar_today,
-              color: Color(0xFF15B85B),
-            ),
-            SizedBox(
-              width: 17,
-            ),
-          ],
-        ),
-      ],
+              Container(
+                width: 255,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${state.startDate.year}년 ${state.startDate.month}월 ${state.startDate.day}일',
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: Color(0xFF15B85B),
+                          ),
+                    ),
+                    Text(
+                      '-',
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF15B85B),
+                          ),
+                    ),
+                    Text(
+                      '${state.endDate.year}년 ${state.endDate.month}월 ${state.endDate.day}일',
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: Color(0xFF15B85B),
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(
+                Icons.calendar_today,
+                color: Color(0xFF15B85B),
+              ),
+              SizedBox(
+                width: 17,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -218,8 +207,11 @@ class _FMAddPlanState extends State<FMAddPlan> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return FMSmallCalendar(
-            category: category,
+          return BlocProvider.value(
+            value: _fmPlanBloc,
+            child: FMSmallCalendar(
+              category: category,
+            ),
           );
         });
   }
@@ -310,8 +302,8 @@ class _FMAddPlanState extends State<FMAddPlan> {
           if (isEverythingFilledOut) {
             if (isDateOrderCorrect) {
               _fmPlanBloc.add(PostNewPlan(
-                startDate: startDate,
-                endDate: endDate,
+                startDate: state.startDate,
+                endDate: state.endDate,
                 title: _title,
                 content: _content,
                 selectedField: state.selectedField,
@@ -327,8 +319,8 @@ class _FMAddPlanState extends State<FMAddPlan> {
             color: (!isDateOrderCorrect)
                 ? Color(0xFFEEEEEE)
                 : (isEverythingFilledOut)
-                ? Color(0xFF15B85B)
-                : Color(0xFFEEEEEE),
+                    ? Color(0xFF15B85B)
+                    : Color(0xFFEEEEEE),
             borderRadius: BorderRadius.circular(5),
           ),
           child: Center(
@@ -337,16 +329,16 @@ class _FMAddPlanState extends State<FMAddPlan> {
                   ? '모두 입력했는지 확인해 주세요'
                   : (!isDateOrderCorrect)
                       ? '날짜 순서를 확인해주세요'
-                      : '요청',
+                      : '추가',
               style: Theme.of(context).textTheme.bodyText1.copyWith(
                     fontWeight: FontWeight.w600,
                     color: (!isDateOrderCorrect)
                         ? Colors.red
                         : (!isEverythingFilledOut)
-                        ? Colors.red
-                        : (isEverythingFilledOut)
-                        ? Colors.white
-                        : Color(0xFF969696),
+                            ? Colors.red
+                            : (isEverythingFilledOut)
+                                ? Colors.white
+                                : Color(0xFF969696),
                   ),
             ),
           ),
