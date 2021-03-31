@@ -48,7 +48,10 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
   }
 
   Widget _detailList(FMPlanState state) {
-    List<List<FMPlan>> _list = getSortedList(state);
+    List<List<FMPlan>> _list;
+    (state.selectedField == 0)
+        ? _list = getSortedList(state)
+        : _list = getSortedListBySelection(state);
     // print(_list.length);
     // return Container();
     return (_list.length > 0)
@@ -59,107 +62,9 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
                       children: List.generate(_list[main].length, (sub) {
                         String fieldName =
                             getField(state, _list[main][sub].fid);
-                        return Column(
-                          children: [
-                            (sub == 0)
-                                ? Row(
-                                    children: [
-                                      Container(
-                                        color: (main == 0)
-                                            ? Color(0xFF15B85B)
-                                            : (main == 1)
-                                                ? Colors.orange
-                                                : (main == 2)
-                                                    ? Colors.yellow
-                                                    : (main == 3)
-                                                        ? Colors.blue
-                                                        : Colors.purple,
-                                        child: Text(
-                                          '${fieldName}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2
-                                              .copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.white,
-                                              ),
-                                        ),
-                                      ),
-                                      (main == 0)
-                                          ? SizedBox(
-                                              width: 11,
-                                            )
-                                          : SizedBox(
-                                              width: 16,
-                                            ),
-                                      Container(
-                                        width: 166,
-                                        child: Text(
-                                          '${_list[main][sub].content} (${DateFormat('M/d').format(_list[main][sub].startDate.toDate())} ~ ${DateFormat('M/d').format(_list[main][sub].endDate.toDate())})',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2
-                                              .copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: (main == 0)
-                                                    ? Color(0xFF15B85B)
-                                                    : (main == 1)
-                                                        ? Colors.orange
-                                                        : (main == 2)
-                                                            ? Colors.yellow
-                                                            : (main == 3)
-                                                                ? Colors.blue
-                                                                : Colors.purple,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Row(
-                                    children: [
-                                      Container(
-                                        width: 22,
-                                      ),
-                                      Container(
-                                        width: 166,
-                                        child: Text(
-                                          '${_list[main][sub].content} (${DateFormat('M/d').format(_list[main][sub].startDate.toDate())} ~ ${DateFormat('M/d').format(_list[main][sub].endDate.toDate())})',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText2
-                                              .copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: (main == 0)
-                                                    ? Color(0xFF15B85B)
-                                                    : (main == 1)
-                                                        ? Colors.orange
-                                                        : (main == 2)
-                                                            ? Colors.yellow
-                                                            : (main == 3)
-                                                                ? Colors.blue
-                                                                : Colors.purple,
-                                              ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            (sub == _list[main].length - 1)
-                                ? Divider(
-                                    height: 1,
-                                    thickness: 1,
-                                    color: Color(0x4D000000),
-                                  )
-                                : Container(),
-                            (sub == _list[main].length - 1)
-                                ? SizedBox(
-                                    height: 12,
-                                  )
-                                : Container(),
-                          ],
-                        );
+                        return (state.selectedField == 0)
+                            ? _all(main, sub, _list, fieldName)
+                            : _fromFieldSelection(main, sub, _list, fieldName, state);
                       }),
                     )
                   : Container();
@@ -168,20 +73,276 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
         : Container();
   }
 
+  Widget _fromFieldSelection(
+      int main, int sub, List<List<FMPlan>> list, String fieldName, FMPlanState state) {
+    return Column(
+      children: [
+        (sub == 0)
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    color: (main == 0)
+                        ? Color(0xFF15B85B)
+                        : (main == 1 && state.selectedField == 1)
+                            ? Colors.orange
+                            : (main == 1 && state.selectedField == 2)
+                                ? Colors.yellow
+                                : (main == 1 && state.selectedField == 3)
+                                    ? Colors.blue
+                                    : Colors.purple,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 6,
+                        ),
+                        Text(
+                          '${fieldName}',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                        ),
+                        SizedBox(
+                          width: 6,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  // (main == 0)
+                  //     ? SizedBox(
+                  //         width: 11,
+                  //       )
+                  //     : SizedBox(
+                  //         width: 16,
+                  //       ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 22,
+                      ),
+                      Container(
+                        width: 166,
+                        child: Text(
+                          '${list[main][sub].content} (${DateFormat('M/d').format(list[main][sub].startDate.toDate())} ~ ${DateFormat('M/d').format(list[main][sub].endDate.toDate())})',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: (main == 0)
+                                    ? Color(0xFF15B85B)
+                                    : (main == 1 && state.selectedField == 1)
+                                        ? Colors.orange
+                                        : (main == 1 && state.selectedField == 2)
+                                            ? Colors.yellow
+                                            : (main == 1 && state.selectedField == 3)
+                                                ? Colors.blue
+                                                : Colors.purple,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            : Row(
+                children: [
+                  Container(
+                    width: 22,
+                  ),
+                  Container(
+                    width: 166,
+                    child: Text(
+                      '${list[main][sub].content} (${DateFormat('M/d').format(list[main][sub].startDate.toDate())} ~ ${DateFormat('M/d').format(list[main][sub].endDate.toDate())})',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: (main == 0)
+                                ? Color(0xFF15B85B)
+                                : (main == 1 && state.selectedField == 1)
+                                    ? Colors.orange
+                                    : (main == 1 && state.selectedField == 2)
+                                        ? Colors.yellow
+                                        : (main == 1 && state.selectedField == 3)
+                                            ? Colors.blue
+                                            : Colors.purple,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+        SizedBox(
+          height: 12,
+        ),
+        (sub == list[main].length - 1)
+            ? Divider(
+                height: 1,
+                thickness: 1,
+                color: Color(0x4D000000),
+              )
+            : Container(),
+        (sub == list[main].length - 1)
+            ? SizedBox(
+                height: 12,
+              )
+            : Container(),
+      ],
+    );
+  }
+
+  Widget _all(int main, int sub, List<List<FMPlan>> list, String fieldName) {
+    return Column(
+      children: [
+        (sub == 0)
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    color: (main == 0)
+                        ? Color(0xFF15B85B)
+                        : (main == 1)
+                            ? Colors.orange
+                            : (main == 2)
+                                ? Colors.yellow
+                                : (main == 3)
+                                    ? Colors.blue
+                                    : Colors.purple,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 6,
+                        ),
+                        Text(
+                          '${fieldName}',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                        ),
+                        SizedBox(
+                          width: 6,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
+                  ),
+                  // (main == 0)
+                  //     ? SizedBox(
+                  //         width: 11,
+                  //       )
+                  //     : SizedBox(
+                  //         width: 16,
+                  //       ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 22,
+                      ),
+                      Container(
+                        width: 166,
+                        child: Text(
+                          '${list[main][sub].content} (${DateFormat('M/d').format(list[main][sub].startDate.toDate())} ~ ${DateFormat('M/d').format(list[main][sub].endDate.toDate())})',
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: (main == 0)
+                                    ? Color(0xFF15B85B)
+                                    : (main == 1)
+                                        ? Colors.orange
+                                        : (main == 2)
+                                            ? Colors.yellow
+                                            : (main == 3)
+                                                ? Colors.blue
+                                                : Colors.purple,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            : Row(
+                children: [
+                  Container(
+                    width: 22,
+                  ),
+                  Container(
+                    width: 166,
+                    child: Text(
+                      '${list[main][sub].content} (${DateFormat('M/d').format(list[main][sub].startDate.toDate())} ~ ${DateFormat('M/d').format(list[main][sub].endDate.toDate())})',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: (main == 0)
+                                ? Color(0xFF15B85B)
+                                : (main == 1)
+                                    ? Colors.orange
+                                    : (main == 2)
+                                        ? Colors.yellow
+                                        : (main == 3)
+                                            ? Colors.blue
+                                            : Colors.purple,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+        SizedBox(
+          height: 12,
+        ),
+        (sub == list[main].length - 1)
+            ? Divider(
+                height: 1,
+                thickness: 1,
+                color: Color(0x4D000000),
+              )
+            : Container(),
+        (sub == list[main].length - 1)
+            ? SizedBox(
+                height: 12,
+              )
+            : Container(),
+      ],
+    );
+  }
+
   String getField(FMPlanState state, String fid) {
-    // List<Field> _list =
-    //     state.fieldList.where((element) => element.fid == fid).toList();
-    // return '${_list[0].name}';
-    int index = state.fieldList.indexWhere((element) => element.fid == fid);
-    return (index == 0)
-        ? '통'
-        : (index == 1)
-            ? 'A'
-            : (index == 2)
-                ? 'B'
-                : (index == 3)
-                    ? 'C'
-                    : 'D';
+    List<Field> _list =
+        state.fieldList.where((element) => element.fid == fid).toList();
+    return '${_list[0].name}';
+    // int index = state.fieldList.indexWhere((element) => element.fid == fid);
+    // return (index == 0)
+    //     ? '통'
+    //     : (index == 1)
+    //         ? 'A'
+    //         : (index == 2)
+    //             ? 'B'
+    //             : (index == 3)
+    //                 ? 'C'
+    //                 : 'D';
+  }
+
+  List<List<FMPlan>> getSortedListBySelection(FMPlanState state) {
+    List<List<FMPlan>> _list = [];
+    List<FMPlan> all =
+        state.detailList.where((element) => element.fid == '').toList();
+    List<FMPlan> selectedList = state.detailList.where((element) {
+      return element.fid == state.fieldList[state.selectedField].fid;
+    }).toList();
+
+    // print('///////////${all.length}');
+    // print('///////////${selectedList.length}');
+
+    (all.isNotEmpty)
+        ? _list.insert(0, all)
+        : _list.insert(0, []); //print('all is empty');
+    (selectedList.isNotEmpty)
+        ? _list.add(selectedList)
+        : _list.add([]); //print('f1 is empty');
+
+    return _list;
   }
 
   List<List<FMPlan>> getSortedList(FMPlanState state) {

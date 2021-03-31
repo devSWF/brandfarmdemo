@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FMAddPlan extends StatefulWidget {
-  final int selectedField;
-
-  FMAddPlan({Key key, @required this.selectedField}) : super(key: key);
+  // final int selectedField;
+  //
+  // FMAddPlan({Key key, @required this.selectedField}) : super(key: key);
 
   @override
   _FMAddPlanState createState() => _FMAddPlanState();
@@ -104,7 +104,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
                 SizedBox(
                   height: 27,
                 ),
-                _requestButton(),
+                _requestButton(state),
               ],
             ),
           ),
@@ -304,7 +304,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
     );
   }
 
-  Widget _requestButton() {
+  Widget _requestButton(FMPlanState state) {
     return InkResponse(
         onTap: () {
           if (isEverythingFilledOut) {
@@ -314,7 +314,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
                 endDate: endDate,
                 title: _title,
                 content: _content,
-                selectedField: widget.selectedField,
+                selectedField: state.selectedField,
               ));
               Navigator.pop(context);
             }
