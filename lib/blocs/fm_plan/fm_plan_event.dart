@@ -1,5 +1,6 @@
 
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -16,31 +17,21 @@ class GetFieldListForFMPlan extends FMPlanEvent {}
 
 class GetPlanList extends FMPlanEvent {}
 
-class PostNewPlan extends FMPlanEvent {
-  final DateTime startDate;
-  final DateTime endDate;
-  final String title;
-  final String content;
-  final int selectedField;
+class PostNewPlan extends FMPlanEvent {}
 
-  const PostNewPlan({
-    @required this.startDate,
-    @required this.endDate,
-    @required this.title,
-    @required this.content,
-    @required this.selectedField,
+class SetWaitingPlan extends FMPlanEvent {
+  final WaitingConfirmation wPlan;
+
+  const SetWaitingPlan({
+    @required this.wPlan,
   });
 
   // @override
   // List<Object> get props => [navTo];
 
   @override
-  String toString() => '''PostNewPlan { 
-    startDate : $startDate,
-    endDate : $endDate,
-    title : $title,
-    content : $content,
-    selectedField : $selectedField,
+  String toString() => '''SetWaitingPlan { 
+    wPlan : $wPlan,
   }''';
 }
 
@@ -93,5 +84,18 @@ class SetEndDate extends FMPlanEvent{
   @override
   String toString() => '''SetEndDate {
     endDate: $endDate,
+  }''';
+}
+
+class CheckConfirmState extends FMPlanEvent{
+  final bool confirmState;
+
+  const CheckConfirmState({
+    @required this.confirmState,
+  });
+
+  @override
+  String toString() => '''CheckConfirmState {
+    confirmState: $confirmState,
   }''';
 }

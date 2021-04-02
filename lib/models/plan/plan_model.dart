@@ -72,3 +72,19 @@ class FMPlan {
     };
   }
 }
+
+class WaitingConfirmation {
+  DateTime startDate;
+  DateTime endDate;
+  String title;
+  String content;
+  int selectedFieldIndex;
+
+  WaitingConfirmation({
+    @required this.startDate,
+    @required this.endDate,
+    @required this.title,
+    @required this.content,
+    @required this.selectedFieldIndex,
+  });
+}
