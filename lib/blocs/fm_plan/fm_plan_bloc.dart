@@ -21,13 +21,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     } else if (event is GetPlanList) {
       yield* _mapGetPlanListToState();
     } else if (event is PostNewPlan) {
-      yield* _mapPostNewPlanToState(
-        event.startDate,
-        event.endDate,
-        event.title,
-        event.content,
-        event.selectedField,
-      );
+      yield* _mapPostNewPlanToState();
     } else if (event is SetDate) {
       yield* _mapSetDateToState(event.date);
     } else if (event is SetSelectedField) {
@@ -36,6 +30,10 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
       yield* _mapSetStartDateToState(event.startDate);
     } else if (event is SetEndDate) {
       yield* _mapSetEndDateToState(event.endDate);
+    } else if (event is SetWaitingPlan) {
+      yield* _mapSetWaitingPlanToState(event.wPlan);
+    } else if (event is CheckConfirmState) {
+      yield* _mapCheckConfirmStateToState(event.confirmState);
     }
   }
 
@@ -80,12 +78,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     );
   }
 
-  Stream<FMPlanState> _mapPostNewPlanToState(
-      DateTime startDate,
-      DateTime endDate,
-      String title,
-      String content,
-      int selectedField) async* {
+  Stream<FMPlanState> _mapPostNewPlanToState() async* {
     // post new plan
     String planID = '';
     planID = FirebaseFirestore.instance.collection('Plan').doc().id;
@@ -94,16 +87,16 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
       uid: UserUtil.getUser().uid,
       name: UserUtil.getUser().name,
       imgUrl: UserUtil.getUser().imgUrl,
-      startDate: Timestamp.fromDate(startDate),
-      endDate: Timestamp.fromDate(endDate),
-      title: title,
-      content: content,
+      startDate: Timestamp.fromDate(state.wPlan.startDate),
+      endDate: Timestamp.fromDate(state.wPlan.endDate),
+      title: state.wPlan.title,
+      content: state.wPlan.content,
       isReadByFM: true,
       isReadByOffice: false,
       isReadBySFM: false,
       from: 2,
       // 1 : office, 2 : FM
-      fid: (selectedField > 0) ? state.fieldList[selectedField].fid : '',
+      fid: (state.wPlan.selectedFieldIndex > 0) ? state.fieldList[state.wPlan.selectedFieldIndex].fid : '',
       farmID: state.farm.farmID,
     );
 
@@ -176,6 +169,20 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     // set end date
     yield state.update(
       endDate: end,
+    );
+  }
+
+  Stream<FMPlanState> _mapSetWaitingPlanToState(WaitingConfirmation wPlan) async* {
+    // wait for post confirmation
+    yield state.update(
+      wPlan: wPlan,
+    );
+  }
+
+  Stream<FMPlanState> _mapCheckConfirmStateToState(bool cState) async* {
+    // check if confirm button is pressed
+    yield state.update(
+      isConfirmed: cState,
     );
   }
 }
