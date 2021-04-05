@@ -21,7 +21,6 @@ class FMAddPlan extends StatefulWidget {
 class _FMAddPlanState extends State<FMAddPlan> {
   FMPlanBloc _fmPlanBloc;
   GlobalKey _key = GlobalKey();
-  OverlayEntry _overlayEntry;
 
   // DateTime startDate;
   // DateTime endDate;
