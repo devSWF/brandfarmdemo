@@ -1,5 +1,10 @@
+import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
+import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
+import 'package:BrandFarm/fm_screens/plan/fm_plan_screen.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Plan extends StatefulWidget {
   @override
@@ -7,6 +12,8 @@ class Plan extends StatefulWidget {
 }
 
 class _PlanState extends State<Plan> {
+  FMPlanBloc _fmPlanBloc;
+  FMHomeBloc _fmHomeBloc;
   ScrollController _scrollController;
   DateTime now = DateTime.now();
   List list = [
@@ -23,6 +30,8 @@ class _PlanState extends State<Plan> {
   @override
   void initState() {
     super.initState();
+    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
     _scrollController = ScrollController();
   }
 
@@ -55,7 +64,17 @@ class _PlanState extends State<Plan> {
         ),
         child: Column(
           children: [
-            DateBar(),
+            MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: _fmPlanBloc,
+                ),
+                BlocProvider.value(
+                  value: _fmHomeBloc,
+                ),
+              ],
+              child: DateBar(),
+            ),
             SizedBox(
               height: 7,
             ),
@@ -150,7 +169,9 @@ class _PlanState extends State<Plan> {
       children: [
         Column(
           children: [
-            SizedBox(height: 1,),
+            SizedBox(
+              height: 1,
+            ),
             Container(
               padding: EdgeInsets.zero,
               height: 14,
@@ -198,7 +219,9 @@ class _PlanState extends State<Plan> {
       children: [
         Column(
           children: [
-            SizedBox(height: 1,),
+            SizedBox(
+              height: 1,
+            ),
             Container(
               padding: EdgeInsets.zero,
               height: 28,
@@ -207,13 +230,10 @@ class _PlanState extends State<Plan> {
               child: Center(
                 child: Text(
                   '공통',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2
-                      .copyWith(
-                    fontSize: 10,
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        fontSize: 10,
+                        color: Colors.white,
+                      ),
                   maxLines: 2,
                 ),
               ),
@@ -225,20 +245,15 @@ class _PlanState extends State<Plan> {
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children:
-          List.generate(list.length, (indexx) {
+          children: List.generate(list.length, (indexx) {
             return Column(
               children: [
                 Text(
                   '${list[indexx]}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText2
-                      .copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: Util().getColorByIndex(
-                        index: 100),
-                  ),
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: Util().getColorByIndex(index: 100),
+                      ),
                 ),
               ],
             );
@@ -248,6 +263,7 @@ class _PlanState extends State<Plan> {
     );
   }
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -257,6 +273,16 @@ class DateBar extends StatefulWidget {
 }
 
 class _DateBarState extends State<DateBar> {
+  FMPlanBloc _fmPlanBloc;
+  FMHomeBloc _fmHomeBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -279,12 +305,19 @@ class _DateBarState extends State<DateBar> {
         ),
         Row(
           children: [
-            Text(
-              '전체 영농계획 보기',
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 12,
-                    color: Color(0x80000000),
-                  ),
+            InkWell(
+              onTap: () {
+                _fmHomeBloc.add(SetPageIndex(index: 2));
+                _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                _fmHomeBloc.add(SetSelectedIndex(index: 2));
+              },
+              child: Text(
+                '전체 영농계획 보기',
+                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      fontSize: 12,
+                      color: Color(0x80000000),
+                    ),
+              ),
             ),
             SizedBox(
               width: 13,
@@ -326,11 +359,13 @@ class _CalendarBarState extends State<CalendarBar> {
                 width: 293,
                 color: Color(0xFF15B85B),
                 child: FittedBox(
-                  child: Text('씨뿌리기',
+                  child: Text(
+                    '씨뿌리기',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 8,
-                      color: Colors.white,
-                    ),),
+                          fontSize: 8,
+                          color: Colors.white,
+                        ),
+                  ),
                 ),
               ),
             ),
@@ -342,11 +377,13 @@ class _CalendarBarState extends State<CalendarBar> {
                 height: 10,
                 color: Color(0xFFF7685B),
                 child: FittedBox(
-                  child: Text('씨뿌리기',
+                  child: Text(
+                    '씨뿌리기',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 8,
-                      color: Colors.white,
-                    ),),
+                          fontSize: 8,
+                          color: Colors.white,
+                        ),
+                  ),
                 ),
               ),
             ),
@@ -358,11 +395,13 @@ class _CalendarBarState extends State<CalendarBar> {
                 height: 10,
                 color: Color(0xFFA532CD),
                 child: FittedBox(
-                  child: Text('덩굴채찍',
+                  child: Text(
+                    '덩굴채찍',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 8,
-                      color: Colors.white,
-                    ),),
+                          fontSize: 8,
+                          color: Colors.white,
+                        ),
+                  ),
                 ),
               ),
             ),
@@ -374,11 +413,13 @@ class _CalendarBarState extends State<CalendarBar> {
                 height: 10,
                 color: Color(0xFFF4C708),
                 child: FittedBox(
-                  child: Text('솔라빔',
+                  child: Text(
+                    '솔라빔',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 8,
-                      color: Colors.white,
-                    ),),
+                          fontSize: 8,
+                          color: Colors.white,
+                        ),
+                  ),
                 ),
               ),
             ),
@@ -390,11 +431,13 @@ class _CalendarBarState extends State<CalendarBar> {
                 height: 12,
                 color: Colors.white,
                 child: FittedBox(
-                  child: Text('...그외 4개 일정',
+                  child: Text(
+                    '...그외 4개 일정',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 10,
-                      color: Color(0xB3000000),
-                    ),),
+                          fontSize: 10,
+                          color: Color(0xB3000000),
+                        ),
+                  ),
                 ),
               ),
             ),
@@ -427,7 +470,9 @@ class _FieldListState extends State<FieldList> {
         return (index == 0)
             ? Column(
                 children: [
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Container(
                       height: 14,
                       width: 29,

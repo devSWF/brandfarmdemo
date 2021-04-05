@@ -1,8 +1,11 @@
+import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/fm_home/comments.dart';
 import 'package:BrandFarm/widgets/fm_home/create_announcement.dart';
 import 'package:BrandFarm/widgets/fm_home/plan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeBody extends StatefulWidget {
   HomeBody({
@@ -14,11 +17,15 @@ class HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<HomeBody> {
+  FMPlanBloc _fmPlanBloc;
+  FMHomeBloc _fmHomeBloc;
   ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
     _scrollController = ScrollController();
   }
 
@@ -28,7 +35,8 @@ class _HomeBodyState extends State<HomeBody> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       color: Color(0xFFEEEEEE),
-      padding: EdgeInsets.fromLTRB(defaultPadding, defaultPadding, defaultPadding, 0),
+      padding: EdgeInsets.fromLTRB(
+          defaultPadding, defaultPadding, defaultPadding, 0),
       child: Scrollbar(
         controller: _scrollController,
         isAlwaysShown: true,
@@ -38,11 +46,27 @@ class _HomeBodyState extends State<HomeBody> {
             shrinkWrap: true,
             children: [
               CreateAnnouncement(),
-              SizedBox(height: defaultPadding,),
-              Plan(),
-              SizedBox(height: defaultPadding,),
+              SizedBox(
+                height: defaultPadding,
+              ),
+              MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(
+                    value: _fmPlanBloc,
+                  ),
+                  BlocProvider.value(
+                    value: _fmHomeBloc,
+                  ),
+                ],
+                child: Plan(),
+              ),
+              SizedBox(
+                height: defaultPadding,
+              ),
               Comments(),
-              SizedBox(height: defaultPadding,),
+              SizedBox(
+                height: defaultPadding,
+              ),
             ],
           ),
         ),

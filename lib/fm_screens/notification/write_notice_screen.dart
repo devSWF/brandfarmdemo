@@ -15,6 +15,25 @@ class WriteNoticeScreen extends StatefulWidget {
 
 class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
   FMNotificationBloc _fmNotificationBloc;
+  GlobalKey _fieldCategoryButtonkey = GlobalKey();
+  GlobalKey _noticeTypekey = GlobalKey();
+  double _fieldMenuHeight = 0.0;
+  double _fieldMenuWidth = 0.0;
+  double _fieldButtonSizeDX = 0.0;
+  double _fieldButtonSizeDY = 0.0;
+
+  double _noticeTypeHeight = 0.0;
+  double _noticeTypeWidth = 0.0;
+  double _noticeButtonSizeDX = 0.0;
+  double _noticeButtonSizeDY = 0.0;
+
+  bool isFieldCatSelected = false;
+  bool isNoticeTypeSelected = false;
+
+  int fieldCategoryIndex = 0;
+  List<String> noticeTypeList = ['일반', '중요',];
+  int noticeTypeIndex = 0;
+
   String noticeType;
   TextEditingController _titleController;
   TextEditingController _noticeController;
@@ -40,6 +59,39 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
     isScheduled = false;
   }
 
+  void _afterLayout() {
+    _getSize();
+    _getPosition();
+  }
+
+  void _getSize() {
+    final RenderBox renderBoxField = _fieldCategoryButtonkey.currentContext.findRenderObject();
+    final RenderBox renderBoxNotice = _noticeTypekey.currentContext.findRenderObject();
+    final fieldSize = renderBoxField.size;
+    final noticeSize = renderBoxNotice.size;
+    setState(() {
+      _fieldMenuHeight = fieldSize.height;
+      _fieldMenuWidth = fieldSize.width;
+      _noticeTypeHeight = noticeSize.height;
+      _noticeTypeWidth = noticeSize.width;
+    });
+    print('field: ${fieldSize} // notice: ${noticeSize}');
+  }
+
+  void _getPosition() {
+    final RenderBox renderBoxField = _fieldCategoryButtonkey.currentContext.findRenderObject();
+    final RenderBox renderBoxNotice = _noticeTypekey.currentContext.findRenderObject();
+    final fieldPosition = renderBoxField.localToGlobal(Offset.zero);
+    final noticePosition = renderBoxNotice.localToGlobal(Offset.zero);
+    setState(() {
+      _fieldButtonSizeDX = fieldPosition.dx;
+      _fieldButtonSizeDY = fieldPosition.dy;
+      _noticeButtonSizeDX = noticePosition.dx;
+      _noticeButtonSizeDY = noticePosition.dy;
+    });
+    print('field: ${fieldPosition} // notice: ${noticePosition}');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_title.isNotEmpty && _notice.isNotEmpty) {
@@ -54,125 +106,134 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
     return BlocConsumer<FMNotificationBloc, FMNotificationState>(
       listener: (context, state) {},
       builder: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _afterLayout();
+        });
         return (state.field.name.isNotEmpty)
-            ? AlertDialog(
-                contentPadding: EdgeInsets.zero,
-                content: Container(
-                  height: 398,
-                  width: 493,
-                  padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            '공지사항 작성하기',
-                            style:
-                                Theme.of(context).textTheme.bodyText1.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                          ),
-                          SizedBox(
-                            width: 148,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Icon(
-                              Icons.close,
-                              color: Colors.black,
-                              size: 24,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 13,
-                          ),
-                        ],
+            ? Stack(
+              children: [
+                AlertDialog(
+                    contentPadding: EdgeInsets.zero,
+                    content: Container(
+                      height: 398,
+                      width: 493,
+                      padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Divider(
-                              height: 28,
-                              thickness: 1,
-                              color: Color(0xFFE1E1E1),
-                            ),
-                            Row(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                '공지사항 작성하기',
+                                style:
+                                    Theme.of(context).textTheme.bodyText1.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                              ),
+                              SizedBox(
+                                width: 148,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.black,
+                                  size: 24,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 13,
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  height: 51,
-                                  width: 51,
-                                  child: CircleAvatar(
-                                    backgroundImage:
-                                        (UserUtil.getUser().imgUrl.isNotEmpty)
-                                            ? CachedNetworkImageProvider(
-                                                UserUtil.getUser().imgUrl)
-                                            : AssetImage('assets/profile.png'),
-                                  ),
+                                Divider(
+                                  height: 28,
+                                  thickness: 1,
+                                  color: Color(0xFFE1E1E1),
                                 ),
-                                SizedBox(
-                                  width: 7,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
                                   children: [
-                                    Text(
-                                      UserUtil.getUser().name,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2
-                                          .copyWith(
-                                            color: Colors.black,
-                                          ),
+                                    Container(
+                                      height: 51,
+                                      width: 51,
+                                      child: CircleAvatar(
+                                        backgroundImage:
+                                            (UserUtil.getUser().imgUrl.isNotEmpty)
+                                                ? CachedNetworkImageProvider(
+                                                    UserUtil.getUser().imgUrl)
+                                                : AssetImage('assets/profile.png'),
+                                      ),
                                     ),
                                     SizedBox(
-                                      height: 4,
+                                      width: 7,
                                     ),
-                                    Row(
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        _selectField(state),
-                                        SizedBox(
-                                          width: 10,
+                                        Text(
+                                          UserUtil.getUser().name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2
+                                              .copyWith(
+                                                color: Colors.black,
+                                              ),
                                         ),
-                                        _noticeType(),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Row(
+                                          children: [
+                                            _selectFieldCategory(state),
+                                            // _selectField(state),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            _selectNoticeType(state),
+                                            // _noticeType(),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ],
                                 ),
+                                SizedBox(
+                                  height: 21,
+                                ),
+                                _writeTitle(),
+                                SizedBox(
+                                  height: 12,
+                                ),
+                                _writeNotice(),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                _completeButton(state),
                               ],
                             ),
-                            SizedBox(
-                              height: 21,
-                            ),
-                            _writeTitle(),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            _writeNotice(),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            _scheduling(),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            _completeButton(state),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              )
+                (isNoticeTypeSelected)
+                    ? _noticeTypeMenu(state) : Container(),
+                (isFieldCatSelected)
+                    ? _fieldCategoryMenu(state) : Container(),
+              ],
+            )
             : Container();
       },
     );
@@ -202,6 +263,124 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
           _fmNotificationBloc.add(SetField(field: value));
         });
       },
+    );
+  }
+
+  Widget _selectFieldCategory(FMNotificationState state) {
+    return OutlinedButton(
+      key: _fieldCategoryButtonkey,
+      onPressed: () {
+        setState(() {
+          isFieldCatSelected = !isFieldCatSelected;
+        });
+      },
+      child: Text(
+        '${state.fieldList[fieldCategoryIndex].name}',
+        style: Theme.of(context).textTheme.bodyText1.copyWith(
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+
+  Widget _fieldCategoryMenu(FMNotificationState state) {
+    return Positioned(
+      top: _fieldButtonSizeDY + _fieldMenuHeight,
+      left: _fieldButtonSizeDX,
+      width: _fieldMenuWidth,
+      child: Material(
+        elevation: 3.0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(
+              state.fieldList.length,
+                  (index) => InkWell(
+                onTap: () {
+                  setState(() {
+                    fieldCategoryIndex = index;
+                    isFieldCatSelected = !isFieldCatSelected;
+                  });
+                },
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 1,
+                    ),
+                    Text(
+                      '${state.fieldList[index].name}',
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(
+                      height: 1,
+                    ),
+                  ],
+                ),
+              )),
+        ),
+      ),
+    );
+  }
+
+  Widget _selectNoticeType(FMNotificationState state) {
+    return OutlinedButton(
+      key: _noticeTypekey,
+      onPressed: () {
+        setState(() {
+          isNoticeTypeSelected = !isNoticeTypeSelected;
+        });
+      },
+      child: Text(
+        '${noticeTypeList[noticeTypeIndex]}',
+        style: Theme.of(context).textTheme.bodyText1.copyWith(
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+
+  Widget _noticeTypeMenu(FMNotificationState state) {
+    return Positioned(
+      top: _noticeButtonSizeDY + _noticeTypeHeight,
+      left: _noticeButtonSizeDX,
+      width: _noticeTypeWidth,
+      child: Material(
+        elevation: 3.0,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(
+              noticeTypeList.length,
+                  (index) => InkWell(
+                onTap: () {
+                  setState(() {
+                    noticeTypeIndex = index;
+                    isNoticeTypeSelected = !isNoticeTypeSelected;
+                  });
+                },
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 1,
+                    ),
+                    Text(
+                      '${noticeTypeList[index]}',
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(
+                      height: 1,
+                    ),
+                  ],
+                ),
+              )),
+        ),
+      ),
     );
   }
 
@@ -273,7 +452,7 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
 
   Widget _writeNotice() {
     return Container(
-      height: 121,
+      height: 151,
       width: 451,
       padding: EdgeInsets.fromLTRB(8, 7, 0, 0),
       decoration: BoxDecoration(
@@ -312,36 +491,6 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
     );
   }
 
-  Widget _scheduling() {
-    return Container(
-      width: 93,
-      child: OutlinedButton(
-        onPressed: () {},
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.timer_outlined,
-              color: Color(0xFFC2C2C2),
-              size: 14,
-            ),
-            SizedBox(
-              width: 12,
-            ),
-            Text(
-              '예약하기',
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                    fontSize: 12,
-                    color: Color(0xFFC2C2C2),
-                  ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _completeButton(FMNotificationState state) {
     return InkResponse(
       onTap: () {
@@ -354,7 +503,7 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
               uid: UserUtil.getUser().uid,
               name: UserUtil.getUser().name,
               imgUrl: UserUtil.getUser().imgUrl,
-              fid: state.field.fid,
+              fid: state.fieldList[fieldCategoryIndex].fid,
               farmid: state.farm.farmID,
               title: _title,
               content: _notice,
@@ -364,7 +513,7 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
               isReadByOffice: false,
               isReadBySFM: false,
               notid: '',
-              type: noticeType,
+              type: noticeTypeList[noticeTypeIndex],
               department: 'farm',
             )));
             Navigator.pop(context);

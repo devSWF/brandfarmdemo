@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
+import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
+import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
+import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
@@ -27,11 +30,9 @@ class FMHomeScreen extends StatefulWidget {
 class _FMHomeScreenState extends State<FMHomeScreen> {
   FMPurchaseBloc _fmPurchaseBloc;
   FMPlanBloc _fmPlanBloc;
+  FMHomeBloc _fmHomeBloc;
   bool isVisible;
   bool showDrawer;
-  int _selectedIndex;
-  int pageIndex;
-  int subPageIndex;
 
   @override
   void initState() {
@@ -41,11 +42,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
     _fmPlanBloc.add(GetFieldListForFMPlan());
     _fmPlanBloc.add(GetPlanList());
+    _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
     isVisible = true;
     showDrawer = true;
-    _selectedIndex = 0;
-    pageIndex = 0;
-    subPageIndex = 0;
   }
 
   @override
@@ -60,11 +59,16 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
       appBar: _appBar(context: context),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          if (constraints.maxWidth >= 1000) {
-            return _big(context: context, theme: theme);
-          } else {
-            return _small(context: context, theme: theme);
-          }
+          return BlocConsumer<FMHomeBloc, FMHomeState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              if (constraints.maxWidth >= 1000) {
+                return _big(context: context, theme: theme, state: state);
+              } else {
+                return _small(context: context, theme: theme, state: state);
+              }
+            },
+          );
         },
       ),
     );
@@ -118,10 +122,10 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     );
   }
 
-  Widget _small({BuildContext context, ThemeData theme}) {
+  Widget _small({BuildContext context, ThemeData theme, FMHomeState state}) {
     return Row(
       children: [
-        _smallDrawer(context: context),
+        _smallDrawer(context: context, state: state),
         Expanded(
           child: MultiBlocProvider(
             providers: [
@@ -131,10 +135,13 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
               BlocProvider.value(
                 value: _fmPlanBloc,
               ),
+              BlocProvider.value(
+                value: _fmHomeBloc,
+              ),
             ],
             child: GetPage(
-              index: _selectedIndex,
-              subIndex: subPageIndex,
+              index: state.selectedIndex,
+              subIndex: state.subPageIndex,
             ),
           ),
         ),
@@ -142,11 +149,11 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     );
   }
 
-  Widget _big({BuildContext context, ThemeData theme}) {
+  Widget _big({BuildContext context, ThemeData theme, FMHomeState state}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _drawer(context: context, theme: theme),
+        _drawer(context: context, theme: theme, state: state),
         Expanded(
           child: MultiBlocProvider(
             providers: [
@@ -156,10 +163,13 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
               BlocProvider.value(
                 value: _fmPlanBloc,
               ),
+              BlocProvider.value(
+                value: _fmHomeBloc,
+              ),
             ],
             child: GetPage(
-              index: pageIndex,
-              subIndex: subPageIndex,
+              index: state.pageIndex,
+              subIndex: state.subPageIndex,
             ),
           ),
         ),
@@ -167,7 +177,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     );
   }
 
-  Widget _drawer({BuildContext context, ThemeData theme}) {
+  Widget _drawer({BuildContext context, ThemeData theme, FMHomeState state}) {
     return Theme(
       data: Theme.of(context).copyWith(
         canvasColor: Color(0xFFEEEEEE),
@@ -179,12 +189,13 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
             ListTile(
               onTap: () {
                 setState(() {
-                  pageIndex = 0;
+                  _fmHomeBloc.add(SetPageIndex(index: 0));
                 });
               },
               leading: Icon(
                 Icons.widgets_outlined,
-                color: (pageIndex == 0) ? Color(0xFF15B85B) : Colors.black,
+                color:
+                    (state.pageIndex == 0) ? Color(0xFF15B85B) : Colors.black,
                 size: 18,
               ),
               title: Text(
@@ -192,8 +203,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
                       fontWeight: FontWeight.w500,
                       fontSize: 13,
-                      color:
-                          (pageIndex == 0) ? Color(0xFF15B85B) : Colors.black,
+                      color: (state.pageIndex == 0)
+                          ? Color(0xFF15B85B)
+                          : Colors.black,
                     ),
               ),
             ),
@@ -203,14 +215,15 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                 onExpansionChanged: (value) {
                   if (value) {
                     setState(() {
-                      pageIndex = 1;
-                      subPageIndex = 1;
+                      _fmHomeBloc.add(SetPageIndex(index: 1));
+                      _fmHomeBloc.add(SetSubPageIndex(index: 1));
                     });
                   }
                 },
                 leading: Icon(
                   Icons.view_agenda_outlined,
-                  color: (pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                  color:
+                      (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
                   size: 18,
                 ),
                 title: Text(
@@ -218,16 +231,17 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.w500,
                         fontSize: 13,
-                        color:
-                            (pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                        color: (state.pageIndex == 1)
+                            ? Color(0xFF15B85B)
+                            : Colors.black,
                       ),
                 ),
                 children: [
                   ListTile(
                     onTap: () {
                       setState(() {
-                        pageIndex = 1;
-                        subPageIndex = 1;
+                        _fmHomeBloc.add(SetPageIndex(index: 1));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
                       });
                     },
                     title: Row(
@@ -239,7 +253,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                           '테스트',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontSize: 13,
-                                color: (pageIndex == 1 && subPageIndex == 1)
+                                color: (state.pageIndex == 1 &&
+                                        state.subPageIndex == 1)
                                     ? Color(0xFF15B85B)
                                     : Colors.black,
                               ),
@@ -250,8 +265,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                   ListTile(
                     onTap: () {
                       setState(() {
-                        pageIndex = 1;
-                        subPageIndex = 2;
+                        _fmHomeBloc.add(SetPageIndex(index: 1));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 2));
                       });
                     },
                     title: Row(
@@ -263,7 +278,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                           '테스트',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontSize: 13,
-                                color: (pageIndex == 1 && subPageIndex == 2)
+                                color: (state.pageIndex == 1 &&
+                                        state.subPageIndex == 2)
                                     ? Color(0xFF15B85B)
                                     : Colors.black,
                               ),
@@ -277,33 +293,36 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
             ListTile(
               onTap: () {
                 setState(() {
-                  pageIndex = 2;
+                  _fmHomeBloc.add(SetPageIndex(index: 2));
                 });
               },
               leading: Icon(
                 Icons.calendar_today_outlined,
-                color: (pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
+                color:
+                    (state.pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
                 size: 18,
               ),
               title: Text(
                 '영농계획',
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13,
-                  color:
-                  (pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
-                ),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                      color: (state.pageIndex == 2)
+                          ? Color(0xFF15B85B)
+                          : Colors.black,
+                    ),
               ),
             ),
             ListTile(
               onTap: () {
                 setState(() {
-                  pageIndex = 3;
+                  _fmHomeBloc.add(SetPageIndex(index: 3));
                 });
               },
               leading: Icon(
                 Icons.person_outline,
-                color: (pageIndex == 3) ? Color(0xFF15B85B) : Colors.black,
+                color:
+                    (state.pageIndex == 3) ? Color(0xFF15B85B) : Colors.black,
                 size: 18,
               ),
               title: Text(
@@ -311,8 +330,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
                       fontWeight: FontWeight.w500,
                       fontSize: 13,
-                      color:
-                          (pageIndex == 3) ? Color(0xFF15B85B) : Colors.black,
+                      color: (state.pageIndex == 3)
+                          ? Color(0xFF15B85B)
+                          : Colors.black,
                     ),
               ),
             ),
@@ -322,14 +342,15 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                 onExpansionChanged: (value) {
                   if (value) {
                     setState(() {
-                      pageIndex = 4;
-                      subPageIndex = 1;
+                      _fmHomeBloc.add(SetPageIndex(index: 4));
+                      _fmHomeBloc.add(SetSubPageIndex(index: 1));
                     });
                   }
                 },
                 leading: Icon(
                   Icons.chat_bubble_outline,
-                  color: (pageIndex == 4) ? Color(0xFF15B85B) : Colors.black,
+                  color:
+                      (state.pageIndex == 4) ? Color(0xFF15B85B) : Colors.black,
                   size: 18,
                 ),
                 title: Text(
@@ -337,16 +358,17 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.w500,
                         fontSize: 13,
-                        color:
-                            (pageIndex == 4) ? Color(0xFF15B85B) : Colors.black,
+                        color: (state.pageIndex == 4)
+                            ? Color(0xFF15B85B)
+                            : Colors.black,
                       ),
                 ),
                 children: [
                   ListTile(
                     onTap: () {
                       setState(() {
-                        pageIndex = 4;
-                        subPageIndex = 1;
+                        _fmHomeBloc.add(SetPageIndex(index: 4));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
                       });
                     },
                     title: Row(
@@ -358,7 +380,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                           '구매목록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontSize: 13,
-                                color: (pageIndex == 4 && subPageIndex == 1)
+                                color: (state.pageIndex == 4 &&
+                                        state.subPageIndex == 1)
                                     ? Color(0xFF15B85B)
                                     : Colors.black,
                               ),
@@ -369,8 +392,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                   ListTile(
                     onTap: () {
                       setState(() {
-                        pageIndex = 4;
-                        subPageIndex = 2;
+                        _fmHomeBloc.add(SetPageIndex(index: 4));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 2));
                       });
                     },
                     title: Row(
@@ -382,7 +405,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                           '구매요청하기',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontSize: 13,
-                                color: (pageIndex == 4 && subPageIndex == 2)
+                                color: (state.pageIndex == 4 &&
+                                        state.subPageIndex == 2)
                                     ? Color(0xFF15B85B)
                                     : Colors.black,
                               ),
@@ -399,14 +423,15 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                 onExpansionChanged: (value) {
                   if (value) {
                     setState(() {
-                      pageIndex = 5;
-                      subPageIndex = 1;
+                      _fmHomeBloc.add(SetPageIndex(index: 5));
+                      _fmHomeBloc.add(SetSubPageIndex(index: 1));
                     });
                   }
                 },
                 leading: Icon(
                   Icons.article_outlined,
-                  color: (pageIndex == 5) ? Color(0xFF15B85B) : Colors.black,
+                  color:
+                      (state.pageIndex == 5) ? Color(0xFF15B85B) : Colors.black,
                   size: 18,
                 ),
                 title: Text(
@@ -414,16 +439,17 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.w500,
                         fontSize: 13,
-                        color:
-                            (pageIndex == 5) ? Color(0xFF15B85B) : Colors.black,
+                        color: (state.pageIndex == 5)
+                            ? Color(0xFF15B85B)
+                            : Colors.black,
                       ),
                 ),
                 children: [
                   ListTile(
                     onTap: () {
                       setState(() {
-                        pageIndex = 5;
-                        subPageIndex = 1;
+                        _fmHomeBloc.add(SetPageIndex(index: 5));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
                       });
                     },
                     title: Row(
@@ -435,7 +461,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                           '일지목록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontSize: 13,
-                                color: (pageIndex == 5 && subPageIndex == 1)
+                                color: (state.pageIndex == 5 &&
+                                        state.subPageIndex == 1)
                                     ? Color(0xFF15B85B)
                                     : Colors.black,
                               ),
@@ -446,8 +473,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                   ListTile(
                     onTap: () {
                       setState(() {
-                        pageIndex = 5;
-                        subPageIndex = 2;
+                        _fmHomeBloc.add(SetPageIndex(index: 5));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 2));
                       });
                     },
                     title: Row(
@@ -459,7 +486,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                           '일지관리',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
                                 fontSize: 13,
-                                color: (pageIndex == 5 && subPageIndex == 2)
+                                color: (state.pageIndex == 5 &&
+                                        state.subPageIndex == 2)
                                     ? Color(0xFF15B85B)
                                     : Colors.black,
                               ),
@@ -479,28 +507,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
             ListTile(
               onTap: () {
                 setState(() {
-                  pageIndex = 6;
-                });
-              },
-              leading: Icon(
-                Icons.more_horiz,
-                color: (pageIndex == 6) ? Color(0xFF15B85B) : Colors.black,
-                size: 18,
-              ),
-              title: Text(
-                '설정',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color:
-                          (pageIndex == 6) ? Color(0xFF15B85B) : Colors.black,
-                    ),
-              ),
-            ),
-            ListTile(
-              onTap: () {
-                setState(() {
-                  pageIndex = 7;
+                  _fmHomeBloc.add(SetPageIndex(index: 6));
                 });
                 BlocProvider.of<AuthenticationBloc>(context).add(
                   AuthenticationLoggedOut(),
@@ -509,7 +516,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
               },
               leading: Icon(
                 Icons.logout,
-                color: (pageIndex == 7) ? Color(0xFF15B85B) : Colors.black,
+                color:
+                    (state.pageIndex == 6) ? Color(0xFF15B85B) : Colors.black,
                 size: 18,
               ),
               title: Text(
@@ -517,8 +525,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
                       fontWeight: FontWeight.w500,
                       fontSize: 13,
-                      color:
-                          (pageIndex == 7) ? Color(0xFF15B85B) : Colors.black,
+                      color: (state.pageIndex == 6)
+                          ? Color(0xFF15B85B)
+                          : Colors.black,
                     ),
               ),
             ),
@@ -528,12 +537,12 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     );
   }
 
-  Widget _smallDrawer({BuildContext context}) {
+  Widget _smallDrawer({BuildContext context, FMHomeState state}) {
     return NavigationRail(
-      selectedIndex: _selectedIndex,
+      selectedIndex: state.selectedIndex,
       onDestinationSelected: (int index) {
         setState(() {
-          _selectedIndex = index;
+          _fmHomeBloc.add(SetSelectedIndex(index: index));
         });
       },
       labelType: NavigationRailLabelType.none,
@@ -624,12 +633,14 @@ class GetPage extends StatefulWidget {
 class _GetPageState extends State<GetPage> {
   FMPurchaseBloc _fmPurchaseBloc;
   FMPlanBloc _fmPlanBloc;
+  FMHomeBloc _fmHomeBloc;
 
   @override
   void initState() {
     super.initState();
     _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
   }
 
   @override
@@ -698,7 +709,17 @@ class _GetPageState extends State<GetPage> {
         break;
       default:
         {
-          return HomeBody();
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _fmPlanBloc,
+              ),
+              BlocProvider.value(
+                value: _fmHomeBloc,
+              ),
+            ],
+            child: HomeBody(),
+          );
         }
         break;
     }
