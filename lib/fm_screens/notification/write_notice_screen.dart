@@ -75,7 +75,7 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
       _noticeTypeHeight = noticeSize.height;
       _noticeTypeWidth = noticeSize.width;
     });
-    print('field: ${fieldSize} // notice: ${noticeSize}');
+    // print('field: ${fieldSize} // notice: ${noticeSize}');
   }
 
   void _getPosition() {
@@ -89,7 +89,7 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
       _noticeButtonSizeDX = noticePosition.dx;
       _noticeButtonSizeDY = noticePosition.dy;
     });
-    print('field: ${fieldPosition} // notice: ${noticePosition}');
+    // print('field: ${fieldPosition} // notice: ${noticePosition}');
   }
 
   @override
@@ -274,11 +274,17 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
           isFieldCatSelected = !isFieldCatSelected;
         });
       },
-      child: Text(
-        '${state.fieldList[fieldCategoryIndex].name}',
-        style: Theme.of(context).textTheme.bodyText1.copyWith(
-          color: Colors.black,
-        ),
+      child: Row(
+        children: [
+          Text(
+            '${state.fieldList[fieldCategoryIndex].name}',
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(width: 6,),
+          Icon(Icons.arrow_drop_down, color: Colors.black,),
+        ],
       ),
     );
   }
@@ -306,13 +312,18 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
                     SizedBox(
                       height: 1,
                     ),
-                    Text(
-                      '${state.fieldList[index].name}',
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(
-                        color: Colors.black,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Row(
+                      children: [
+                        SizedBox(width: 8,),
+                        Text(
+                          '${state.fieldList[index].name}',
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: Colors.black,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 1,
@@ -333,11 +344,17 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
           isNoticeTypeSelected = !isNoticeTypeSelected;
         });
       },
-      child: Text(
-        '${noticeTypeList[noticeTypeIndex]}',
-        style: Theme.of(context).textTheme.bodyText1.copyWith(
-          color: Colors.black,
-        ),
+      child: Row(
+        children: [
+          Text(
+            '${noticeTypeList[noticeTypeIndex]}',
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(width: 6,),
+          Icon(Icons.arrow_drop_down, color: Colors.black,),
+        ],
       ),
     );
   }
@@ -365,13 +382,18 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
                     SizedBox(
                       height: 1,
                     ),
-                    Text(
-                      '${noticeTypeList[index]}',
-                      style: Theme.of(context).textTheme.bodyText1.copyWith(
-                        color: Colors.black,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    Row(
+                      children: [
+                        SizedBox(width: 8,),
+                        Text(
+                          '${noticeTypeList[index]}',
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            color: Colors.black,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 1,
