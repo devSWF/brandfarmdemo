@@ -1,5 +1,4 @@
 
-import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -99,3 +98,5 @@ class CheckConfirmState extends FMPlanEvent{
     confirmState: $confirmState,
   }''';
 }
+
+class GetShortDetailList extends FMPlanEvent{}

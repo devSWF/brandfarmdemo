@@ -1,7 +1,9 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/fm_screens/plan/fm_plan_screen.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
+import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,7 +80,14 @@ class _PlanState extends State<Plan> {
             SizedBox(
               height: 7,
             ),
-            CalendarBar(),
+            MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: _fmPlanBloc,
+                ),
+              ],
+              child: CalendarBar(),
+            ),
           ],
         ),
       ),
@@ -121,38 +130,18 @@ class _PlanState extends State<Plan> {
                   shrinkWrap: true,
                   controller: _scrollController,
                   children: List.generate(cat.length, (index) {
-                    return (index == 0)
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              _commonList(index: index),
-                              Divider(
-                                height: 24,
-                                thickness: 1,
-                                color: Color(0x4D000000),
-                                endIndent: 24,
-                              ),
-                              _individualList(index: index),
-                              Divider(
-                                height: 24,
-                                thickness: 1,
-                                color: Color(0x4D000000),
-                                endIndent: 24,
-                              ),
-                            ],
-                          )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              _individualList(index: index),
-                              Divider(
-                                height: 24,
-                                thickness: 1,
-                                color: Color(0x4D000000),
-                                endIndent: 24,
-                              ),
-                            ],
-                          );
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(),
+                        Divider(
+                          height: 24,
+                          thickness: 1,
+                          color: Color(0x4D000000),
+                          endIndent: 24,
+                        ),
+                      ],
+                    );
                   }),
                 ),
               ),
@@ -160,106 +149,6 @@ class _PlanState extends State<Plan> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _individualList({int index}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            SizedBox(
-              height: 1,
-            ),
-            Container(
-              padding: EdgeInsets.zero,
-              height: 14,
-              width: 10,
-              color: Util().getColorByIndex(index: index),
-              child: Center(
-                child: Text(
-                  '${cat[index]}',
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontSize: 10,
-                        color: Colors.white,
-                      ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(
-          width: 11,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(list.length, (indexx) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${list[indexx]}',
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Util().getColorByIndex(index: index),
-                      ),
-                ),
-              ],
-            );
-          }),
-        )
-      ],
-    );
-  }
-
-  Widget _commonList({int index}) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            SizedBox(
-              height: 1,
-            ),
-            Container(
-              padding: EdgeInsets.zero,
-              height: 28,
-              width: 10,
-              color: Util().getColorByIndex(index: 100),
-              child: Center(
-                child: Text(
-                  '공통',
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontSize: 10,
-                        color: Colors.white,
-                      ),
-                  maxLines: 2,
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(
-          width: 11,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(list.length, (indexx) {
-            return Column(
-              children: [
-                Text(
-                  '${list[indexx]}',
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Util().getColorByIndex(index: 100),
-                      ),
-                ),
-              ],
-            );
-          }),
-        )
-      ],
     );
   }
 }
@@ -338,278 +227,266 @@ class CalendarBar extends StatefulWidget {
 }
 
 class _CalendarBarState extends State<CalendarBar> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        FieldList(),
-        SizedBox(
-          width: 5,
-        ),
-        Stack(
-          children: [
-            HorizontalViewCalendar(),
-            Positioned(
-              left: 6,
-              right: 211,
-              top: 43,
-              child: Container(
-                height: 10,
-                width: 293,
-                color: Color(0xFF15B85B),
-                child: FittedBox(
-                  child: Text(
-                    '씨뿌리기',
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 8,
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 211,
-              right: 6,
-              top: 58,
-              child: Container(
-                height: 10,
-                color: Color(0xFFF7685B),
-                child: FittedBox(
-                  child: Text(
-                    '씨뿌리기',
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 8,
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 6,
-              right: 6,
-              top: 73,
-              child: Container(
-                height: 10,
-                color: Color(0xFFA532CD),
-                child: FittedBox(
-                  child: Text(
-                    '덩굴채찍',
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 8,
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 108,
-              right: 6,
-              top: 88,
-              child: Container(
-                height: 10,
-                color: Color(0xFFF4C708),
-                child: FittedBox(
-                  child: Text(
-                    '솔라빔',
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 8,
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 221,
-              right: 223,
-              top: 115,
-              child: Container(
-                height: 12,
-                color: Colors.white,
-                child: FittedBox(
-                  child: Text(
-                    '...그외 4개 일정',
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 10,
-                          color: Color(0xB3000000),
-                        ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
+  FMPlanBloc _fmPlanBloc;
+  DateTime now = DateTime.now();
+  int selectedIndex = 2;
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-class FieldList extends StatefulWidget {
-  @override
-  _FieldListState createState() => _FieldListState();
-}
-
-class _FieldListState extends State<FieldList> {
-  List fieldName = [
-    '필드A',
-    '필드B',
-    '필드C',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(fieldName.length, (index) {
-        return (index == 0)
-            ? Column(
-                children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                      height: 14,
-                      width: 29,
-                      child: FieldBadge(
-                        index: 100,
-                        name: '공통',
-                      )),
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Container(
-                      height: 14,
-                      width: 29,
-                      child: FieldBadge(
-                        index: index,
-                        name: fieldName[index],
-                      )),
-                  SizedBox(
-                    height: 6,
-                  ),
-                ],
-              )
-            : Column(
-                children: [
-                  Container(
-                      height: 14,
-                      width: 29,
-                      child: FieldBadge(
-                        index: index,
-                        name: fieldName[index],
-                      )),
-                  SizedBox(
-                    height: 6,
-                  ),
-                ],
-              );
-      }),
-    );
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-class FieldBadge extends StatefulWidget {
-  final int index;
-  final String name;
-
-  FieldBadge({
-    Key key,
-    this.index,
-    this.name,
-  }) : super(key: key);
-
-  @override
-  _FieldBadgeState createState() => _FieldBadgeState();
-}
-
-class _FieldBadgeState extends State<FieldBadge> {
   @override
   void initState() {
     super.initState();
+    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(1, 1, 4, 1),
-      color: Util().getColorByIndex(index: widget.index),
-      child: Text(
-        '${widget.name}',
-        style: Theme.of(context).textTheme.bodyText2.copyWith(
-              fontSize: 10,
-              color: Colors.white,
+    return BlocConsumer<FMPlanBloc, FMPlanState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                  value: _fmPlanBloc,
+                ),
+              ],
+              child: FieldList(),
             ),
-      ),
+            SizedBox(
+              width: 5,
+            ),
+            _CalendarBody(state),
+          ],
+        );
+      },
     );
   }
-}
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-class HorizontalViewCalendar extends StatefulWidget {
-  @override
-  _HorizontalViewCalendarState createState() => _HorizontalViewCalendarState();
-}
+  Widget _CalendarBody(FMPlanState state) {
+    return Stack(
+      children: [
+        _horizontalViewCalendar(),
+        Positioned(top: 0, left: 0, right: 0, child: _highlightPlan(state)),
+        Positioned(
+            top: 0, left: 0, right: 0, child: _horizontalViewCalendarFront()),
+      ],
+    );
+  }
 
-class _HorizontalViewCalendarState extends State<HorizontalViewCalendar> {
-  DateTime now = DateTime.now();
+  List<List<FMPlan>> getSortedList(List<FMPlan> plist, List<Field> fList) {
+    List<List<FMPlan>> sList = [];
+    List<FMPlan> listByFid1 = (fList.isNotEmpty)
+        ? plist.where((element) => element.fid == fList[0].fid).toList()
+        : [];
+    List<FMPlan> listByFid2 = (fList.length >= 2)
+        ? plist.where((element) => element.fid == fList[1].fid).toList()
+        : [];
+    List<FMPlan> listByFid3 = (fList.length >= 3)
+        ? plist.where((element) => element.fid == fList[2].fid).toList()
+        : [];
+    List<FMPlan> listByFid4 = (fList.length >= 4)
+        ? plist.where((element) => element.fid == fList[3].fid).toList()
+        : [];
+    List<FMPlan> listByFid5 = (fList.length >= 5)
+        ? plist.where((element) => element.fid == fList[4].fid).toList()
+        : [];
 
-  @override
-  Widget build(BuildContext context) {
+    switch (fList.length) {
+      case 1:
+        {
+          sList.insert(0, listByFid1);
+        }
+        break;
+      case 2:
+        {
+          sList.insert(0, listByFid1);
+          sList.add(listByFid2);
+        }
+        break;
+      case 3:
+        {
+          sList.insert(0, listByFid1);
+          sList.add(listByFid2);
+          sList.add(listByFid3);
+        }
+        break;
+      case 4:
+        {
+          sList.insert(0, listByFid1);
+          sList.add(listByFid2);
+          sList.add(listByFid3);
+          sList.add(listByFid4);
+        }
+        break;
+      case 5:
+        {
+          sList.insert(0, listByFid1);
+          sList.add(listByFid2);
+          sList.add(listByFid3);
+          sList.add(listByFid4);
+          sList.add(listByFid5);
+        }
+        break;
+    }
+    return sList;
+  }
+
+  Widget _highlightPlan(FMPlanState state) {
+    List<List<FMPlan>> sortedList =
+        getSortedList(state.detailListShort, state.fieldList);
+    return Row(
+      children: List.generate(5, (row) {
+        return Container(
+          padding: EdgeInsets.zero,
+          width: (selectedIndex == row) ? 102 : 103,
+          height: (selectedIndex == row) ? 149 : 131,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            // border: Border.all(
+            //   width: (selectedIndex == row) ? 2 : 1,
+            //   color: Colors.transparent,
+            // ),
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: (selectedIndex == row) ? 39 : 30,
+              ),
+              (sortedList.length > 0 && sortedList[0].isNotEmpty)
+                  ? Column(
+                      children: [
+                        Container(
+                          height: 10,
+                          width: (selectedIndex == row) ? 160 : 140,
+                          color: Util().getColorByIndex(index: 0),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                      ],
+                    )
+                  : Container(),
+              (sortedList.length >= 2 && sortedList[1].isNotEmpty)
+                  ? Column(
+                      children: [
+                        Container(
+                          height: 10,
+                          width: (selectedIndex == row) ? 160 : 140,
+                          color: Util().getColorByIndex(index: 1),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                      ],
+                    )
+                  : Container(),
+              (sortedList.length >= 3 && sortedList[2].isNotEmpty)
+                  ? Column(
+                      children: [
+                        Container(
+                          height: 10,
+                          width: (selectedIndex == row) ? 160 : 140,
+                          color: Util().getColorByIndex(index: 2),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                      ],
+                    )
+                  : Container(),
+              (sortedList.length >= 4 && sortedList[3].isNotEmpty)
+                  ? Column(
+                      children: [
+                        Container(
+                          height: 10,
+                          width: (selectedIndex == row) ? 160 : 140,
+                          color: Util().getColorByIndex(index: 3),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                      ],
+                    )
+                  : Container(),
+              (sortedList.length >= 5 && sortedList[4].isNotEmpty)
+                  ? Column(
+                      children: [
+                        Container(
+                          height: 10,
+                          width: (selectedIndex == row) ? 160 : 140,
+                          color: Util().getColorByIndex(index: 4),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                      ],
+                    )
+                  : Container(),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _horizontalViewCalendarFront() {
     return Row(
       children: List.generate(5, (index) {
         String date = getDate(index: index, date: now);
-        return (index == 2)
-            ? Container(
-                padding: EdgeInsets.all(6),
-                width: 102,
-                height: 149,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(
-                    width: 2,
-                    color: Color(0xFF15B85B),
-                  ),
+        return InkResponse(
+          onTap: () {
+            setState(() {
+              selectedIndex = index;
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.all(6),
+            width: (selectedIndex == index) ? 102 : 103,
+            height: (selectedIndex == index) ? 149 : 131,
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              border: Border.all(
+                width: (selectedIndex == index) ? 2 : 1,
+                color: (selectedIndex == index)
+                    ? Color(0xFF15B85B)
+                    : Colors.transparent,
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _horizontalViewCalendar() {
+    return Row(
+      children: List.generate(5, (index) {
+        String date = getDate(index: index, date: now);
+        return Container(
+          padding: EdgeInsets.all(6),
+          width: (selectedIndex == index) ? 102 : 103,
+          height: (selectedIndex == index) ? 149 : 131,
+          decoration: BoxDecoration(
+            color: (selectedIndex == index) ? Colors.white : Color(0xFFF3F3F3),
+            border: Border.all(
+              width: (selectedIndex == index) ? 2 : 1,
+              color: (selectedIndex == index)
+                  ? Colors.transparent
+                  : Color(0xFFD8D8D8),
+            ),
+          ),
+          child: Text(
+            '${date}',
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                  fontWeight: FontWeight.w200,
+                  fontSize: 15,
+                  color: (selectedIndex == index)
+                      ? Color(0xFF15B85B)
+                      : Colors.black,
                 ),
-                child: Text(
-                  '${date}',
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontWeight: FontWeight.w200,
-                        fontSize: 15,
-                        color: Color(0xFF15B85B),
-                      ),
-                ),
-              )
-            : Container(
-                padding: EdgeInsets.all(6),
-                width: 103,
-                height: 131,
-                decoration: BoxDecoration(
-                  color: Color(0xFFF3F3F3),
-                  border: Border.all(
-                    width: 1,
-                    color: Color(0xFFD8D8D8),
-                  ),
-                ),
-                child: Text(
-                  '${date}',
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(
-                        fontWeight: FontWeight.w200,
-                        fontSize: 15,
-                        color: Colors.black,
-                      ),
-                ),
-              );
+          ),
+        );
       }),
     );
   }
@@ -657,27 +534,127 @@ class _HorizontalViewCalendarState extends State<HorizontalViewCalendar> {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+class FieldList extends StatefulWidget {
+  @override
+  _FieldListState createState() => _FieldListState();
+}
+
+class _FieldListState extends State<FieldList> {
+  FMPlanBloc _fmPlanBloc;
+
+  // List fieldName = [
+  //   '필드A',
+  //   '필드B',
+  //   '필드C',
+  // ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<FMPlanBloc, FMPlanState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Column(
+          children: List.generate(state.fieldList.length, (index) {
+            return Column(
+              children: [
+                (index == 0)
+                    ? SizedBox(
+                        height: 10,
+                      )
+                    : Container(),
+                Container(
+                    height: 14,
+                    width: 29,
+                    child: FieldBadge(
+                      index: index,
+                      name: (index == 0) ? '공통' : state.fieldList[index].name,
+                    )),
+                SizedBox(
+                  height: 6,
+                ),
+              ],
+            );
+          }),
+        );
+      },
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+class FieldBadge extends StatefulWidget {
+  final int index;
+  final String name;
+
+  FieldBadge({
+    Key key,
+    this.index,
+    this.name,
+  }) : super(key: key);
+
+  @override
+  _FieldBadgeState createState() => _FieldBadgeState();
+}
+
+class _FieldBadgeState extends State<FieldBadge> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(1, 1, 4, 1),
+      color: Util().getColorByIndex(index: widget.index),
+      child: Text(
+        '${widget.name}',
+        style: Theme.of(context).textTheme.bodyText2.copyWith(
+              fontSize: 10,
+              color: Colors.white,
+            ),
+      ),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 class Util {
   Color getColorByIndex({int index}) {
     switch (index) {
-      case 0:
-        {
-          return Color(0xFFF7685B);
-        }
-        break;
       case 1:
         {
-          return Color(0xFFA532CD);
+          return Colors.orange;
         }
         break;
       case 2:
         {
-          return Color(0xFFF4C708);
+          return Colors.yellow;
+        }
+        break;
+      case 3:
+        {
+          return Colors.blue;
+        }
+        break;
+      case 4:
+        {
+          return Colors.purple;
         }
         break;
       default:
         {
-          return Color(0xFF15B85B);
+          return Colors.green;
         }
         break;
     }

@@ -14,6 +14,7 @@ class FMPlanState {
   List<FMPlan> planList;
   DateTime selectedDate;
   List<FMPlan> detailList;
+  List<FMPlan> detailListShort;
 
   int selectedField;
   DateTime startDate;
@@ -28,6 +29,7 @@ class FMPlanState {
     @required this.field,
     @required this.planList,
     @required this.detailList,
+    @required this.detailListShort,
     @required this.selectedDate,
     @required this.selectedField,
     @required this.startDate,
@@ -52,6 +54,7 @@ class FMPlanState {
           name: ''),
       planList: [],
       detailList: [],
+      detailListShort: [],
       selectedDate: DateTime.now(),
       selectedField: 0,
       startDate: DateTime.now(),
@@ -74,6 +77,7 @@ class FMPlanState {
     Field field,
     List<FMPlan> planList,
     List<FMPlan> detailList,
+    List<FMPlan> detailListShort,
     DateTime selectedDate,
     int selectedField,
     DateTime startDate,
@@ -88,6 +92,7 @@ class FMPlanState {
       field: field ?? this.field,
       planList: planList ?? this.planList,
       detailList: detailList ?? this.detailList,
+      detailListShort: detailListShort ?? this.detailListShort,
       selectedDate: selectedDate ?? this.selectedDate,
       selectedField: selectedField ?? this.selectedField,
       startDate: startDate ?? this.startDate,
@@ -104,6 +109,7 @@ class FMPlanState {
     Field field,
     List<FMPlan> planList,
     List<FMPlan> detailList,
+    List<FMPlan> detailListShort,
     DateTime selectedDate,
     int selectedField,
     DateTime startDate,
@@ -118,6 +124,7 @@ class FMPlanState {
       field: field,
       planList: planList,
       detailList: detailList,
+      detailListShort: detailListShort,
       selectedDate: selectedDate,
       selectedField: selectedField,
       startDate: startDate,
@@ -136,6 +143,7 @@ class FMPlanState {
     field: ${field},
     planList: ${planList.length},
     detailList: ${detailList.length},
+    detailListShort: ${detailListShort.length},
     selectedDate: ${selectedDate},
     selectedField: ${selectedField},
     startDate: ${startDate},
