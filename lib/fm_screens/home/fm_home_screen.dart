@@ -13,7 +13,6 @@ import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
 import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/journal/fm_journal_screen.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_screen.dart';
-import 'package:BrandFarm/fm_screens/plan/fm_plan_setting_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_request_purchase_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
@@ -42,6 +41,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
     _fmPlanBloc.add(GetFieldListForFMPlan());
     _fmPlanBloc.add(GetPlanList());
+    _fmPlanBloc.add(GetShortDetailList());
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
     isVisible = true;
     showDrawer = true;
@@ -184,354 +184,356 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
       ),
       child: Drawer(
         elevation: 3,
-        child: Column(
-          children: [
-            ListTile(
-              onTap: () {
-                setState(() {
-                  _fmHomeBloc.add(SetPageIndex(index: 0));
-                });
-              },
-              leading: Icon(
-                Icons.widgets_outlined,
-                color:
-                    (state.pageIndex == 0) ? Color(0xFF15B85B) : Colors.black,
-                size: 18,
-              ),
-              title: Text(
-                'Dashboard',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color: (state.pageIndex == 0)
-                          ? Color(0xFF15B85B)
-                          : Colors.black,
-                    ),
-              ),
-            ),
-            Theme(
-              data: theme,
-              child: MyExpansionTile(
-                onExpansionChanged: (value) {
-                  if (value) {
-                    setState(() {
-                      _fmHomeBloc.add(SetPageIndex(index: 1));
-                      _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                    });
-                  }
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              ListTile(
+                onTap: () {
+                  setState(() {
+                    _fmHomeBloc.add(SetPageIndex(index: 0));
+                  });
                 },
                 leading: Icon(
-                  Icons.view_agenda_outlined,
+                  Icons.widgets_outlined,
                   color:
-                      (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                      (state.pageIndex == 0) ? Color(0xFF15B85B) : Colors.black,
                   size: 18,
                 ),
                 title: Text(
-                  '공지사항',
+                  'Dashboard',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.w500,
                         fontSize: 13,
-                        color: (state.pageIndex == 1)
+                        color: (state.pageIndex == 0)
                             ? Color(0xFF15B85B)
                             : Colors.black,
                       ),
                 ),
-                children: [
-                  ListTile(
-                    onTap: () {
+              ),
+              Theme(
+                data: theme,
+                child: MyExpansionTile(
+                  onExpansionChanged: (value) {
+                    if (value) {
                       setState(() {
                         _fmHomeBloc.add(SetPageIndex(index: 1));
                         _fmHomeBloc.add(SetSubPageIndex(index: 1));
                       });
-                    },
-                    title: Row(
-                      children: [
-                        SizedBox(
-                          width: 76,
-                        ),
-                        Text(
-                          '테스트',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 13,
-                                color: (state.pageIndex == 1 &&
-                                        state.subPageIndex == 1)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                              ),
-                        ),
-                      ],
-                    ),
+                    }
+                  },
+                  leading: Icon(
+                    Icons.view_agenda_outlined,
+                    color:
+                        (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                    size: 18,
                   ),
-                  ListTile(
-                    onTap: () {
-                      setState(() {
-                        _fmHomeBloc.add(SetPageIndex(index: 1));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 2));
-                      });
-                    },
-                    title: Row(
-                      children: [
-                        SizedBox(
-                          width: 76,
+                  title: Text(
+                    '공지사항',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                          color: (state.pageIndex == 1)
+                              ? Color(0xFF15B85B)
+                              : Colors.black,
                         ),
-                        Text(
-                          '테스트',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 13,
-                                color: (state.pageIndex == 1 &&
-                                        state.subPageIndex == 2)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                              ),
-                        ),
-                      ],
-                    ),
                   ),
-                ],
-              ),
-            ),
-            ListTile(
-              onTap: () {
-                setState(() {
-                  _fmHomeBloc.add(SetPageIndex(index: 2));
-                });
-              },
-              leading: Icon(
-                Icons.calendar_today_outlined,
-                color:
-                    (state.pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
-                size: 18,
-              ),
-              title: Text(
-                '영농계획',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color: (state.pageIndex == 2)
-                          ? Color(0xFF15B85B)
-                          : Colors.black,
+                  children: [
+                    ListTile(
+                      onTap: () {
+                        setState(() {
+                          _fmHomeBloc.add(SetPageIndex(index: 1));
+                          _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                        });
+                      },
+                      title: Row(
+                        children: [
+                          SizedBox(
+                            width: 76,
+                          ),
+                          Text(
+                            '테스트',
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                  fontSize: 13,
+                                  color: (state.pageIndex == 1 &&
+                                          state.subPageIndex == 1)
+                                      ? Color(0xFF15B85B)
+                                      : Colors.black,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
-              ),
-            ),
-            ListTile(
-              onTap: () {
-                setState(() {
-                  _fmHomeBloc.add(SetPageIndex(index: 3));
-                });
-              },
-              leading: Icon(
-                Icons.person_outline,
-                color:
-                    (state.pageIndex == 3) ? Color(0xFF15B85B) : Colors.black,
-                size: 18,
-              ),
-              title: Text(
-                '연락처',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color: (state.pageIndex == 3)
-                          ? Color(0xFF15B85B)
-                          : Colors.black,
+                    ListTile(
+                      onTap: () {
+                        setState(() {
+                          _fmHomeBloc.add(SetPageIndex(index: 1));
+                          _fmHomeBloc.add(SetSubPageIndex(index: 2));
+                        });
+                      },
+                      title: Row(
+                        children: [
+                          SizedBox(
+                            width: 76,
+                          ),
+                          Text(
+                            '테스트',
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                  fontSize: 13,
+                                  color: (state.pageIndex == 1 &&
+                                          state.subPageIndex == 2)
+                                      ? Color(0xFF15B85B)
+                                      : Colors.black,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
+                  ],
+                ),
               ),
-            ),
-            Theme(
-              data: theme,
-              child: MyExpansionTile(
-                onExpansionChanged: (value) {
-                  if (value) {
-                    setState(() {
-                      _fmHomeBloc.add(SetPageIndex(index: 4));
-                      _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                    });
-                  }
+              ListTile(
+                onTap: () {
+                  setState(() {
+                    _fmHomeBloc.add(SetPageIndex(index: 2));
+                  });
                 },
                 leading: Icon(
-                  Icons.chat_bubble_outline,
+                  Icons.calendar_today_outlined,
                   color:
-                      (state.pageIndex == 4) ? Color(0xFF15B85B) : Colors.black,
+                      (state.pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
                   size: 18,
                 ),
                 title: Text(
-                  '구매요청',
+                  '영농계획',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.w500,
                         fontSize: 13,
-                        color: (state.pageIndex == 4)
+                        color: (state.pageIndex == 2)
                             ? Color(0xFF15B85B)
                             : Colors.black,
                       ),
                 ),
-                children: [
-                  ListTile(
-                    onTap: () {
-                      setState(() {
-                        _fmHomeBloc.add(SetPageIndex(index: 4));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                      });
-                    },
-                    title: Row(
-                      children: [
-                        SizedBox(
-                          width: 76,
-                        ),
-                        Text(
-                          '구매목록',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 13,
-                                color: (state.pageIndex == 4 &&
-                                        state.subPageIndex == 1)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    onTap: () {
-                      setState(() {
-                        _fmHomeBloc.add(SetPageIndex(index: 4));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 2));
-                      });
-                    },
-                    title: Row(
-                      children: [
-                        SizedBox(
-                          width: 76,
-                        ),
-                        Text(
-                          '구매요청하기',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 13,
-                                color: (state.pageIndex == 4 &&
-                                        state.subPageIndex == 2)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ),
-            ),
-            Theme(
-              data: theme,
-              child: MyExpansionTile(
-                onExpansionChanged: (value) {
-                  if (value) {
-                    setState(() {
-                      _fmHomeBloc.add(SetPageIndex(index: 5));
-                      _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                    });
-                  }
+              ListTile(
+                onTap: () {
+                  setState(() {
+                    _fmHomeBloc.add(SetPageIndex(index: 3));
+                  });
                 },
                 leading: Icon(
-                  Icons.article_outlined,
+                  Icons.person_outline,
                   color:
-                      (state.pageIndex == 5) ? Color(0xFF15B85B) : Colors.black,
+                      (state.pageIndex == 3) ? Color(0xFF15B85B) : Colors.black,
                   size: 18,
                 ),
                 title: Text(
-                  '일지',
+                  '연락처',
                   style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontWeight: FontWeight.w500,
                         fontSize: 13,
-                        color: (state.pageIndex == 5)
+                        color: (state.pageIndex == 3)
                             ? Color(0xFF15B85B)
                             : Colors.black,
                       ),
                 ),
-                children: [
-                  ListTile(
-                    onTap: () {
+              ),
+              Theme(
+                data: theme,
+                child: MyExpansionTile(
+                  onExpansionChanged: (value) {
+                    if (value) {
+                      setState(() {
+                        _fmHomeBloc.add(SetPageIndex(index: 4));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      });
+                    }
+                  },
+                  leading: Icon(
+                    Icons.chat_bubble_outline,
+                    color:
+                        (state.pageIndex == 4) ? Color(0xFF15B85B) : Colors.black,
+                    size: 18,
+                  ),
+                  title: Text(
+                    '구매요청',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                          color: (state.pageIndex == 4)
+                              ? Color(0xFF15B85B)
+                              : Colors.black,
+                        ),
+                  ),
+                  children: [
+                    ListTile(
+                      onTap: () {
+                        setState(() {
+                          _fmHomeBloc.add(SetPageIndex(index: 4));
+                          _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                        });
+                      },
+                      title: Row(
+                        children: [
+                          SizedBox(
+                            width: 76,
+                          ),
+                          Text(
+                            '구매목록',
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                  fontSize: 13,
+                                  color: (state.pageIndex == 4 &&
+                                          state.subPageIndex == 1)
+                                      ? Color(0xFF15B85B)
+                                      : Colors.black,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        setState(() {
+                          _fmHomeBloc.add(SetPageIndex(index: 4));
+                          _fmHomeBloc.add(SetSubPageIndex(index: 2));
+                        });
+                      },
+                      title: Row(
+                        children: [
+                          SizedBox(
+                            width: 76,
+                          ),
+                          Text(
+                            '구매요청하기',
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                  fontSize: 13,
+                                  color: (state.pageIndex == 4 &&
+                                          state.subPageIndex == 2)
+                                      ? Color(0xFF15B85B)
+                                      : Colors.black,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Theme(
+                data: theme,
+                child: MyExpansionTile(
+                  onExpansionChanged: (value) {
+                    if (value) {
                       setState(() {
                         _fmHomeBloc.add(SetPageIndex(index: 5));
                         _fmHomeBloc.add(SetSubPageIndex(index: 1));
                       });
-                    },
-                    title: Row(
-                      children: [
-                        SizedBox(
-                          width: 76,
-                        ),
-                        Text(
-                          '일지목록',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 13,
-                                color: (state.pageIndex == 5 &&
-                                        state.subPageIndex == 1)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                              ),
-                        ),
-                      ],
-                    ),
+                    }
+                  },
+                  leading: Icon(
+                    Icons.article_outlined,
+                    color:
+                        (state.pageIndex == 5) ? Color(0xFF15B85B) : Colors.black,
+                    size: 18,
                   ),
-                  ListTile(
-                    onTap: () {
-                      setState(() {
-                        _fmHomeBloc.add(SetPageIndex(index: 5));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 2));
-                      });
-                    },
-                    title: Row(
-                      children: [
-                        SizedBox(
-                          width: 76,
+                  title: Text(
+                    '일지',
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 13,
+                          color: (state.pageIndex == 5)
+                              ? Color(0xFF15B85B)
+                              : Colors.black,
                         ),
-                        Text(
-                          '일지관리',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 13,
-                                color: (state.pageIndex == 5 &&
-                                        state.subPageIndex == 2)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                              ),
-                        ),
-                      ],
-                    ),
                   ),
-                ],
-              ),
-            ),
-            Divider(
-              height: 50,
-              thickness: 1,
-              color: Color(0x1A000000),
-              endIndent: defaultPadding,
-            ),
-            ListTile(
-              onTap: () {
-                setState(() {
-                  _fmHomeBloc.add(SetPageIndex(index: 6));
-                });
-                BlocProvider.of<AuthenticationBloc>(context).add(
-                  AuthenticationLoggedOut(),
-                );
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-              leading: Icon(
-                Icons.logout,
-                color:
-                    (state.pageIndex == 6) ? Color(0xFF15B85B) : Colors.black,
-                size: 18,
-              ),
-              title: Text(
-                '로그아웃',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color: (state.pageIndex == 6)
-                          ? Color(0xFF15B85B)
-                          : Colors.black,
+                  children: [
+                    ListTile(
+                      onTap: () {
+                        setState(() {
+                          _fmHomeBloc.add(SetPageIndex(index: 5));
+                          _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                        });
+                      },
+                      title: Row(
+                        children: [
+                          SizedBox(
+                            width: 76,
+                          ),
+                          Text(
+                            '일지목록',
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                  fontSize: 13,
+                                  color: (state.pageIndex == 5 &&
+                                          state.subPageIndex == 1)
+                                      ? Color(0xFF15B85B)
+                                      : Colors.black,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
+                    ListTile(
+                      onTap: () {
+                        setState(() {
+                          _fmHomeBloc.add(SetPageIndex(index: 5));
+                          _fmHomeBloc.add(SetSubPageIndex(index: 2));
+                        });
+                      },
+                      title: Row(
+                        children: [
+                          SizedBox(
+                            width: 76,
+                          ),
+                          Text(
+                            '일지관리',
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                  fontSize: 13,
+                                  color: (state.pageIndex == 5 &&
+                                          state.subPageIndex == 2)
+                                      ? Color(0xFF15B85B)
+                                      : Colors.black,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              Divider(
+                height: 50,
+                thickness: 1,
+                color: Color(0x1A000000),
+                endIndent: defaultPadding,
+              ),
+              ListTile(
+                onTap: () {
+                  setState(() {
+                    _fmHomeBloc.add(SetPageIndex(index: 6));
+                  });
+                  BlocProvider.of<AuthenticationBloc>(context).add(
+                    AuthenticationLoggedOut(),
+                  );
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                },
+                leading: Icon(
+                  Icons.logout,
+                  color:
+                      (state.pageIndex == 6) ? Color(0xFF15B85B) : Colors.black,
+                  size: 18,
+                ),
+                title: Text(
+                  '로그아웃',
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13,
+                        color: (state.pageIndex == 6)
+                            ? Color(0xFF15B85B)
+                            : Colors.black,
+                      ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

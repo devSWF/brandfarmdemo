@@ -5,7 +5,6 @@ import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/repository/fm_plan/fm_plan_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
-import 'package:BrandFarm/utils/weather/weather_icons.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -34,6 +33,8 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
       yield* _mapSetWaitingPlanToState(event.wPlan);
     } else if (event is CheckConfirmState) {
       yield* _mapCheckConfirmStateToState(event.confirmState);
+    } else if (event is GetShortDetailList) {
+      yield* _mapGetShortDetailListToState();
     }
   }
 
@@ -183,6 +184,54 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     // check if confirm button is pressed
     yield state.update(
       isConfirmed: cState,
+    );
+  }
+
+  Stream<FMPlanState> _mapGetShortDetailListToState() async* {
+    // get short detail list
+    DateTime now = DateTime.now();
+    DateTime twoDaysLess = DateTime.utc(now.year, now.month, now.day - 2);
+    DateTime oneDayLess = DateTime.utc(now.year, now.month, now.day - 1);
+    DateTime curr = DateTime.utc(now.year, now.month, now.day);
+    DateTime oneDayMore = DateTime.utc(now.year, now.month, now.day + 1);
+    DateTime twoDaysMore = DateTime.utc(now.year, now.month, now.day + 2);
+    List<FMPlan> _selectedList = state.planList
+        .where((plan) => (
+        // two days less
+        ((plan.endDate.toDate().isAfter(twoDaysLess) || twoDaysLess.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+            ((plan.startDate.toDate().isBefore(twoDaysLess) ||
+                twoDaysLess.isAtSameMomentAs(DateTime.utc(
+                    plan.startDate.toDate().year,
+                    plan.startDate.toDate().month,
+                    plan.startDate.toDate().day))))) ||
+            // one day less
+            ((plan.endDate.toDate().isAfter(oneDayLess) || oneDayLess.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+                ((plan.startDate.toDate().isBefore(oneDayLess) ||
+                    oneDayLess.isAtSameMomentAs(DateTime.utc(
+                        plan.startDate.toDate().year,
+                        plan.startDate.toDate().month,
+                        plan.startDate.toDate().day))))) ||
+            // today
+            ((plan.endDate.toDate().isAfter(curr) || curr.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+                ((plan.startDate.toDate().isBefore(curr) ||
+                    curr.isAtSameMomentAs(DateTime.utc(
+                        plan.startDate.toDate().year,
+                        plan.startDate.toDate().month,
+                        plan.startDate.toDate().day))))) ||
+            // one day more
+            ((plan.endDate.toDate().isAfter(oneDayMore) || oneDayMore.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+                ((plan.startDate.toDate().isBefore(oneDayMore) ||
+                    oneDayMore.isAtSameMomentAs(DateTime.utc(
+                        plan.startDate.toDate().year,
+                        plan.startDate.toDate().month,
+                        plan.startDate.toDate().day))))) ||
+            // two days more
+            ((plan.endDate.toDate().isAfter(twoDaysMore) || twoDaysMore.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+                ((plan.startDate.toDate().isBefore(twoDaysMore) || twoDaysMore.isAtSameMomentAs(DateTime.utc(plan.startDate.toDate().year, plan.startDate.toDate().month, plan.startDate.toDate().day)))))))
+        .toList();
+    // print('sorted list: ${_selectedList.length}');
+    yield state.update(
+      detailListShort: _selectedList,
     );
   }
 }
