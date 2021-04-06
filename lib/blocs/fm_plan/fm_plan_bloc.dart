@@ -35,6 +35,10 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
       yield* _mapCheckConfirmStateToState(event.confirmState);
     } else if (event is GetShortDetailList) {
       yield* _mapGetShortDetailListToState();
+    } else if (event is GetSortedDetailList) {
+      yield* _mapGetSortedDetailListToState();
+    } else if (event is SetCalendarIndex) {
+      yield* _mapSetCalendarIndexToState(event.index);
     }
   }
 
@@ -195,6 +199,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     DateTime curr = DateTime.utc(now.year, now.month, now.day);
     DateTime oneDayMore = DateTime.utc(now.year, now.month, now.day + 1);
     DateTime twoDaysMore = DateTime.utc(now.year, now.month, now.day + 2);
+    List<DateTime> dList = [twoDaysLess, oneDayLess, curr, oneDayMore, twoDaysMore,];
     List<FMPlan> _selectedList = state.planList
         .where((plan) => (
         // two days less
@@ -230,8 +235,103 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
                 ((plan.startDate.toDate().isBefore(twoDaysMore) || twoDaysMore.isAtSameMomentAs(DateTime.utc(plan.startDate.toDate().year, plan.startDate.toDate().month, plan.startDate.toDate().day)))))))
         .toList();
     // print('sorted list: ${_selectedList.length}');
+    // _selectedList.forEach((element) {
+    //   print('start: ${element.startDate.toDate()} // end: ${element.endDate.toDate()}');
+    // });
+
+    // divide period to days
+    List<CalendarPlan> cpList = [];
+    for(int i = 0; i < _selectedList.length; i++) {
+      int period = (_selectedList[i].endDate.toDate().isAtSameMomentAs(_selectedList[i].startDate.toDate()))
+          ? 1 : _selectedList[i].endDate.toDate().difference(_selectedList[i].startDate.toDate()).inDays + 1;
+      // print('period: ${period}');
+      for(int j = 0; j < period; j++) {
+        int year = _selectedList[i].startDate.toDate().year;
+        int month = _selectedList[i].startDate.toDate().month;
+        int day = _selectedList[i].startDate.toDate().day;
+        CalendarPlan cp = CalendarPlan(
+          date: DateTime(year, month, day + j),
+          title: _selectedList[i].title,
+          content: _selectedList[i].content,
+          farmID: _selectedList[i].farmID,
+          fid: _selectedList[i].fid,
+          planID: _selectedList[i].planID,
+        );
+        // if(cpList.isNotEmpty) {
+        //   cpList.add(cp);
+        // } else {
+        //   cpList.insert(0, cp);
+        // }
+        if((cp.date.isAfter(DateTime(twoDaysLess.year, twoDaysLess.month, twoDaysLess.day - 1)))
+            && (cp.date.isBefore(twoDaysMore))){
+          if(cpList.isNotEmpty) {
+            cpList.add(cp);
+          } else {
+            cpList.insert(0, cp);
+          }
+        } else {
+          print('date is not within range');
+        }
+      }
+    }
+
+    // cpList.forEach((element) {print('${element.date}');});
+
     yield state.update(
-      detailListShort: _selectedList,
+      detailListShort: cpList,
+      fmHomeCalendarDateList: dList,
+      todoPlanListShort: _selectedList,
+    );
+  }
+
+  Stream<FMPlanState> _mapGetSortedDetailListToState() async* {
+    // get sorted detail list
+    // sort list by field id
+    List<List<CalendarPlan>> listByField =
+    List.generate(state.fieldList.length, (col) {
+      List<CalendarPlan> cpList = state.detailListShort.where((element) {
+        if (col == 0) {
+          return element.farmID == state.farm.farmID && element.fid.isEmpty;
+        } else {
+          return element.fid == state.fieldList[col].fid;
+        }
+      }).toList();
+      // print('fieldList ${col} : ${cpList.length}');
+      return cpList;
+    });
+    // print('list by field : ${listByField.length}');
+
+    // sort list by date
+    List<List<List<CalendarPlan>>> listByDate = List.generate(state.fmHomeCalendarDateList.length, (row) {
+      List<List<CalendarPlan>> fieldList = List.generate(listByField.length, (col) {
+        List<CalendarPlan> dateList = [];
+        for(int i = 0; i < listByField[col].length; i++) {
+          if(listByField[col][i].date.year == state.fmHomeCalendarDateList[row].year
+          && listByField[col][i].date.month == state.fmHomeCalendarDateList[row].month
+          && listByField[col][i].date.day == state.fmHomeCalendarDateList[row].day) {
+            if(dateList.isEmpty) {
+              dateList.insert(0, listByField[col][i]);
+            } else {
+              dateList.add(listByField[col][i]);
+            }
+          }
+        }
+        // print('listByDate: ${row} // ListbyField: ${col} // dateList: ${dateList.length}');
+        return dateList;
+      });
+      // print('field list : ${fieldList.length}');
+      return fieldList;
+    });
+
+    yield state.update(
+      sortedList: listByDate,
+    );
+  }
+
+  Stream<FMPlanState> _mapSetCalendarIndexToState(int index) async* {
+    // set selected index
+    yield state.update(
+      selectedIndex: index,
     );
   }
 }

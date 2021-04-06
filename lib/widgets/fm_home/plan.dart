@@ -1,12 +1,14 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
+import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class Plan extends StatefulWidget {
   @override
@@ -18,16 +20,17 @@ class _PlanState extends State<Plan> {
   FMHomeBloc _fmHomeBloc;
   ScrollController _scrollController;
   DateTime now = DateTime.now();
-  List list = [
-    '씨뿌리기 (4/5 ~ 4/7)',
-    '솔라빔 (4/5 ~ 4/7)',
-    '잎날가르기 (4/5 ~ 4/7)',
-  ];
-  List cat = [
-    'A',
-    'B',
-    'C',
-  ];
+
+  // List list = [
+  //   '씨뿌리기 (4/5 ~ 4/7)',
+  //   '솔라빔 (4/5 ~ 4/7)',
+  //   '잎날가르기 (4/5 ~ 4/7)',
+  // ];
+  // List cat = [
+  //   'A',
+  //   'B',
+  //   'C',
+  // ];
 
   @override
   void initState() {
@@ -39,14 +42,19 @@ class _PlanState extends State<Plan> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _listByDate(),
-        SizedBox(
-          width: 1,
-        ),
-        _todo(),
-      ],
+    return BlocConsumer<FMPlanBloc, FMPlanState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Row(
+          children: [
+            _listByDate(),
+            SizedBox(
+              width: 1,
+            ),
+            _todo(state),
+          ],
+        );
+      },
     );
   }
 
@@ -94,7 +102,11 @@ class _PlanState extends State<Plan> {
     );
   }
 
-  Widget _todo() {
+  Widget _todo(FMPlanState state) {
+    String date = (state.fmHomeCalendarDateList[state.selectedIndex]
+            .isAtSameMomentAs(DateTime.utc(now.year, now.month, now.day)))
+        ? '오늘'
+        : '${state.fmHomeCalendarDateList[state.selectedIndex].month}/${state.fmHomeCalendarDateList[state.selectedIndex].day}';
     return Card(
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
@@ -112,7 +124,7 @@ class _PlanState extends State<Plan> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '오늘',
+              '${date}',
               style: Theme.of(context).textTheme.bodyText1.copyWith(
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -129,18 +141,93 @@ class _PlanState extends State<Plan> {
                 child: ListView(
                   shrinkWrap: true,
                   controller: _scrollController,
-                  children: List.generate(cat.length, (index) {
+                  children: List.generate(
+                      state.sortedList[state.selectedIndex].length, (field) {
                     return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(),
-                        Divider(
-                          height: 24,
-                          thickness: 1,
-                          color: Color(0x4D000000),
-                          endIndent: 24,
-                        ),
-                      ],
+                      children: List.generate(
+                          state.sortedList[state.selectedIndex][field].length,
+                          (index) {
+                        int planIndex = state.todoPlanListShort.indexWhere(
+                            (element) =>
+                                element.planID ==
+                                state
+                                    .sortedList[state.selectedIndex][field]
+                                        [index]
+                                    .planID);
+                        DateTime sDate = state
+                            .todoPlanListShort[planIndex].startDate
+                            .toDate();
+                        DateTime eDate =
+                            state.todoPlanListShort[planIndex].endDate.toDate();
+                        return (index == 0)
+                            ? Column(
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    color: Util().getColorByIndex(index: field),
+                                    child: Center(
+                                      child: Text(
+                                        '${state.fieldList[field].name}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText1
+                                            .copyWith(
+                                              fontSize: 10,
+                                              color: Colors.white,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '${state.sortedList[state.selectedIndex][field][index].content} (${DateFormat('M/d').format(sDate)} ~ ${DateFormat('M/d').format(eDate)})',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2
+                                                .copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Util().getColorByIndex(
+                                                      index: field),
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      (index == state.sortedList[state.selectedIndex][field].length - 1)
+                                          ? divider()
+                                          : SizedBox(height: 8,),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  '${state.sortedList[state.selectedIndex][field][index].content} (${DateFormat('M/d').format(sDate)} ~ ${DateFormat('M/d').format(eDate)})',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2
+                                      .copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: Util().getColorByIndex(
+                                        index: field),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            (index == state.sortedList[state.selectedIndex][field].length - 1)
+                                ? divider()
+                                : SizedBox(height: 8,),
+                          ],
+                        );
+                      }),
                     );
                   }),
                 ),
@@ -149,6 +236,15 @@ class _PlanState extends State<Plan> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget divider() {
+    return Divider(
+      height: 24,
+      thickness: 1,
+      color: Color(0x4D000000),
+      endIndent: 24,
     );
   }
 }
@@ -229,7 +325,8 @@ class CalendarBar extends StatefulWidget {
 class _CalendarBarState extends State<CalendarBar> {
   FMPlanBloc _fmPlanBloc;
   DateTime now = DateTime.now();
-  int selectedIndex = 2;
+
+  // int selectedIndex = 2;
 
   @override
   void initState() {
@@ -266,189 +363,78 @@ class _CalendarBarState extends State<CalendarBar> {
   Widget _CalendarBody(FMPlanState state) {
     return Stack(
       children: [
-        _horizontalViewCalendar(),
+        _horizontalViewCalendar(state),
         Positioned(top: 0, left: 0, right: 0, child: _highlightPlan(state)),
         Positioned(
-            top: 0, left: 0, right: 0, child: _horizontalViewCalendarFront()),
+            top: 0,
+            left: 0,
+            right: 0,
+            child: _horizontalViewCalendarFront(state)),
       ],
     );
   }
 
-  List<List<FMPlan>> getSortedList(List<FMPlan> plist, List<Field> fList) {
-    List<List<FMPlan>> sList = [];
-    List<FMPlan> listByFid1 = (fList.isNotEmpty)
-        ? plist.where((element) => element.fid == fList[0].fid).toList()
-        : [];
-    List<FMPlan> listByFid2 = (fList.length >= 2)
-        ? plist.where((element) => element.fid == fList[1].fid).toList()
-        : [];
-    List<FMPlan> listByFid3 = (fList.length >= 3)
-        ? plist.where((element) => element.fid == fList[2].fid).toList()
-        : [];
-    List<FMPlan> listByFid4 = (fList.length >= 4)
-        ? plist.where((element) => element.fid == fList[3].fid).toList()
-        : [];
-    List<FMPlan> listByFid5 = (fList.length >= 5)
-        ? plist.where((element) => element.fid == fList[4].fid).toList()
-        : [];
-
-    switch (fList.length) {
-      case 1:
-        {
-          sList.insert(0, listByFid1);
-        }
-        break;
-      case 2:
-        {
-          sList.insert(0, listByFid1);
-          sList.add(listByFid2);
-        }
-        break;
-      case 3:
-        {
-          sList.insert(0, listByFid1);
-          sList.add(listByFid2);
-          sList.add(listByFid3);
-        }
-        break;
-      case 4:
-        {
-          sList.insert(0, listByFid1);
-          sList.add(listByFid2);
-          sList.add(listByFid3);
-          sList.add(listByFid4);
-        }
-        break;
-      case 5:
-        {
-          sList.insert(0, listByFid1);
-          sList.add(listByFid2);
-          sList.add(listByFid3);
-          sList.add(listByFid4);
-          sList.add(listByFid5);
-        }
-        break;
-    }
-    return sList;
-  }
-
   Widget _highlightPlan(FMPlanState state) {
-    List<List<FMPlan>> sortedList =
-        getSortedList(state.detailListShort, state.fieldList);
     return Row(
-      children: List.generate(5, (row) {
+      children: List.generate(state.sortedList.length, (row) {
         return Container(
-          padding: EdgeInsets.zero,
-          width: (selectedIndex == row) ? 102 : 103,
-          height: (selectedIndex == row) ? 149 : 131,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            // border: Border.all(
-            //   width: (selectedIndex == row) ? 2 : 1,
-            //   color: Colors.transparent,
-            // ),
-          ),
-          child: Column(
-            children: [
-              SizedBox(
-                height: (selectedIndex == row) ? 39 : 30,
-              ),
-              (sortedList.length > 0 && sortedList[0].isNotEmpty)
-                  ? Column(
+                padding: EdgeInsets.zero,
+                width: (state.selectedIndex == row) ? 102 : 103,
+                height: (state.selectedIndex == row) ? 149 : 131,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  // border: Border.all(
+                  //   width: (selectedIndex == row) ? 2 : 1,
+                  //   color: Colors.transparent,
+                  // ),
+                ),
+                child: Column(
+                  children: List.generate(state.sortedList[row].length, (index) {
+                    return Column(
                       children: [
-                        Container(
-                          height: 10,
-                          width: (selectedIndex == row) ? 160 : 140,
-                          color: Util().getColorByIndex(index: 0),
-                        ),
-                        SizedBox(
-                          height: 5,
+                        (index == 0) ? SizedBox(
+                          height: (state.selectedIndex == row) ? 39 : 30,
+                        ) : Container(),
+                        Column(
+                          children: [
+                            Container(
+                              height: 10,
+                              width: (state.selectedIndex == row) ? 160 : 140,
+                              color: (state.sortedList[row][index].length > 0)
+                                  ? Util().getColorByIndex(index: index)
+                                  : Colors.transparent,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                          ],
                         ),
                       ],
-                    )
-                  : Container(),
-              (sortedList.length >= 2 && sortedList[1].isNotEmpty)
-                  ? Column(
-                      children: [
-                        Container(
-                          height: 10,
-                          width: (selectedIndex == row) ? 160 : 140,
-                          color: Util().getColorByIndex(index: 1),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                      ],
-                    )
-                  : Container(),
-              (sortedList.length >= 3 && sortedList[2].isNotEmpty)
-                  ? Column(
-                      children: [
-                        Container(
-                          height: 10,
-                          width: (selectedIndex == row) ? 160 : 140,
-                          color: Util().getColorByIndex(index: 2),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                      ],
-                    )
-                  : Container(),
-              (sortedList.length >= 4 && sortedList[3].isNotEmpty)
-                  ? Column(
-                      children: [
-                        Container(
-                          height: 10,
-                          width: (selectedIndex == row) ? 160 : 140,
-                          color: Util().getColorByIndex(index: 3),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                      ],
-                    )
-                  : Container(),
-              (sortedList.length >= 5 && sortedList[4].isNotEmpty)
-                  ? Column(
-                      children: [
-                        Container(
-                          height: 10,
-                          width: (selectedIndex == row) ? 160 : 140,
-                          color: Util().getColorByIndex(index: 4),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                      ],
-                    )
-                  : Container(),
-            ],
-          ),
-        );
+                    );
+                  }),
+                ),
+              );
       }),
     );
   }
 
-  Widget _horizontalViewCalendarFront() {
+  Widget _horizontalViewCalendarFront(FMPlanState state) {
     return Row(
       children: List.generate(5, (index) {
         String date = getDate(index: index, date: now);
         return InkResponse(
           onTap: () {
-            setState(() {
-              selectedIndex = index;
-            });
+            _fmPlanBloc.add(SetCalendarIndex(index: index));
           },
           child: Container(
             padding: EdgeInsets.all(6),
-            width: (selectedIndex == index) ? 102 : 103,
-            height: (selectedIndex == index) ? 149 : 131,
+            width: (state.selectedIndex == index) ? 102 : 103,
+            height: (state.selectedIndex == index) ? 149 : 131,
             decoration: BoxDecoration(
               color: Colors.transparent,
               border: Border.all(
-                width: (selectedIndex == index) ? 2 : 1,
-                color: (selectedIndex == index)
+                width: (state.selectedIndex == index) ? 2 : 1,
+                color: (state.selectedIndex == index)
                     ? Color(0xFF15B85B)
                     : Colors.transparent,
               ),
@@ -459,19 +445,21 @@ class _CalendarBarState extends State<CalendarBar> {
     );
   }
 
-  Widget _horizontalViewCalendar() {
+  Widget _horizontalViewCalendar(FMPlanState state) {
     return Row(
       children: List.generate(5, (index) {
         String date = getDate(index: index, date: now);
         return Container(
           padding: EdgeInsets.all(6),
-          width: (selectedIndex == index) ? 102 : 103,
-          height: (selectedIndex == index) ? 149 : 131,
+          width: (state.selectedIndex == index) ? 102 : 103,
+          height: (state.selectedIndex == index) ? 149 : 131,
           decoration: BoxDecoration(
-            color: (selectedIndex == index) ? Colors.white : Color(0xFFF3F3F3),
+            color: (state.selectedIndex == index)
+                ? Colors.white
+                : Color(0xFFF3F3F3),
             border: Border.all(
-              width: (selectedIndex == index) ? 2 : 1,
-              color: (selectedIndex == index)
+              width: (state.selectedIndex == index) ? 2 : 1,
+              color: (state.selectedIndex == index)
                   ? Colors.transparent
                   : Color(0xFFD8D8D8),
             ),
@@ -481,7 +469,7 @@ class _CalendarBarState extends State<CalendarBar> {
             style: Theme.of(context).textTheme.bodyText2.copyWith(
                   fontWeight: FontWeight.w200,
                   fontSize: 15,
-                  color: (selectedIndex == index)
+                  color: (state.selectedIndex == index)
                       ? Color(0xFF15B85B)
                       : Colors.black,
                 ),

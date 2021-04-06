@@ -88,3 +88,21 @@ class WaitingConfirmation {
     @required this.selectedFieldIndex,
   });
 }
+
+class CalendarPlan {
+  DateTime date;
+  String title;
+  String content;
+  String farmID;
+  String fid;
+  String planID;
+
+  CalendarPlan({
+    this.date,
+    this.title,
+    this.content,
+    this.farmID,
+    this.fid,
+    this.planID,
+  });
+}

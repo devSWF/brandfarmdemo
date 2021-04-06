@@ -100,3 +100,18 @@ class CheckConfirmState extends FMPlanEvent{
 }
 
 class GetShortDetailList extends FMPlanEvent{}
+
+class GetSortedDetailList extends FMPlanEvent{}
+
+class SetCalendarIndex extends FMPlanEvent{
+  final int index;
+
+  const SetCalendarIndex({
+    @required this.index,
+  });
+
+  @override
+  String toString() => '''SetCalendarIndex {
+    index: $index,
+  }''';
+}
