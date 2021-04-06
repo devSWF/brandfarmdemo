@@ -14,7 +14,11 @@ class FMPlanState {
   List<FMPlan> planList;
   DateTime selectedDate;
   List<FMPlan> detailList;
-  List<FMPlan> detailListShort;
+  List<FMPlan> todoPlanListShort;
+  List<CalendarPlan> detailListShort;
+  List<List<List<CalendarPlan>>> sortedList;
+  List<DateTime> fmHomeCalendarDateList;
+  int selectedIndex;
 
   int selectedField;
   DateTime startDate;
@@ -29,7 +33,11 @@ class FMPlanState {
     @required this.field,
     @required this.planList,
     @required this.detailList,
+    @required this.todoPlanListShort,
     @required this.detailListShort,
+    @required this.sortedList,
+    @required this.fmHomeCalendarDateList,
+    @required this.selectedIndex,
     @required this.selectedDate,
     @required this.selectedField,
     @required this.startDate,
@@ -54,7 +62,11 @@ class FMPlanState {
           name: ''),
       planList: [],
       detailList: [],
+      todoPlanListShort: [],
       detailListShort: [],
+      sortedList: [],
+      fmHomeCalendarDateList: [],
+      selectedIndex: 2,
       selectedDate: DateTime.now(),
       selectedField: 0,
       startDate: DateTime.now(),
@@ -77,7 +89,11 @@ class FMPlanState {
     Field field,
     List<FMPlan> planList,
     List<FMPlan> detailList,
-    List<FMPlan> detailListShort,
+    List<FMPlan> todoPlanListShort,
+    List<CalendarPlan> detailListShort,
+    List<List<List<CalendarPlan>>> sortedList,
+    List<DateTime> fmHomeCalendarDateList,
+    int selectedIndex,
     DateTime selectedDate,
     int selectedField,
     DateTime startDate,
@@ -92,7 +108,11 @@ class FMPlanState {
       field: field ?? this.field,
       planList: planList ?? this.planList,
       detailList: detailList ?? this.detailList,
+      todoPlanListShort: todoPlanListShort ?? this.todoPlanListShort,
       detailListShort: detailListShort ?? this.detailListShort,
+      sortedList: sortedList ?? this.sortedList,
+      fmHomeCalendarDateList: fmHomeCalendarDateList ?? this.fmHomeCalendarDateList,
+      selectedIndex: selectedIndex ?? this.selectedIndex,
       selectedDate: selectedDate ?? this.selectedDate,
       selectedField: selectedField ?? this.selectedField,
       startDate: startDate ?? this.startDate,
@@ -109,7 +129,11 @@ class FMPlanState {
     Field field,
     List<FMPlan> planList,
     List<FMPlan> detailList,
-    List<FMPlan> detailListShort,
+    List<FMPlan> todoPlanListShort,
+    List<CalendarPlan> detailListShort,
+    List<List<List<CalendarPlan>>> sortedList,
+    List<DateTime> fmHomeCalendarDateList,
+    int selectedIndex,
     DateTime selectedDate,
     int selectedField,
     DateTime startDate,
@@ -124,7 +148,11 @@ class FMPlanState {
       field: field,
       planList: planList,
       detailList: detailList,
+      todoPlanListShort: todoPlanListShort,
       detailListShort: detailListShort,
+      sortedList: sortedList,
+      fmHomeCalendarDateList: fmHomeCalendarDateList,
+      selectedIndex: selectedIndex,
       selectedDate: selectedDate,
       selectedField: selectedField,
       startDate: startDate,
@@ -143,7 +171,11 @@ class FMPlanState {
     field: ${field},
     planList: ${planList.length},
     detailList: ${detailList.length},
+    todoPlanListShort: ${todoPlanListShort.length},
     detailListShort: ${detailListShort.length},
+    sortedList: ${sortedList.length},
+    fmHomeCalendarDateList: ${fmHomeCalendarDateList.length},
+    selectedIndex: ${selectedIndex},
     selectedDate: ${selectedDate},
     selectedField: ${selectedField},
     startDate: ${startDate},
