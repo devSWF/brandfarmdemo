@@ -102,9 +102,10 @@ class SubHomeFAB extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) => BlocProvider(
-                      create: (BuildContext context) => JournalIssueCreateBloc(),
-                      child: SubJournalIssueCreateScreen(),
-                    )));
+                          create: (BuildContext context) =>
+                              JournalIssueCreateBloc(),
+                          child: SubJournalIssueCreateScreen(),
+                        )));
           },
         ),
       ],

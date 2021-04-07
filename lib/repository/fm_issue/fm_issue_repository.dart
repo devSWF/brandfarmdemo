@@ -47,6 +47,22 @@ class FMIssueRepository {
     await reference.update(obj.toMap());
   }
 
+  Future<void> addCommentIssue({
+    String issid,
+  })async{
+    DocumentReference reference = _firestore.collection('Issue').doc(issid);
+
+    await reference.update({"comments": FieldValue.increment(1)});
+  }
+
+  Future<void> addCommentJournal({
+    String jid,
+  })async{
+    DocumentReference reference = _firestore.collection('Journal').doc(jid);
+
+    await reference.update({"comments": FieldValue.increment(1)});
+  }
+
   Future<List<ImagePicture>> getImage(Field field) async {
     List<ImagePicture> image = [];
     QuerySnapshot img = await _firestore
@@ -88,14 +104,6 @@ class FMIssueRepository {
 
     return scmt;
   }
-
-// Future<void> uploadIssue({
-//   SubJournalIssue subJournalIssue,
-// }) async {
-//   DocumentReference reference =
-//   _firestore.collection('Issue').doc(subJournalIssue.issid);
-//   await reference.set(subJournalIssue.toMap());
-// }
 
   Future<void> updateIssueComment({String issid, int cmts}) async {
     DocumentReference reference = _firestore.collection('Issue').doc(issid);

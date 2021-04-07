@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:BrandFarm/repository/user/user_repository.dart';
-// import 'package:BrandFarm/screens/register/register_screen.dart';
 import 'package:BrandFarm/testpage.dart';
 
 class CreateAccountButton extends StatelessWidget {
@@ -13,7 +12,7 @@ class CreateAccountButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return MaterialButton(
       child: Text(
         '아직 회원이 아니신가요?',
         style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue[700]),

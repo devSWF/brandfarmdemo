@@ -188,7 +188,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
         ),
       ),
       actions: [
-        FlatButton(
+        TextButton(
           onPressed: () {
             _journalCreateBloc
                 .add(WidgetListLoaded(widgets: journal.widgets));
@@ -227,7 +227,10 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                               ),
                               selectedImage: _pic,
                               date: journal.date.toDate()),
-                        ))).then((item) {
+                        ))).then((value){
+                          setState(() {
+                            journal = value;
+                          });
             });
           },
           child: Text(

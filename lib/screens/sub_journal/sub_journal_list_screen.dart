@@ -1266,6 +1266,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
       height: 96,
       child: InkWell(
         onTap: () {
+          _journalBloc.add(PassSelectedIssue(issue: list[index]));
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -1280,7 +1281,6 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         ),
                       ],
                       child: SubJournalIssueDetailScreen(
-                        subJournalIssue: list[index],
                         issueListOptions: issueListOptions,
                         issueOrder: issueOrder,
                       ),

@@ -22,7 +22,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapLoadJournalToState();
     } else if (event is GetInitialList) {
       yield* _mapGetInitialListToState();
-    } else if (event is GetListBySelectedDate) {
+    }else if (event is GetListBySelectedDate) {
       yield* _mapGetListBySelectedDateToState(
           month: event.month, year: event.year);
     } else if (event is LoadMore) {
@@ -43,6 +43,10 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapAddJournalCommentToState(
         jid: event.id,
       );
+    } else if (event is PassSelectedJournal){
+      yield* _mapPassSelectedJournalToState(event.journal);
+    } else if (event is PassSelectedIssue){
+      yield* _mapPassSelectedIssueToState(event.issue);
     }
   }
 
@@ -336,4 +340,13 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       orderByOldest: rev,
     );
   }
+
+  Stream<JournalState> _mapPassSelectedJournalToState(Journal journal) async*{
+    yield state.update(selectedJournal: journal);
+  }
+
+  Stream<JournalState> _mapPassSelectedIssueToState(SubJournalIssue issue) async*{
+    yield state.update(selectedIssue: issue);
+  }
+
 }

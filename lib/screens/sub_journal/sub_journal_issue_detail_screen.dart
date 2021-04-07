@@ -2,7 +2,6 @@ import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/models/comment/comment_model.dart';
-import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_issue_modify_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
@@ -20,14 +19,14 @@ import 'package:intl/intl.dart';
 class SubJournalIssueDetailScreen extends StatefulWidget {
   SubJournalIssueDetailScreen({
     Key key,
-    this.subJournalIssue,
     this.issueListOptions,
     this.issueOrder,
+    this.issid,
   }) : super(key: key);
 
-  final SubJournalIssue subJournalIssue;
   final String issueListOptions;
   final int issueOrder;
+  final String issid;
 
   @override
   _SubJournalIssueDetailScreenState createState() =>
@@ -41,7 +40,6 @@ class _SubJournalIssueDetailScreenState
   ScrollController _scrollController;
   JournalBloc _journalBloc;
   CommentBloc _commentBloc;
-  SubJournalIssue subJournalIssue;
 
   //////////////////////////////////////////////////////////////////////////////
   double height;
@@ -52,7 +50,6 @@ class _SubJournalIssueDetailScreenState
   bool _isSubCommentClicked = false;
   int indx = 0;
   String cmtid = '';
-  int numOfComments;
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -61,12 +58,10 @@ class _SubJournalIssueDetailScreenState
   @override
   void initState() {
     super.initState();
-    subJournalIssue = widget.subJournalIssue;
     _journalBloc = BlocProvider.of<JournalBloc>(context);
     _commentBloc = BlocProvider.of<CommentBloc>(context);
     _commentBloc.add(LoadComment());
-    _commentBloc.add(GetComment(id: subJournalIssue.issid, from: 'issid'));
-    numOfComments = subJournalIssue.comments;
+    _commentBloc.add(GetComment(id: widget.issid, from: 'issid'));
     Future.delayed(Duration.zero, () {
       height = MediaQuery.of(context).size.height / 2;
       print(height);
@@ -136,7 +131,7 @@ class _SubJournalIssueDetailScreenState
             return (cstate.isLoading)
                 ? Loading()
                 : Scaffold(
-                    appBar: _appBar(context: context),
+                    appBar: _appBar(context: context, state: state),
                     body: Stack(
                       children: [
                         _issueBody(
@@ -151,7 +146,8 @@ class _SubJournalIssueDetailScreenState
                               _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
                           child: _writeComment(
                             context: context,
-                            state: cstate,
+                            cstate: cstate,
+                            state: state,
                           ),
                         ),
                       ],
@@ -163,7 +159,7 @@ class _SubJournalIssueDetailScreenState
     );
   }
 
-  Widget _appBar({BuildContext context}) {
+  Widget _appBar({BuildContext context, JournalState state}) {
     return AppBar(
       elevation: 1,
       leading: IconButton(
@@ -174,7 +170,7 @@ class _SubJournalIssueDetailScreenState
       ),
       centerTitle: true,
       title: Text(
-        '${subJournalIssue.title}',
+        '${state.selectedIssue.title}',
         style: TextStyle(
           fontWeight: FontWeight.normal,
           fontSize: 16,
@@ -191,24 +187,15 @@ class _SubJournalIssueDetailScreenState
                         providers: [
                           BlocProvider(
                             create: (BuildContext context) =>
-                                JournalIssueModifyBloc(),
+                                JournalIssueModifyBloc()..add(ModifyLoading()),
                           ),
                           BlocProvider.value(
                             value: _journalBloc,
                           ),
                         ],
-                        child: SubJournalIssueModifyScreen(
-                          from: 'issue',
-                          issid: subJournalIssue.issid,
-                          obj: subJournalIssue,
-                          comments: numOfComments,
-                        ),
+                        child: SubJournalIssueModifyScreen(),
                       )),
-            ).then((value) {
-              setState(() {
-                subJournalIssue = value;
-              });
-            });
+            );
           },
           child: Text(
             '편집',
@@ -226,7 +213,7 @@ class _SubJournalIssueDetailScreenState
   Widget _issueBody(
       {BuildContext context, JournalState state, CommentState cstate}) {
     List pic = state.imageList
-        .where((element) => element.issid == subJournalIssue.issid)
+        .where((element) => element.issid == state.selectedIssue.issid)
         .toList();
     return GestureDetector(
       onTap: () {
@@ -271,7 +258,7 @@ class _SubJournalIssueDetailScreenState
                         width: 14,
                       ),
                       Text(
-                        '${DateFormat('yMMMMEEEEd', 'ko').format(DateTime.fromMicrosecondsSinceEpoch(subJournalIssue.date.microsecondsSinceEpoch))}',
+                        '${DateFormat('yMMMMEEEEd', 'ko').format(DateTime.fromMicrosecondsSinceEpoch(state.selectedIssue.date.microsecondsSinceEpoch))}',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w500,
                             ),
@@ -295,7 +282,7 @@ class _SubJournalIssueDetailScreenState
                         width: 11,
                       ),
                       Text(
-                        getCategoryInfo(category: subJournalIssue.category),
+                        getCategoryInfo(category: state.selectedIssue.category),
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               color: Color(0xFF219653),
                               fontWeight: FontWeight.w500,
@@ -321,7 +308,7 @@ class _SubJournalIssueDetailScreenState
                       ),
                       DepartmentBadge(
                           department:
-                              getIssueState(state: subJournalIssue.issueState)),
+                              getIssueState(state: state.selectedIssue.issueState)),
                     ],
                   ),
                 ],
@@ -334,7 +321,7 @@ class _SubJournalIssueDetailScreenState
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
             child: Text(
-              subJournalIssue.contents,
+              state.selectedIssue.contents,
               style: Theme.of(context).textTheme.bodyText1,
             ),
           ),
@@ -823,7 +810,7 @@ class _SubJournalIssueDetailScreenState
     }
   }
 
-  Widget _writeComment({BuildContext context, CommentState state}) {
+  Widget _writeComment({BuildContext context, CommentState cstate, JournalState state}) {
     return Wrap(
       children: [
         (_isSubCommentClicked)
@@ -834,7 +821,7 @@ class _SubJournalIssueDetailScreenState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${state.comments[indx].name}님에게 답글 남기는 중. . .'),
+                    Text('${cstate.comments[indx].name}님에게 답글 남기는 중. . .'),
                     IconButton(
                       onPressed: () {
                         setState(() {
@@ -899,21 +886,18 @@ class _SubJournalIssueDetailScreenState
                               if (_isSubCommentClicked) {
                                 _commentBloc.add(AddSubComment(
                                   from: 'issue',
-                                  id: subJournalIssue.issid,
+                                  id: state.selectedIssue.issid,
                                   comment: comment,
                                   cmtid: cmtid,
                                 ));
                               } else {
                                 _commentBloc.add(AddComment(
                                   from: 'issue',
-                                  id: subJournalIssue.issid,
+                                  id: state.selectedIssue.issid,
                                   comment: comment,
                                 ));
-                                setState(() {
-                                  numOfComments += 1;
-                                });
                                 _journalBloc.add(AddIssueComment(
-                                    id: subJournalIssue.issid,
+                                    id: state.selectedIssue.issid,
                                     ));
                               }
                               setState(() {
@@ -921,7 +905,7 @@ class _SubJournalIssueDetailScreenState
                               });
                               _commentBloc.add(LoadComment());
                               _commentBloc
-                                  .add(GetComment(id: subJournalIssue.issid, from: 'issid'));
+                                  .add(GetComment(id: state.selectedIssue.issid, from: 'issid'));
                               _textEditingController.clear();
                             },
                             child: Container(
