@@ -1,3 +1,5 @@
+import 'package:BrandFarm/models/journal/journal_model.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -11,6 +13,7 @@ abstract class JournalEvent extends Equatable {
 class LoadJournal extends JournalEvent {}
 
 class GetInitialList extends JournalEvent {}
+
 
 class GetListBySelectedDate extends JournalEvent {
   final String year;
@@ -109,4 +112,30 @@ class AddJournalComment extends JournalEvent {
       '''AddComment { 
       id: $id, 
       }''';
+}
+
+class PassSelectedJournal extends JournalEvent{
+  final Journal journal;
+  const PassSelectedJournal({
+    @required this.journal,
+  });
+  @override
+  String toString() {
+    return '''PassSelectedJournal{
+    Journal : ${journal}
+    ''';
+  }
+}
+
+class PassSelectedIssue extends JournalEvent{
+  final SubJournalIssue issue;
+  const PassSelectedIssue({
+    @required this.issue,
+  });
+  @override
+  String toString() {
+    return '''PassSelectedIssue{
+    issue : ${issue}
+    ''';
+  }
 }

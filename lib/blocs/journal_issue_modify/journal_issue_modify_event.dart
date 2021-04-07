@@ -13,6 +13,15 @@ abstract class JournalIssueModifyEvent extends Equatable{
   List<Object> get props => [];
 }
 
+class ModifyLoading extends JournalIssueModifyEvent{
+  @override
+  String toString() {
+    return 'abcabc';
+  }
+}
+
+class ModifyLoaded extends JournalIssueModifyEvent{}
+
 class SelectImageM extends JournalIssueModifyEvent{
   final List<Asset> assetList;
 

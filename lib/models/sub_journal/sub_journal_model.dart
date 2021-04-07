@@ -82,6 +82,22 @@ class SubJournalIssue {
     );
   }
 
+  factory SubJournalIssue.empty(){
+    return SubJournalIssue(
+        date: Timestamp.now(),
+        fid: '',
+        sfmid: '',
+        issid: '',
+        uid: '',
+        title: '',
+        category: 0,
+        issueState: 0,
+        contents: '',
+        comments: 0,
+        isReadByFM: false,
+        isReadByOffice: false);
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'date': date,

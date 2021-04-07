@@ -22,7 +22,11 @@ class JournalIssueModifyBloc
     if (event is AddImageFileM) {
       yield* _mapAddImageFileMToState(
           imageFile: event.imageFile, index: event.index, from: event.from);
-    } else if (event is SelectImageM) {
+    } else if (event is ModifyLoading) {
+      yield* _mapModifyLoadingToState();
+    }  else if (event is ModifyLoaded) {
+      yield* _mapModifyLoadedToState();
+    }  else if (event is SelectImageM) {
       yield* _mapSelectImageMToState(assetList: event.assetList);
     } else if (event is PressComplete) {
       yield* _mapPressCompleteToState();
@@ -66,6 +70,16 @@ class JournalIssueModifyBloc
     yield state.update(
       imageList: _img,
     );
+  }
+
+
+
+  Stream<JournalIssueModifyState> _mapModifyLoadingToState() async* {
+    yield state.update(isModifyLoading: true);
+  }
+
+  Stream<JournalIssueModifyState> _mapModifyLoadedToState() async* {
+    yield state.update(isModifyLoading: false);
   }
 
   Stream<JournalIssueModifyState> _mapSelectImageMToState(
@@ -165,7 +179,7 @@ class JournalIssueModifyBloc
 
     QuerySnapshot pic = await FirebaseFirestore.instance
         .collection('Picture')
-        .where('uid', isEqualTo: UserUtil.getUser().uid)
+        .where('issid', isEqualTo: issid)
         .orderBy('dttm', descending: true)
         .get();
     pic.docs.forEach((ds) {

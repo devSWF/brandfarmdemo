@@ -18,6 +18,9 @@ class JournalState {
   List<SubJournalIssue> reverseIssueList;
   List<ImagePicture> imageList;
 
+  Journal selectedJournal;
+  SubJournalIssue selectedIssue;
+
   JournalState({
     @required this.isLoading,
     @required this.isLoadingToGetMore,
@@ -28,6 +31,8 @@ class JournalState {
     @required this.issueListByCategorySelection,
     @required this.reverseIssueList,
     @required this.imageList,
+    @required this.selectedJournal,
+    @required this.selectedIssue,
   });
 
   factory JournalState.empty() {
@@ -41,6 +46,8 @@ class JournalState {
       issueListByCategorySelection: [],
       reverseIssueList: [],
       imageList: [],
+      selectedJournal: Journal.empty(),
+      selectedIssue: SubJournalIssue.empty(),
     );
   }
 
@@ -54,6 +61,8 @@ class JournalState {
     List<SubJournalIssue> issueListByCategorySelection,
     List<SubJournalIssue> reverseIssueList,
     List<ImagePicture> imageList,
+    Journal selectedJournal,
+    SubJournalIssue selectedIssue,
   }) {
     return JournalState(
       isLoading: isLoading ?? this.isLoading,
@@ -65,6 +74,8 @@ class JournalState {
       issueListByCategorySelection: issueListByCategorySelection ?? this.issueListByCategorySelection,
       reverseIssueList: reverseIssueList ?? this.reverseIssueList,
       imageList: imageList ?? this.imageList,
+      selectedJournal: selectedJournal ?? this.selectedJournal,
+      selectedIssue: selectedIssue ?? this.selectedIssue,
     );
   }
 
@@ -78,6 +89,8 @@ class JournalState {
     List<SubJournalIssue> issueListByCategorySelection,
     List<SubJournalIssue> reverseIssueList,
     List<ImagePicture> imageList,
+    Journal selectedJournal,
+    SubJournalIssue selectedIssue,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -89,6 +102,8 @@ class JournalState {
       issueListByCategorySelection: issueListByCategorySelection,
       reverseIssueList: reverseIssueList,
       imageList: imageList,
+      selectedIssue: selectedIssue,
+      selectedJournal: selectedJournal,
     );
   }
 
@@ -104,6 +119,8 @@ class JournalState {
     issueListByCategorySelection: ${issueListByCategorySelection.length},
     reverseIssueList: ${reverseIssueList.length},
     imageList: ${imageList.length},
+    selectedIssue: ${selectedIssue},
+    selectedJournal: ${selectedJournal},
     }
     ''';
   }

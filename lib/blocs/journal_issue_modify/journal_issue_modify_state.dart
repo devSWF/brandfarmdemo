@@ -13,6 +13,8 @@ class JournalIssueModifyState {
   final bool isComplete;
   final bool isUploaded;
 
+  final bool isModifyLoading;
+
   JournalIssueModifyState({
     @required this.title,
     @required this.imageList,
@@ -21,6 +23,7 @@ class JournalIssueModifyState {
     @required this.deletedFromExistingImageList,
     @required this.isComplete,
     @required this.isUploaded,
+    @required this.isModifyLoading,
   });
 
   factory JournalIssueModifyState.empty() {
@@ -32,6 +35,7 @@ class JournalIssueModifyState {
       deletedFromExistingImageList: [],
       isComplete: false,
       isUploaded: false,
+      isModifyLoading: false,
     );
   }
 
@@ -43,6 +47,7 @@ class JournalIssueModifyState {
     List<ImagePicture> deletedFromExistingImageList,
     bool isComplete,
     bool isUploaded,
+    bool isModifyLoading,
   }) {
     return JournalIssueModifyState(
       title: title ?? this.title,
@@ -52,6 +57,7 @@ class JournalIssueModifyState {
       deletedFromExistingImageList: deletedFromExistingImageList ?? this.deletedFromExistingImageList,
       isComplete: isComplete ?? this.isComplete,
       isUploaded: isUploaded ?? this.isUploaded,
+      isModifyLoading: isModifyLoading ?? this.isModifyLoading,
     );
   }
 
@@ -63,6 +69,7 @@ class JournalIssueModifyState {
     List<ImagePicture> deletedFromExistingImageList,
     bool isComplete,
     bool isUploaded,
+    bool isModifyLoading,
   }) {
     return copyWith(
       title: title,
@@ -72,6 +79,7 @@ class JournalIssueModifyState {
       deletedFromExistingImageList: deletedFromExistingImageList,
       isComplete: isComplete,
       isUploaded: isUploaded,
+      isModifyLoading: isModifyLoading,
     );
   }
 
@@ -85,6 +93,7 @@ class JournalIssueModifyState {
     deletedFromExistingImageList: ${deletedFromExistingImageList?.length ?? 0},
     isComplete: ${isComplete},
     isUploaded: ${isUploaded},
+    isModifyLoading: $isModifyLoading,
    }''';
   }
 }

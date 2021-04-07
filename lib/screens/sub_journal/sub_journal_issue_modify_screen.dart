@@ -6,6 +6,7 @@ import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/customized_badge.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -19,22 +20,6 @@ import 'package:intl/intl.dart';
 import '../../utils/user/user_util.dart';
 
 class SubJournalIssueModifyScreen extends StatefulWidget {
-  String issid;
-  String from;
-  SubJournalIssue obj;
-  int comments;
-
-  SubJournalIssueModifyScreen(
-      {Key key,
-      @required String issid,
-      String from,
-      SubJournalIssue obj,
-      int comments})
-      : issid = issid,
-        from = from ?? 'journal',
-        obj = obj,
-        comments = comments ?? 0,
-        super(key: key);
 
   @override
   _SubJournalIssueModifyScreenState createState() =>
@@ -64,11 +49,10 @@ class _SubJournalIssueModifyScreenState
   // DateTime dnow = DateTime.fromMicrosecondsSinceEpoch(tnow.microsecondsSinceEpoch);
   // DateTime dnow = DateTime.fromMillisecondsSinceEpoch(tnow.millisecondsSinceEpoch);
   // DateTime dnow = DateTime.now();
-  int category = 1;
-  int issueState = 1;
   String title = '';
   String contents = '';
-
+  int category;
+  int issueState;
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -76,129 +60,131 @@ class _SubJournalIssueModifyScreenState
   @override
   void initState() {
     super.initState();
-    _title = TextEditingController(text: '${widget.obj.title}');
-    _content = TextEditingController(text: '${widget.obj.contents}');
     _focusTitle = FocusNode();
     _focusContent = FocusNode();
     _journalIssueModifyBloc = BlocProvider.of<JournalIssueModifyBloc>(context);
     _journalBloc = BlocProvider.of<JournalBloc>(context);
-    _journalIssueModifyBloc.add(GetImageList(issid: widget.obj.issid));
-    setState(() {
-      category = widget.obj.category;
-      issueState = widget.obj.issueState;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<JournalIssueModifyBloc, JournalIssueModifyState>(
-      listener: (context, state) {
-        if (state.isComplete == true && state.isUploaded == false) {
-          // print('isUpload false');
-          LoadingDialog.onLoading(context);
-          _journalIssueModifyBloc.add(UpdateJournal(
-            fid: FieldUtil.getField().fid,
-            category: category,
-            sfmid: FieldUtil.getField().sfmid,
-            issid: widget.issid,
-            contents: _content.text,
-            title: _title.text,
-            uid: UserUtil.getUser().uid,
-            issueState: issueState,
-            comments: widget.comments,
-            isReadByFM: widget.obj.isReadByFM,
-            isReadByOffice: widget.obj.isReadByOffice,
-          ));
-        } else if (state.isComplete == true && state.isUploaded == true) {
-          // print('isUpload true');
-          _journalBloc.add(GetInitialList());
-          LoadingDialog.dismiss(context, () {
-            Navigator.pop(context,
-                SubJournalIssue(
-                  date: Timestamp.now(),
+    return BlocBuilder<JournalBloc, JournalState>(
+        builder: (context, state) {
+          return BlocConsumer<JournalIssueModifyBloc, JournalIssueModifyState>(
+            listener: (context, mstate) {
+              if (mstate.isComplete == true && mstate.isUploaded == false) {
+                // print('isUpload false');
+                LoadingDialog.onLoading(context);
+                _journalIssueModifyBloc.add(UpdateJournal(
                   fid: FieldUtil.getField().fid,
                   category: category,
                   sfmid: FieldUtil.getField().sfmid,
-                  issid: widget.issid,
+                  issid: state.selectedIssue.issid,
                   contents: _content.text,
                   title: _title.text,
                   uid: UserUtil.getUser().uid,
                   issueState: issueState,
-                  comments: widget.comments,
-                  isReadByFM: widget.obj.isReadByFM,
-                  isReadByOffice: widget.obj.isReadByOffice,
+                  comments: state.selectedIssue.comments,
+                  isReadByFM: state.selectedIssue.isReadByFM,
+                  isReadByOffice: state.selectedIssue.isReadByOffice,
                 ));
-          });
-        }
-      },
-      builder: (context, cstate) {
-        return BlocBuilder<JournalBloc, JournalState>(
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back_ios_rounded),
-                  onPressed: () {
-                    Navigator.pop(context);
+              } else if (mstate.isComplete == true && mstate.isUploaded == true) {
+                // print('isUpload true');
+                _journalBloc.add(GetInitialList());
+                LoadingDialog.dismiss(context, () {
+                  Navigator.pop(context,
+                      SubJournalIssue(
+                        date: Timestamp.now(),
+                        fid: FieldUtil.getField().fid,
+                        category: state.selectedIssue.category,
+                        sfmid: FieldUtil.getField().sfmid,
+                        issid: state.selectedIssue.issid,
+                        contents: _content.text,
+                        title: _title.text,
+                        uid: UserUtil.getUser().uid,
+                        issueState: state.selectedIssue.issueState,
+                        comments: state.selectedIssue.comments,
+                        isReadByFM: state.selectedIssue.isReadByFM,
+                        isReadByOffice: state.selectedIssue.isReadByOffice,
+                      ));
+                });
+              } else if (mstate.isModifyLoading){
+                _title = TextEditingController(text: '${state.selectedIssue.title}');
+                _content = TextEditingController(text: '${state.selectedIssue.contents}');
+                _journalIssueModifyBloc.add(GetImageList(issid: state.selectedIssue.issid));
+                print(state.selectedIssue.issid);
+                issueState = state.selectedIssue.issueState;
+                category = state.selectedIssue.category;
+                _journalIssueModifyBloc.add(ModifyLoaded());
+              }
+            },
+            builder: (context, mstate) {
+              return Scaffold(
+                appBar: AppBar(
+                  leading: IconButton(
+                    icon: Icon(Icons.arrow_back_ios_rounded),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  title: Text(
+                    '이슈일지 작성',
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  centerTitle: true,
+                ),
+                body: GestureDetector(
+                  onTap: () {
+                    _focusTitle.unfocus();
+                    _focusContent.unfocus();
                   },
-                ),
-                title: Text(
-                  '이슈일지 작성',
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                centerTitle: true,
-              ),
-              body: GestureDetector(
-                onTap: () {
-                  _focusTitle.unfocus();
-                  _focusContent.unfocus();
-                },
-                child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 24.0,
-                      ),
-                      _dateBar(context: context, state: state),
-                      SizedBox(
-                        height: 37.0,
-                      ),
-                      _inputTitleBar(context: context, state: state),
-                      SizedBox(
-                        height: 51.0,
-                      ),
-                      _chooseCategory(context: context, state: state),
-                      SizedBox(
-                        height: 45.0,
-                      ),
-                      _chooseIssueState(),
-                      SizedBox(
-                        height: 48.0,
-                      ),
-                      _addPictureBar(context: context, state: cstate),
-                      SizedBox(
-                        height: 43.0,
-                      ),
-                      _inputIssueContents(),
-                      SizedBox(
-                        height: 72,
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    physics: ClampingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 24.0,
+                        ),
+                        _dateBar(context: context, state: state),
+                        SizedBox(
+                          height: 37.0,
+                        ),
+                        _inputTitleBar(context: context, state: state),
+                        SizedBox(
+                          height: 51.0,
+                        ),
+                        _chooseCategory(context: context, state: state),
+                        SizedBox(
+                          height: 45.0,
+                        ),
+                        _chooseIssueState(),
+                        SizedBox(
+                          height: 48.0,
+                        ),
+                        _addPictureBar(context: context, state: mstate),
+                        SizedBox(
+                          height: 43.0,
+                        ),
+                        _inputIssueContents(),
+                        SizedBox(
+                          height: 72,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              bottomNavigationBar: CustomBottomButton(
-                title: '완료',
-                onPressed: () {
-                  _journalIssueModifyBloc.add(PressComplete());
-                },
-              ),
-            );
-          },
-        );
-      },
+                bottomNavigationBar: CustomBottomButton(
+                  title: '완료',
+                  onPressed: () {
+                    _journalIssueModifyBloc.add(PressComplete());
+                  },
+                ),
+              );
+
+            },
+          );
+        }
     );
   }
 
@@ -208,7 +194,7 @@ class _SubJournalIssueModifyScreenState
       child: Row(
         children: [
           Text(
-              '${DateFormat('yMMMMEEEEd', 'ko').format(widget.obj.date.toDate())}',
+              '${DateFormat('yMMMMEEEEd', 'ko').format(state.selectedIssue.date.toDate())}',
               style: Theme.of(context).textTheme.subtitle2.copyWith(
                   fontSize: 16.0, color: Theme.of(context).primaryColor)),
           Spacer(),
@@ -263,10 +249,7 @@ class _SubJournalIssueModifyScreenState
           SizedBox(
             width: 10,
           ),
-          FlatButton(
-            minWidth: 0,
-            height: 0,
-            padding: EdgeInsets.zero,
+          TextButton(
             onPressed: () {
               setState(() {
                 category = 1;
@@ -282,10 +265,7 @@ class _SubJournalIssueModifyScreenState
             ),
           ),
           // SizedBox(width: 29,),
-          FlatButton(
-            minWidth: 0,
-            height: 0,
-            padding: EdgeInsets.zero,
+          TextButton(
             onPressed: () {
               setState(() {
                 category = 2;
@@ -301,10 +281,7 @@ class _SubJournalIssueModifyScreenState
             ),
           ),
           // SizedBox(width: 28,),
-          FlatButton(
-            minWidth: 0,
-            height: 0,
-            padding: EdgeInsets.zero,
+          TextButton(
             onPressed: () {
               setState(() {
                 category = 3;
@@ -337,10 +314,7 @@ class _SubJournalIssueModifyScreenState
           SizedBox(
             width: 10,
           ),
-          FlatButton(
-            minWidth: 0,
-            height: 0,
-            padding: EdgeInsets.zero,
+          TextButton(
             onPressed: () {
               setState(() {
                 issueState = 1;
@@ -357,10 +331,7 @@ class _SubJournalIssueModifyScreenState
             ),
           ),
           // SizedBox(width: 29,),
-          FlatButton(
-            minWidth: 0,
-            height: 0,
-            padding: EdgeInsets.zero,
+          TextButton(
             onPressed: () {
               setState(() {
                 issueState = 2;
@@ -377,10 +348,7 @@ class _SubJournalIssueModifyScreenState
             ),
           ),
           // SizedBox(width: 28,),
-          FlatButton(
-            minWidth: 0,
-            height: 0,
-            padding: EdgeInsets.zero,
+          TextButton(
             onPressed: () {
               setState(() {
                 issueState = 3;
@@ -405,9 +373,6 @@ class _SubJournalIssueModifyScreenState
   }
 
   Widget _addPictureBar({BuildContext context, JournalIssueModifyState state}) {
-    List<ImagePicture> pic = state.existingImageList
-        .where((image) => image.issid == widget.issid)
-        .toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -428,68 +393,87 @@ class _SubJournalIssueModifyScreenState
                 : state.imageList.length,
             itemBuilder: (BuildContext context, int index) {
               return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   (index == 0)
                       ? SizedBox(
-                          width: defaultPadding,
-                        )
+                    width: defaultPadding,
+                  )
                       : Container(),
                   (index == 0)
                       ? Center(
-                          child: InkWell(
-                              onTap: () {
-                                _pickImage(context: context, state: state);
-                              },
-                              child: Container(
-                                height: 74.0,
-                                width: 74.0,
-                                decoration:
-                                    BoxDecoration(color: Color(0x1a000000)),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 34.0,
-                                  ),
-                                ),
-                              )),
-                        )
+                    child: InkWell(
+                        onTap: () {
+                          _pickImage(context: context, state: state);
+                        },
+                        child: Container(
+                          height: 74.0,
+                          width: 74.0,
+                          decoration:
+                          BoxDecoration(color: Color(0x1a000000)),
+                          child: Center(
+                            child: Icon(
+                              Icons.add,
+                              size: 34.0,
+                            ),
+                          ),
+                        )),
+                  )
                       : Container(),
-                  (index == 0)
+                  (state.imageList.isNotEmpty && index == 0)
                       ? SizedBox(
-                          width: defaultPadding,
-                        )
+                    width: defaultPadding,
+                  )
                       : Container(),
                   (state?.imageList?.isNotEmpty ?? true)
-                      ? Row(
+                      ? _image(
+                    context: context,
+                    state: state,
+                    index: index,
+                  )
+                      : Container(
+                    width: defaultPadding,
+                  ),
+                  if (state.imageList.isEmpty && index == 0)
+                    Row(
+                      children:
+                      List.generate(state.existingImageList.length, (index) {
+                        return Row(
                           children: [
-                            _image(
+                            _existingImage(
                               context: context,
-                              state: state,
+                              url: state.existingImageList[index].url,
+                              obj: state.existingImageList[index],
                               index: index,
                             ),
                             SizedBox(
                               width: defaultPadding,
                             ),
                           ],
-                        )
-                      : Container(),
-                  (index == 0 && pic.isNotEmpty)
-                      ? Row(
-                          children: List.generate(pic.length, (index) {
-                            return Row(
-                              children: [
-                                _existingImage(
-                                    context: context,
-                                    url: pic[index].url,
-                                    obj: pic[index]),
-                                SizedBox(
-                                  width: defaultPadding,
-                                ),
-                              ],
-                            );
-                          }),
-                        )
-                      : Container(),
+                        );
+                      }),
+                    )
+                  else if (index + 1 == state.imageList.length &&
+                      state.existingImageList.isNotEmpty)
+                    Row(
+                      children:
+                      List.generate(state.existingImageList.length, (index) {
+                        return Row(
+                          children: [
+                            _existingImage(
+                                context: context,
+                                url: state.existingImageList[index].url,
+                                obj: state.existingImageList[index],
+                                index: index),
+                            SizedBox(
+                              width: defaultPadding,
+                            ),
+                          ],
+                        );
+                      }),
+                    )
+                  else
+                    Container(),
                 ],
               );
             },
@@ -497,81 +481,116 @@ class _SubJournalIssueModifyScreenState
         ),
       ],
     );
+
   }
 
-  Widget _existingImage({BuildContext context, String url, ImagePicture obj}) {
-    return Badge(
-      // padding: EdgeInsets.zero,
+
+  Widget _existingImage(
+      {BuildContext context, String url, ImagePicture obj, int index}) {
+    return CustomizedBadge(
+      onPressed: () {
+        _journalIssueModifyBloc.add(DeleteExistingImage(obj: obj));
+      },
       toAnimate: false,
-      badgeContent: InkResponse(
-        onTap: () {
-          _journalIssueModifyBloc.add(DeleteExistingImage(obj: obj));
-        },
-        child: Icon(
-          Icons.close,
-          color: Colors.white,
-          size: 11,
-        ),
+      badgeContent: Icon(
+        Icons.close,
+        color: Colors.white,
+        size: 11,
       ),
+      position: BadgePosition.topEnd(top: 3, end: 3),
       badgeColor: Colors.black,
       shape: BadgeShape.circle,
-      child: Container(
-        height: 74.0,
-        width: 74.0,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: CachedNetworkImageProvider(
-              url,
+      child: Stack(
+        children: [
+          Container(
+            height: 87.0,
+            width: 87.0,
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                height: 74.0,
+                width: 74.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(
+                      url,
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ),
-            fit: BoxFit.cover,
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _image(
-      {BuildContext context, JournalIssueModifyState state, int index}) {
+  Widget _image({BuildContext context, JournalIssueModifyState state, int index}) {
     bool isNull = state.imageList[index] == null;
-    return Badge(
+    return CustomizedBadge(
+      onPressed: () {
+        _journalIssueModifyBloc
+            .add(DeleteImageFile(removedFile: state.imageList[index]));
+      },
       // padding: EdgeInsets.zero,
       toAnimate: false,
-      badgeContent: InkResponse(
-        onTap: () {
-          _journalIssueModifyBloc
-              .add(DeleteImageFile(removedFile: state.imageList[index]));
-        },
-        child: Icon(
-          Icons.close,
-          color: Colors.white,
-          size: 11,
-        ),
+
+      badgeContent: Icon(
+        Icons.close,
+        color: Colors.white,
+        size: 11,
       ),
+      position: BadgePosition.topEnd(top: 3, end: 3),
       badgeColor: Colors.black,
       shape: BadgeShape.circle,
       child: isNull
-          ? Container(
-              height: 74.0,
-              width: 74.0,
-              color: Colors.grey,
-              child: Center(
-                  child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Color.fromARGB(255, 0, 61, 165)),
-              )),
-            )
-          : Container(
-              height: 74.0,
-              width: 74.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: FileImage(
-                    state.imageList[index],
+          ? Stack(
+        children: [
+          Container(
+            height: 87.0,
+            width: 87.0,
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                height: 74.0,
+                width: 74.0,
+                color: Colors.grey,
+                child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Color.fromARGB(255, 0, 61, 165)),
+                    )),
+              ),
+            ),
+          ),
+        ],
+      )
+          : Stack(
+        children: [
+          Container(
+            height: 87.0,
+            width: 87.0,
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                height: 74.0,
+                width: 74.0,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FileImage(
+                      state.imageList[index],
+                    ),
+                    fit: BoxFit.cover,
+                    // colorFilter: ColorFilter.mode(
+                    //     Colors.black.withOpacity(0.5), BlendMode.srcATop),
                   ),
-                  fit: BoxFit.cover,
                 ),
               ),
             ),
+          ),
+        ],
+      ),
     );
   }
 

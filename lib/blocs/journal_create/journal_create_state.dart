@@ -47,6 +47,7 @@ class JournalCreateState {
 
   ///Edit Journal
   final Journal existJournal;
+  final Journal bufferJournal;
 
   ///사진정보
   final List<File> imageList;
@@ -188,6 +189,7 @@ class JournalCreateState {
 
     ///Edit Journal
     @required this.existJournal,
+    @required this.bufferJournal,
 
     ///사진정보
     @required this.imageList,
@@ -346,6 +348,7 @@ class JournalCreateState {
 
       ///Edit Journal
       existJournal: Journal.empty(),
+      bufferJournal: Journal.empty(),
 
       ///사진정보
       imageList: [],
@@ -491,6 +494,7 @@ class JournalCreateState {
 
     ///Edit Journal
     Journal existJournal,
+    Journal bufferJournal,
 
     ///사진정보
     List<File> imageList,
@@ -634,6 +638,7 @@ class JournalCreateState {
 
       ///Edit Journal
       existJournal: existJournal,
+      bufferJournal: bufferJournal,
 
       ///사진정보
       imageList: imageList,
@@ -779,6 +784,7 @@ class JournalCreateState {
 
     ///Edit Journal
     Journal existJournal,
+    Journal bufferJournal,
 
     ///사진정보
     List<File> imageList,
@@ -923,6 +929,7 @@ class JournalCreateState {
 
       ///Edit Journal
       existJournal: existJournal ?? this.existJournal,
+      bufferJournal: bufferJournal ?? this.bufferJournal,
 
       ///사진정보
       imageList: imageList ?? this.imageList,

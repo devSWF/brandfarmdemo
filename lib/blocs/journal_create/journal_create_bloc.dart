@@ -483,6 +483,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     }
 
     yield state.update(
+      writeComplete: true,
+      bufferJournal: journal,
     );
   }
 

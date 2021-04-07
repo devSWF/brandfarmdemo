@@ -9,6 +9,7 @@ import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/brandfarm_date_picker.dart';
 import 'package:BrandFarm/widgets/customized_badge.dart';
+import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -104,6 +105,12 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
                   curve: Curves.ease);
             });
           }
+          if(state.writeComplete==true){
+            Navigator.pop(context);
+            Navigator.pop(context,
+              state.bufferJournal,
+            );
+          }
         },
         child: BlocBuilder<JournalCreateBloc, JournalCreateState>(
           builder: (context, state) {
@@ -182,8 +189,8 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
                     ? null
                     : () {
                         // _journalCreateBloc.add(DailyJournal());
-                        _journalCreateBloc.add(UpdateJournal());
-                        Navigator.pop(context);
+                  LoadingDialog.onLoading(context);
+                  _journalCreateBloc.add(UpdateJournal());
                       },
               ),
             );
@@ -1027,7 +1034,7 @@ class CustomBottomButton extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     return Container(
       height: height * 0.086,
-      child: RaisedButton(
+      child: ElevatedButton(
         child: Text(
           _title ?? '다음',
           style: Theme.of(context).textTheme.bodyText1.copyWith(

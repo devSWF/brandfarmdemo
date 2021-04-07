@@ -140,7 +140,6 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
 
       await CommentRepository().uploadComment(comment: cmt);
-
       comments.add(cmt);
     }
 
