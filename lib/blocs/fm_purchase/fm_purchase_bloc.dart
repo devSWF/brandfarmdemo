@@ -3,8 +3,11 @@ import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
 import 'package:BrandFarm/repository/fm_purchase/fm_purchase_repository.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FMPurchaseBloc
     extends Bloc<FMPurchaseEvent, FMPurchaseState> {
@@ -17,6 +20,24 @@ class FMPurchaseBloc
       yield* _mapLoadFMPurchaseToState();
     } else if (event is GetFieldListForFMPurchase) {
       yield* _mapGetFieldListForFMPurchaseToState();
+    } else if (event is SetInitialProductList) {
+      yield* _mapSetInitialProductListToState();
+    } else if (event is UpdateFieldButtonState) {
+      yield* _mapUpdateFieldButtonStateToState(event.index);
+    } else if (event is UpdateFieldName) {
+      yield* _mapUpdateFieldNameToState(event.index, event.field);
+    } else if (event is UpdateProductName) {
+      yield* _mapUpdateProductNameToState(event.index, event.name);
+    } else if (event is UpdateAmount) {
+      yield* _mapUpdateAmountToState(event.index, event.amount);
+    } else if (event is UpdatePrice) {
+      yield* _mapUpdatePriceToState(event.index, event.price);
+    } else if (event is UpdateMarketUrl) {
+      yield* _mapUpdateMarketUrlToState(event.index, event.url);
+    } else if (event is UpdateMemo) {
+      yield* _mapUpdateMemoToState(event.index, event.memo);
+    } else if (event is SetAdditionalProduct) {
+      yield* _mapSetAdditionalProductToState();
     }
   }
 
@@ -51,35 +72,262 @@ class FMPurchaseBloc
     );
   }
 
-//   Stream<FMPurchaseState> _mapSetFieldToState(Field field) async* {
-//     yield state.update(field: field);
-//   }
-//
-//   Stream<FMPurchaseState> _mapPostNotificationToState(
-//       NotificationNotice obj) async* {
-//     // post notification
-//     String _notid = '';
-//     _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
-//     NotificationNotice _notice = NotificationNotice(
-//       uid: obj.uid,
-//       name: obj.name,
-//       imgUrl: obj.imgUrl,
-//       fid: obj.fid,
-//       farmid: obj.farmid,
-//       title: obj.title,
-//       content: obj.content,
-//       postedDate: obj.postedDate,
-//       scheduledDate: obj.scheduledDate,
-//       isReadByFM: obj.isReadByFM,
-//       isReadByOffice: obj.isReadByOffice,
-//       isReadBySFM: obj.isReadBySFM,
-//       notid: _notid,
-//       type: obj.type,
-//       department: obj.department,
-//     );
-//
-//     FMNotificationRepository().postNotification(_notice);
-//
-//     yield state.update(isLoading: false);
-//   }
+  Stream<FMPurchaseState> _mapSetInitialProductListToState() async* {
+    // set initial product list
+    Timestamp now = Timestamp.now();
+    List<FMPurchase> pList = [];
+    FMPurchase product = FMPurchase(
+      purchaseID: '',
+      requester: UserUtil.getUser().name,
+      receiver: '', // field worker name
+      requestDate: now,
+      receiveDate: null,
+      productName: '',
+      amount: '',
+      price: '',
+      marketUrl: '',
+      field: null,
+      memo: '',
+      officeReply: '',
+      waitingState: 1, // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
+      isFieldSelectionButtonClicked: false,
+      isThereUpdates: true,
+    );
+    pList.insert(0, product);
+    yield state.update(
+      productList: pList,
+      curr: now,
+      isLoading: false,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapUpdateFieldButtonStateToState(int index) async* {
+    FMPurchase obj = state.productList[index];
+    FMPurchase newObj = FMPurchase(
+        purchaseID: obj.purchaseID,
+        requester: obj.requester,
+        receiver: obj.receiver,
+        requestDate: obj.requestDate,
+        receiveDate: obj.receiveDate,
+        productName: obj.productName,
+        amount: obj.amount,
+        price: obj.price,
+        marketUrl: obj.marketUrl,
+        field: obj.field,
+        memo: obj.memo,
+        officeReply: obj.officeReply,
+        waitingState: obj.waitingState,
+        isFieldSelectionButtonClicked: !obj.isFieldSelectionButtonClicked,
+        isThereUpdates: obj.isThereUpdates
+    );
+
+    List<FMPurchase> plist = state.productList;
+    plist.removeAt(index);
+    plist.insert(index, newObj);
+
+    yield state.update(
+        productList: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapUpdateFieldNameToState(int index, int field) async* {
+    FMPurchase obj = state.productList[index];
+    FMPurchase newObj = FMPurchase(
+        purchaseID: obj.purchaseID,
+        requester: obj.requester,
+        receiver: obj.receiver,
+        requestDate: obj.requestDate,
+        receiveDate: obj.receiveDate,
+        productName: obj.productName,
+        amount: obj.amount,
+        price: obj.price,
+        marketUrl: obj.marketUrl,
+        field: state.fieldList[field],
+        memo: obj.memo,
+        officeReply: obj.officeReply,
+        waitingState: obj.waitingState,
+        isFieldSelectionButtonClicked: !obj.isFieldSelectionButtonClicked,
+        isThereUpdates: obj.isThereUpdates
+    );
+
+    List<FMPurchase> plist = state.productList;
+    plist.removeAt(index);
+    plist.insert(index, newObj);
+
+    yield state.update(
+        productList: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapUpdateProductNameToState(int index, String name) async* {
+    FMPurchase obj = state.productList[index];
+    FMPurchase newObj = FMPurchase(
+        purchaseID: obj.purchaseID,
+        requester: obj.requester,
+        receiver: obj.receiver,
+        requestDate: obj.requestDate,
+        receiveDate: obj.receiveDate,
+        productName: name,
+        amount: obj.amount,
+        price: obj.price,
+        marketUrl: obj.marketUrl,
+        field: obj.field,
+        memo: obj.memo,
+        officeReply: obj.officeReply,
+        waitingState: obj.waitingState,
+        isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
+        isThereUpdates: obj.isThereUpdates
+    );
+
+    List<FMPurchase> plist = state.productList;
+    plist.removeAt(index);
+    plist.insert(index, newObj);
+
+    yield state.update(
+        productList: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapUpdateAmountToState(int index, String amount) async* {
+    FMPurchase obj = state.productList[index];
+    FMPurchase newObj = FMPurchase(
+        purchaseID: obj.purchaseID,
+        requester: obj.requester,
+        receiver: obj.receiver,
+        requestDate: obj.requestDate,
+        receiveDate: obj.receiveDate,
+        productName: obj.productName,
+        amount: amount,
+        price: obj.price,
+        marketUrl: obj.marketUrl,
+        field: obj.field,
+        memo: obj.memo,
+        officeReply: obj.officeReply,
+        waitingState: obj.waitingState,
+        isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
+        isThereUpdates: obj.isThereUpdates
+    );
+
+    List<FMPurchase> plist = state.productList;
+    plist.removeAt(index);
+    plist.insert(index, newObj);
+
+    yield state.update(
+        productList: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapUpdatePriceToState(int index, String price) async* {
+    FMPurchase obj = state.productList[index];
+    FMPurchase newObj = FMPurchase(
+        purchaseID: obj.purchaseID,
+        requester: obj.requester,
+        receiver: obj.receiver,
+        requestDate: obj.requestDate,
+        receiveDate: obj.receiveDate,
+        productName: obj.productName,
+        amount: obj.amount,
+        price: price,
+        marketUrl: obj.marketUrl,
+        field: obj.field,
+        memo: obj.memo,
+        officeReply: obj.officeReply,
+        waitingState: obj.waitingState,
+        isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
+        isThereUpdates: obj.isThereUpdates
+    );
+
+    List<FMPurchase> plist = state.productList;
+    plist.removeAt(index);
+    plist.insert(index, newObj);
+
+    yield state.update(
+        productList: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapUpdateMarketUrlToState(int index, String url) async* {
+    FMPurchase obj = state.productList[index];
+    FMPurchase newObj = FMPurchase(
+        purchaseID: obj.purchaseID,
+        requester: obj.requester,
+        receiver: obj.receiver,
+        requestDate: obj.requestDate,
+        receiveDate: obj.receiveDate,
+        productName: obj.productName,
+        amount: obj.amount,
+        price: obj.price,
+        marketUrl: url,
+        field: obj.field,
+        memo: obj.memo,
+        officeReply: obj.officeReply,
+        waitingState: obj.waitingState,
+        isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
+        isThereUpdates: obj.isThereUpdates
+    );
+
+    List<FMPurchase> plist = state.productList;
+    plist.removeAt(index);
+    plist.insert(index, newObj);
+
+    yield state.update(
+        productList: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapUpdateMemoToState(int index, String memo) async* {
+    FMPurchase obj = state.productList[index];
+    FMPurchase newObj = FMPurchase(
+        purchaseID: obj.purchaseID,
+        requester: obj.requester,
+        receiver: obj.receiver,
+        requestDate: obj.requestDate,
+        receiveDate: obj.receiveDate,
+        productName: obj.productName,
+        amount: obj.amount,
+        price: obj.price,
+        marketUrl: obj.marketUrl,
+        field: obj.field,
+        memo: memo,
+        officeReply: obj.officeReply,
+        waitingState: obj.waitingState,
+        isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
+        isThereUpdates: obj.isThereUpdates
+    );
+
+    List<FMPurchase> plist = state.productList;
+    plist.removeAt(index);
+    plist.insert(index, newObj);
+
+    yield state.update(
+        productList: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapSetAdditionalProductToState() async* {
+    FMPurchase product = FMPurchase(
+      purchaseID: '',
+      requester: UserUtil.getUser().name,
+      receiver: '', // field worker name
+      requestDate: state.curr,
+      receiveDate: null,
+      productName: '',
+      amount: '',
+      price: '',
+      marketUrl: '',
+      field: null,
+      memo: '',
+      officeReply: '',
+      waitingState: 1, // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
+      isFieldSelectionButtonClicked: false,
+      isThereUpdates: true,
+    );
+
+    List<FMPurchase> plist = state.productList;
+    plist.add(product);
+
+    yield state.update(
+        productList: plist,
+    );
+  }
 }
