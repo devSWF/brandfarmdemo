@@ -585,6 +585,8 @@ class _ConfirmState extends State<Confirm> {
                             onPressed: () {
                               _fmPlanBloc.add(PostNewPlan());
                               _fmPlanBloc.add(CheckConfirmState(confirmState: false));
+                              _fmPlanBloc.add(GetShortDetailList());
+                              _fmPlanBloc.add(GetSortedDetailList());
                               Navigator.pop(context);
                               Navigator.pop(context);
                             },

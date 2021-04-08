@@ -185,16 +185,19 @@ class _PlanState extends State<Plan> {
                                     children: [
                                       Row(
                                         children: [
-                                          Text(
-                                            '${state.sortedList[state.selectedIndex][field][index].content} (${DateFormat('M/d').format(sDate)} ~ ${DateFormat('M/d').format(eDate)})',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2
-                                                .copyWith(
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Util().getColorByIndex(
-                                                      index: field),
-                                                ),
+                                          Container(
+                                            width: 195,
+                                            child: Text(
+                                              '${state.sortedList[state.selectedIndex][field][index].content} (${DateFormat('M/d').format(sDate)} ~ ${DateFormat('M/d').format(eDate)})',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Util().getColorByIndex(
+                                                        index: field),
+                                                  ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -209,15 +212,18 @@ class _PlanState extends State<Plan> {
                           children: [
                             Row(
                               children: [
-                                Text(
-                                  '${state.sortedList[state.selectedIndex][field][index].content} (${DateFormat('M/d').format(sDate)} ~ ${DateFormat('M/d').format(eDate)})',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      .copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: Util().getColorByIndex(
-                                        index: field),
+                                Container(
+                                  width: 195,
+                                  child: Text(
+                                    '${state.sortedList[state.selectedIndex][field][index].content} (${DateFormat('M/d').format(sDate)} ~ ${DateFormat('M/d').format(eDate)})',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2
+                                        .copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: Util().getColorByIndex(
+                                          index: field),
+                                    ),
                                   ),
                                 ),
                               ],
