@@ -1,90 +1,79 @@
-
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_material_model.dart';
+import 'package:BrandFarm/models/field_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
 class FMPurchase {
-  final String uid;
-  final Timestamp postedDate;
-  final String materialName;
-  final String amount;
-  final String state;
-  final Timestamp materialReceivedDate;
+  final String purchaseID;
   final String requester;
   final String receiver;
-  final List<FMPurchaseMaterial> material;
-  final String purchaseID;
+  final Timestamp requestDate;
+  final Timestamp receiveDate;
+  final String productName;
+  final String amount;
+  final String price;
+  final String marketUrl;
+  final Field field;
+  final String memo;
+  final String officeReply;
+  final int waitingState;
+  final bool isFieldSelectionButtonClicked;
+  final bool isThereUpdates;
 
   FMPurchase({
-    @required this.uid,
-    @required this.postedDate,
-    @required this.materialName,
-    @required this.amount,
-    @required this.state,
-    @required this.materialReceivedDate,
+    @required this.purchaseID,
     @required this.requester,
     @required this.receiver,
-    @required this.material,
-    @required this.purchaseID,
+    @required this.requestDate,
+    @required this.receiveDate,
+    @required this.productName,
+    @required this.amount,
+    @required this.price,
+    @required this.marketUrl,
+    @required this.field,
+    @required this.memo,
+    @required this.officeReply,
+    @required this.waitingState,
+    @required this.isFieldSelectionButtonClicked,
+    @required this.isThereUpdates,
   });
 
-  factory FMPurchase.empty(){
+  factory FMPurchase.fromSnapshot(DocumentSnapshot ds) {
     return FMPurchase(
-      uid: '',
-      postedDate: Timestamp.now(),
-      materialName: '',
-      amount: '',
-      state: '',
-      materialReceivedDate: Timestamp.now(),
-      requester: '',
-      receiver: '',
-      material: [],
-      purchaseID: '',
-    );
-  }
-
-  factory FMPurchase.fromDs(DocumentSnapshot ds) {
-    return FMPurchase(
-      uid: ds['uid'],
-      postedDate: ds['postedDate'],
-      materialName: ds['materialName'],
-      amount: ds['amount'],
-      state: ds['state'],
-      materialReceivedDate: ds['materialReceivedDate'],
+      purchaseID: ds['purchaseID'],
       requester: ds['requester'],
       receiver: ds['receiver'],
-      material: ds['material'] == null
-          ? null
-          : ds["material"]
-          .map((dynamic item) {
-        return FMPurchaseMaterial.fromDs(item);
-      })
-          .cast<FMPurchaseMaterial>()
-          .toList(),
-      purchaseID: ds['purchaseID'],
+      requestDate: ds['requestDate'],
+      receiveDate: ds['receiveDate'],
+      productName: ds['productName'],
+      amount: ds['amount'],
+      price: ds['price'],
+      marketUrl: ds['marketUrl'],
+      field: ds['field'],
+      memo: ds['memo'],
+      officeReply: ds['officeReply'],
+      waitingState: ds['waitingState'],
+      isFieldSelectionButtonClicked: ds['isFieldSelectionButtonClicked'],
+      isThereUpdates: ds['isThereUpdates'],
     );
   }
 
-  Map<String, dynamic> toMap() {
-    List<Map<String, dynamic>> material = [];
-
-    if (this.material != null) {
-      material = this.material.map((FMPurchaseMaterial material) {
-        return material.toMap();
-      }).toList();
-    }
-
+  Map<String, Object> toDocument() {
     return {
-      'uid' : this.uid,
-      'postedDate' : this.postedDate,
-      'materialName' : this.materialName,
-      'amount' : this.amount,
-      'state' : this.state,
-      'materialReceivedDate' : this.materialReceivedDate,
-      'requester' : this.requester,
-      'receiver' : this.receiver,
-      'material': this.material == null ? null : material,
-      'purchaseID': this.purchaseID,
+      'planID': purchaseID,
+      'requester': requester,
+      'receiver': receiver,
+      'requestDate': requestDate,
+      'receiveDate': receiveDate,
+      'productName': productName,
+      'amount': amount,
+      'price': price,
+      'marketUrl': marketUrl,
+      'field': field,
+      'memo': memo,
+      'officeReply': officeReply,
+      'waitingState': waitingState,
+      'isFieldSelectionButtonClicked': isFieldSelectionButtonClicked,
+      'isThereUpdates': isThereUpdates,
     };
   }
 }
