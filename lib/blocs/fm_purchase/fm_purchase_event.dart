@@ -144,3 +144,24 @@ class UpdateMemo extends FMPurchaseEvent {
 }
 
 class SetAdditionalProduct extends FMPurchaseEvent {}
+
+class CompletePurchase extends FMPurchaseEvent {}
+
+class GetPurchaseList extends FMPurchaseEvent {}
+
+class SetListOrder extends FMPurchaseEvent {
+  final int columnIndex;
+
+  const SetListOrder({
+    @required this.columnIndex,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''SetListOrder { 
+    columnIndex : $columnIndex,
+  }''';
+}
+

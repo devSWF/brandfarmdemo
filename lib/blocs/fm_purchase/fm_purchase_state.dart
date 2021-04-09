@@ -13,6 +13,9 @@ class FMPurchaseState {
   List<Field> fieldList;
   Field field;
   List<FMPurchase> productList;
+  List<FMPurchase> productListFromDB;
+  int currentSortColumn;
+  bool isAscending;
 
   FMPurchaseState({
     @required this.isLoading,
@@ -21,6 +24,9 @@ class FMPurchaseState {
     @required this.fieldList,
     @required this.field,
     @required this.productList,
+    @required this.productListFromDB,
+    @required this.currentSortColumn,
+    @required this.isAscending,
   });
 
   factory FMPurchaseState.empty() {
@@ -39,6 +45,9 @@ class FMPurchaseState {
           province: '',
           name: ''),
       productList: [],
+      productListFromDB: [],
+      currentSortColumn: 0,
+      isAscending: true,
     );
   }
 
@@ -49,6 +58,9 @@ class FMPurchaseState {
     List<Field> fieldList,
     Field field,
     List<FMPurchase> productList,
+    List<FMPurchase> productListFromDB,
+    int currentSortColumn,
+    bool isAscending,
   }) {
     return FMPurchaseState(
       isLoading: isLoading ?? this.isLoading,
@@ -57,6 +69,9 @@ class FMPurchaseState {
       fieldList: fieldList ?? this.fieldList,
       field: field ?? this.field,
       productList: productList ?? this.productList,
+      productListFromDB: productListFromDB ?? this.productListFromDB,
+      currentSortColumn: currentSortColumn ?? this.currentSortColumn,
+      isAscending: isAscending ?? this.isAscending,
     );
   }
 
@@ -67,6 +82,9 @@ class FMPurchaseState {
     List<Field> fieldList,
     Field field,
     List<FMPurchase> productList,
+    List<FMPurchase> productListFromDB,
+    int currentSortColumn,
+    bool isAscending,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -75,6 +93,9 @@ class FMPurchaseState {
       fieldList: fieldList,
       field: field,
       productList: productList,
+      productListFromDB: productListFromDB,
+      currentSortColumn: currentSortColumn,
+      isAscending: isAscending,
     );
   }
 
@@ -87,6 +108,9 @@ class FMPurchaseState {
     fieldList: ${fieldList.length},
     field: ${field},
     productList: ${productList.length},
+    productListFromDB: ${productListFromDB.length},
+    currentSortColumn: ${currentSortColumn},
+    isAscending: ${isAscending},
     }
     ''';
   }

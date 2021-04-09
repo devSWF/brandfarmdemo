@@ -1,8 +1,12 @@
+import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
+import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
+import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_detail_screen.dart';
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class FMPurchaseScreen extends StatefulWidget {
   @override
@@ -10,6 +14,8 @@ class FMPurchaseScreen extends StatefulWidget {
 }
 
 class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
+  FMPurchaseBloc _fmPurchaseBloc;
+
   // for testing
   List<ForTest> forTesting = List.generate(
       10,
@@ -32,125 +38,166 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
   @override
   void initState() {
     super.initState();
+    _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+    _fmPurchaseBloc.add(LoadFMPurchase());
+    _fmPurchaseBloc.add(GetPurchaseList());
     _searchController = TextEditingController();
     _searchNode = FocusNode();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFEEEEEE),
-      body: GestureDetector(
-        onTap: () {
-          _searchController.clear();
-          _searchNode.unfocus();
-        },
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 18, 24, 18),
-            child: Container(
-              width: 814,
-              color: Colors.white,
-              padding: const EdgeInsets.fromLTRB(32, 31, 42, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    '구매목록',
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 25,
-                          color: Colors.black,
-                        ),
-                  ),
-                  SizedBox(
-                    height: 26,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _searchType(),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      _searchBar(),
-                    ],
-                  ),
-                  FittedBox(
-                    child: DataTable(
-                      showCheckboxColumn: false,
-                      sortColumnIndex: _currentSortColumn,
-                      sortAscending: _isAscending,
-                      columns: [
-                        DataColumn(
-                            label: Row(
+    return BlocConsumer<FMPurchaseBloc, FMPurchaseState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return (!state.isLoading)
+            ? Scaffold(
+                backgroundColor: Color(0xFFEEEEEE),
+                body: GestureDetector(
+                  onTap: () {
+                    _searchController.clear();
+                    _searchNode.unfocus();
+                  },
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 18, 24, 18),
+                      child: Container(
+                        width: 814,
+                        color: Colors.white,
+                        padding: const EdgeInsets.fromLTRB(32, 31, 42, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              '구매목록',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 25,
+                                    color: Colors.black,
+                                  ),
+                            ),
+                            SizedBox(
+                              height: 26,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Text('신청일자'),
-                                (_isAscending)
-                                    ? Icon(
-                                        Icons.arrow_drop_up,
-                                        color: Colors.black,
-                                      )
-                                    : Icon(
-                                        Icons.arrow_drop_down,
-                                        color: Colors.black,
-                                      )
+                                _searchType(),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                _searchBar(),
                               ],
                             ),
-                            onSort: (columnIndex, _) {
-                              setState(() {
-                                _currentSortColumn = columnIndex;
-                                if (_isAscending == true) {
-                                  _isAscending = false;
-                                  // sort the product list in Ascending, order by Price
-                                  forTesting.sort((listA, listB) => listB
-                                      .requestDate
-                                      .compareTo(listA.requestDate));
-                                } else {
-                                  _isAscending = true;
-                                  // sort the product list in Descending, order by Price
-                                  forTesting.sort((listA, listB) => listA
-                                      .requestDate
-                                      .compareTo(listB.requestDate));
-                                }
-                              });
-                            }),
-                        DataColumn(label: Text('자재명')),
-                        DataColumn(label: Text('수량')),
-                        DataColumn(label: Text('상태')),
-                        DataColumn(label: Text('수령일자')),
-                        DataColumn(label: Text('신청자')),
-                        DataColumn(label: Text('주령인')),
-                      ],
-                      rows: List.generate(forTesting.length, (index) {
-                        return DataRow(
-                            cells: [
-                              DataCell(
-                                  Text('${forTesting[index].requestDate}')),
-                              DataCell(
-                                  Text('${forTesting[index].productName}')),
-                              DataCell(
-                                  Text('${forTesting[index].amountOfProduct}')),
-                              DataCell(
-                                  Text('${forTesting[index].waitingState}')),
-                              DataCell(
-                                  Text('${forTesting[index].receiveDate}')),
-                              DataCell(Text('${forTesting[index].requester}')),
-                              DataCell(Text('${forTesting[index].receiver}')),
-                            ],
-                            onSelectChanged: (value) async {
-                              await _showDetail();
-                            });
-                      }),
+                            FittedBox(
+                              child: DataTable(
+                                showCheckboxColumn: false,
+                                sortColumnIndex: state.currentSortColumn,
+                                sortAscending: state.isAscending,
+                                columns: [
+                                  DataColumn(
+                                      label: Row(
+                                        children: [
+                                          Text('신청일자'),
+                                          (state.isAscending)
+                                              ? Icon(
+                                                  Icons.arrow_drop_up,
+                                                  color: Colors.black,
+                                                )
+                                              : Icon(
+                                                  Icons.arrow_drop_down,
+                                                  color: Colors.black,
+                                                )
+                                        ],
+                                      ),
+                                      onSort: (columnIndex, _) {
+                                        _fmPurchaseBloc.add(SetListOrder(columnIndex: columnIndex));
+                                      }),
+                                  DataColumn(label: Text('자재명')),
+                                  DataColumn(label: Text('수량')),
+                                  DataColumn(label: Text('상태')),
+                                  DataColumn(label: Text('수령일자')),
+                                  DataColumn(label: Text('신청자')),
+                                  DataColumn(label: Text('수령인')),
+                                ],
+                                rows: List.generate(
+                                    state.productListFromDB.length, (index) {
+                                  String reqDate = DateFormat('yyyy-MM-dd')
+                                      .format(state
+                                          .productListFromDB[index].requestDate
+                                          .toDate());
+                                  String recDate = (state
+                                              .productListFromDB[index]
+                                              .receiveDate !=
+                                          null)
+                                      ? DateFormat('yyyy-MM-dd').format(state
+                                          .productListFromDB[index].receiveDate
+                                          .toDate())
+                                      : '--';
+                                  String rec = (state.productListFromDB[index]
+                                              .receiver.isNotEmpty ||
+                                          state.productListFromDB[index]
+                                                  .receiver !=
+                                              null)
+                                      ? state.productListFromDB[index].receiver
+                                      : '--';
+                                  return DataRow(
+                                      cells: [
+                                        DataCell(Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            (state.productListFromDB[index]
+                                                    .isThereUpdates)
+                                                ? Container(
+                                                    height: 6,
+                                                    width: 6,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  )
+                                                : Container(
+                                                    height: 6,
+                                                    width: 6,
+                                                    color: Colors.transparent,
+                                                  ),
+                                            SizedBox(
+                                              width: 14,
+                                            ),
+                                            Text('${reqDate}'),
+                                          ],
+                                        )),
+                                        DataCell(Text(
+                                            '${state.productListFromDB[index].productName}')),
+                                        DataCell(Text(
+                                            '${state.productListFromDB[index].amount}')),
+                                        DataCell(Text(
+                                            '${state.productListFromDB[index].waitingState}')),
+                                        DataCell(Text('${recDate}')),
+                                        DataCell(Text(
+                                            '${state.productListFromDB[index].requester}')),
+                                        DataCell(Text('${rec}')),
+                                      ],
+                                      onSelectChanged: (value) async {
+                                        await _showDetail();
+                                      });
+                                }),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+                ),
+              )
+            : LinearProgressIndicator();
+      },
     );
   }
 
@@ -160,8 +207,7 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return FMPurchaseDetailScreen();
-        }
-    );
+        });
   }
 
   Widget _searchType() {

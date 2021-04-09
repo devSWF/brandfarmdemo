@@ -66,43 +66,6 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
                             color: Colors.black,
                           ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        OutlinedButton(
-                          onPressed: () {
-                            _fmPurchaseBloc.add(SetAdditionalProduct());
-                          },
-                          style: OutlinedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            side: BorderSide(
-                              width: 1,
-                              color: Color(0xFF15B85B),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.add,
-                                color: Color(0xFF15B85B),
-                                size: 12,
-                              ),
-                              Text(
-                                '자재 추가하기',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(
-                                      color: Color(0xFF15B85B),
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
                     Column(
                       children: List.generate(state.productList.length ?? 1, (index) {
                         return Column(
@@ -136,6 +99,46 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
                           ],
                         );
                       }),
+                    ),
+                    SizedBox(
+                      height: 23,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            _fmPurchaseBloc.add(SetAdditionalProduct());
+                          },
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            side: BorderSide(
+                              width: 1,
+                              color: Color(0xFF15B85B),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add,
+                                color: Color(0xFF15B85B),
+                                size: 12,
+                              ),
+                              Text(
+                                '자재 추가하기',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .copyWith(
+                                  color: Color(0xFF15B85B),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 27,
@@ -409,8 +412,8 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
   }
 
   Widget _materialField(FMPurchaseState state, int index) {
-    String field = (state.productList[index].field != null)
-        ? state.productList[index].field.name
+    String field = (state.productList[index].fid != null)
+        ? state.fieldList[state.fieldList.indexWhere((element) => element.fid == state.productList[index].fid)].name
         : '필드선택';
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -550,7 +553,9 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: TextButton(
-        onPressed: () {},
+        onPressed: () async {
+          await _showCompleteDialog();
+        },
         child: Text(
           '등록',
           style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -561,4 +566,149 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
       ),
     );
   }
+
+  Future<void> _showCompleteDialog() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return BlocProvider.value(
+            value: _fmPurchaseBloc,
+            child: PurchaseComplete(),
+          );
+        });
+  }
 }
+
+class PurchaseComplete extends StatefulWidget {
+  @override
+  _PurchaseCompleteState createState() => _PurchaseCompleteState();
+}
+
+class _PurchaseCompleteState extends State<PurchaseComplete> {
+  FMPurchaseBloc _fmPurchaseBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<FMPurchaseBloc, FMPurchaseState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            content: Container(
+              height: 203,
+              width: 366,
+              padding: EdgeInsets.zero,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.close, color: Colors.black,),
+                              onPressed: (){
+                                Navigator.pop(context);
+                              }
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('구매사항 ',
+                                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                    color: Color(0xFF15B85B),
+                                  ),),
+                                Text('등록을 요청 하시겠습니까?',
+                                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                    color: Colors.black,
+                                  ),),
+                              ],
+                            ),
+                            SizedBox(height: 54,),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(right: 0, left: 0, bottom: 23, child: _button()),
+                ],
+              ),
+            ),
+          );
+      },
+    );
+  }
+
+  Widget _button() {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: 31,
+              width: 97,
+              padding: EdgeInsets.zero,
+              decoration: BoxDecoration(
+                color: Color(0xFFB5B5B5),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: TextButton(
+                  onPressed: (){
+                    Navigator.pop(context);
+                  },
+                  child: Text('취소',
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),),
+              ),
+            ),
+            SizedBox(width: 12,),
+            Container(
+              height: 31,
+              width: 97,
+              padding: EdgeInsets.zero,
+              decoration: BoxDecoration(
+                color: Color(0xFF15B85B),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: TextButton(
+                onPressed: (){
+                  _fmPurchaseBloc.add(LoadFMPurchase());
+                  _fmPurchaseBloc.add(CompletePurchase());
+                  Navigator.pop(context);
+                },
+                child: Text('확인',
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),),
+              ),
+            ),
+          ],
+        ),
+        // SizedBox(height: 10,),
+      ],
+    );
+  }
+}
+
