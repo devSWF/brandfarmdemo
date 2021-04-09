@@ -2,6 +2,7 @@
 
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -36,11 +37,24 @@ class FMPurchaseRepository {
     return fieldList;
   }
 
-  // Future<void> postNotification(NotificationNotice notice,) async {
-  //   DocumentReference reference =
-  //   _firestore.collection('Notification').doc(notice.notid);
-  //   await reference.set(notice.toDocument());
-  // }
+  Future<void> postPurchaseItem(FMPurchase pur,) async {
+    DocumentReference reference =
+    _firestore.collection('Purchase').doc(pur.purchaseID);
+    await reference.set(pur.toDocument());
+  }
+
+  Future<List<FMPurchase>> getPurchaseList(String farmID) async {
+    List<FMPurchase> plist = [];
+    QuerySnapshot item = await _firestore
+        .collection('Purchase')
+        .where('farmID', isEqualTo: farmID)
+        .get();
+    item.docs.forEach((ds) {
+      plist.add(FMPurchase.fromSnapshot(ds));
+    });
+
+    return plist;
+  }
 
 // Future<User> getDetailUserInfo(uid) async {
 //   User user;
@@ -80,21 +94,7 @@ class FMPurchaseRepository {
 //   DocumentReference reference = _firestore.collection('Issue').doc(obj.issid);
 //   await reference.update(obj.toMap());
 // }
-//
-// Future<List<ImagePicture>> getImage(Field field) async {
-//   List<ImagePicture> image = [];
-//   QuerySnapshot img = await _firestore
-//       .collection('Picture')
-//       .where('uid', isEqualTo: field.sfmid)
-//       .where('jid', isEqualTo: '--')
-//       .get();
-//   img.docs.forEach((ds) {
-//     image.add(ImagePicture.fromSnapshot(ds));
-//   });
-//
-//   return image;
-// }
-//
+
 // Future<List<Comment>> getComment(String issid) async {
 //   List<Comment> cmt = [];
 //   QuerySnapshot _cmt = await _firestore

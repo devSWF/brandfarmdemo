@@ -38,6 +38,12 @@ class FMPurchaseBloc
       yield* _mapUpdateMemoToState(event.index, event.memo);
     } else if (event is SetAdditionalProduct) {
       yield* _mapSetAdditionalProductToState();
+    } else if (event is CompletePurchase) {
+      yield* _mapCompletePurchaseToState();
+    } else if (event is GetPurchaseList) {
+      yield* _mapGetPurchaseListToState();
+    } else if (event is SetListOrder) {
+      yield* _mapSetListOrderToState(event.columnIndex);
     }
   }
 
@@ -78,6 +84,7 @@ class FMPurchaseBloc
     List<FMPurchase> pList = [];
     FMPurchase product = FMPurchase(
       purchaseID: '',
+      farmID: state.farm.farmID,
       requester: UserUtil.getUser().name,
       receiver: '', // field worker name
       requestDate: now,
@@ -86,7 +93,7 @@ class FMPurchaseBloc
       amount: '',
       price: '',
       marketUrl: '',
-      field: null,
+      fid: null,
       memo: '',
       officeReply: '',
       waitingState: 1, // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
@@ -105,6 +112,7 @@ class FMPurchaseBloc
     FMPurchase obj = state.productList[index];
     FMPurchase newObj = FMPurchase(
         purchaseID: obj.purchaseID,
+        farmID: obj.farmID,
         requester: obj.requester,
         receiver: obj.receiver,
         requestDate: obj.requestDate,
@@ -113,7 +121,7 @@ class FMPurchaseBloc
         amount: obj.amount,
         price: obj.price,
         marketUrl: obj.marketUrl,
-        field: obj.field,
+        fid: obj.fid,
         memo: obj.memo,
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
@@ -134,6 +142,7 @@ class FMPurchaseBloc
     FMPurchase obj = state.productList[index];
     FMPurchase newObj = FMPurchase(
         purchaseID: obj.purchaseID,
+        farmID: obj.farmID,
         requester: obj.requester,
         receiver: obj.receiver,
         requestDate: obj.requestDate,
@@ -142,7 +151,7 @@ class FMPurchaseBloc
         amount: obj.amount,
         price: obj.price,
         marketUrl: obj.marketUrl,
-        field: state.fieldList[field],
+        fid: state.fieldList[field].fid,
         memo: obj.memo,
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
@@ -163,6 +172,7 @@ class FMPurchaseBloc
     FMPurchase obj = state.productList[index];
     FMPurchase newObj = FMPurchase(
         purchaseID: obj.purchaseID,
+        farmID: obj.farmID,
         requester: obj.requester,
         receiver: obj.receiver,
         requestDate: obj.requestDate,
@@ -171,7 +181,7 @@ class FMPurchaseBloc
         amount: obj.amount,
         price: obj.price,
         marketUrl: obj.marketUrl,
-        field: obj.field,
+        fid: obj.fid,
         memo: obj.memo,
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
@@ -192,6 +202,7 @@ class FMPurchaseBloc
     FMPurchase obj = state.productList[index];
     FMPurchase newObj = FMPurchase(
         purchaseID: obj.purchaseID,
+        farmID: obj.farmID,
         requester: obj.requester,
         receiver: obj.receiver,
         requestDate: obj.requestDate,
@@ -200,7 +211,7 @@ class FMPurchaseBloc
         amount: amount,
         price: obj.price,
         marketUrl: obj.marketUrl,
-        field: obj.field,
+        fid: obj.fid,
         memo: obj.memo,
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
@@ -221,6 +232,7 @@ class FMPurchaseBloc
     FMPurchase obj = state.productList[index];
     FMPurchase newObj = FMPurchase(
         purchaseID: obj.purchaseID,
+        farmID: obj.farmID,
         requester: obj.requester,
         receiver: obj.receiver,
         requestDate: obj.requestDate,
@@ -229,7 +241,7 @@ class FMPurchaseBloc
         amount: obj.amount,
         price: price,
         marketUrl: obj.marketUrl,
-        field: obj.field,
+        fid: obj.fid,
         memo: obj.memo,
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
@@ -250,6 +262,7 @@ class FMPurchaseBloc
     FMPurchase obj = state.productList[index];
     FMPurchase newObj = FMPurchase(
         purchaseID: obj.purchaseID,
+        farmID: obj.farmID,
         requester: obj.requester,
         receiver: obj.receiver,
         requestDate: obj.requestDate,
@@ -258,7 +271,7 @@ class FMPurchaseBloc
         amount: obj.amount,
         price: obj.price,
         marketUrl: url,
-        field: obj.field,
+        fid: obj.fid,
         memo: obj.memo,
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
@@ -279,6 +292,7 @@ class FMPurchaseBloc
     FMPurchase obj = state.productList[index];
     FMPurchase newObj = FMPurchase(
         purchaseID: obj.purchaseID,
+        farmID: obj.farmID,
         requester: obj.requester,
         receiver: obj.receiver,
         requestDate: obj.requestDate,
@@ -287,7 +301,7 @@ class FMPurchaseBloc
         amount: obj.amount,
         price: obj.price,
         marketUrl: obj.marketUrl,
-        field: obj.field,
+        fid: obj.fid,
         memo: memo,
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
@@ -307,6 +321,7 @@ class FMPurchaseBloc
   Stream<FMPurchaseState> _mapSetAdditionalProductToState() async* {
     FMPurchase product = FMPurchase(
       purchaseID: '',
+      farmID: state.farm.farmID,
       requester: UserUtil.getUser().name,
       receiver: '', // field worker name
       requestDate: state.curr,
@@ -315,7 +330,7 @@ class FMPurchaseBloc
       amount: '',
       price: '',
       marketUrl: '',
-      field: null,
+      fid: null,
       memo: '',
       officeReply: '',
       waitingState: 1, // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
@@ -328,6 +343,96 @@ class FMPurchaseBloc
 
     yield state.update(
         productList: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapCompletePurchaseToState() async* {
+    // upload to firebase
+    List<FMPurchase> plist = state.productList;
+    String purchaseID = '';
+    await Future.forEach(plist, (item) {
+      purchaseID = FirebaseFirestore.instance.collection('Purchase').doc().id;
+      FMPurchase newObj = FMPurchase(
+          purchaseID: purchaseID,
+          farmID: item.farmID,
+          requester: item.requester,
+          receiver: item.receiver,
+          requestDate: item.requestDate,
+          receiveDate: item.receiveDate,
+          productName: item.productName,
+          amount: item.amount,
+          price: item.price,
+          marketUrl: item.marketUrl,
+          fid: item.fid,
+          memo: item.memo,
+          officeReply: item.officeReply,
+          waitingState: item.waitingState,
+          isFieldSelectionButtonClicked: item.isFieldSelectionButtonClicked,
+          isThereUpdates: item.isThereUpdates
+      );
+      FMPurchaseRepository().postPurchaseItem(newObj);
+    });
+
+    List<FMPurchase> pList = [];
+    FMPurchase product = FMPurchase(
+      purchaseID: '',
+      farmID: state.farm.farmID,
+      requester: UserUtil.getUser().name,
+      receiver: '', // field worker name
+      requestDate: state.curr,
+      receiveDate: null,
+      productName: '',
+      amount: '',
+      price: '',
+      marketUrl: '',
+      fid: null,
+      memo: '',
+      officeReply: '',
+      waitingState: 1, // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
+      isFieldSelectionButtonClicked: false,
+      isThereUpdates: true,
+    );
+    pList.insert(0, product);
+
+    yield state.update(
+      productList: pList,
+      isLoading: false,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapGetPurchaseListToState() async* {
+    // get purchase list from firebase
+    List<FMPurchase> plist = [];
+    plist = await FMPurchaseRepository().getPurchaseList(state.farm.farmID);
+
+    yield state.update(
+      productListFromDB: plist,
+      isLoading: false,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapSetListOrderToState(int columnIndex) async* {
+    // get purchase list from firebase
+    List<FMPurchase> plist = state.productListFromDB;
+    bool isAscending;
+    if (state.isAscending == true) {
+      isAscending = false;
+      // sort the product list in Ascending, order by Price
+      plist.sort((listA, listB) =>
+          listB.requestDate.compareTo(
+              listA.requestDate));
+    } else {
+      isAscending = true;
+      // sort the product list in Descending, order by Price
+      plist.sort((listA, listB) =>
+          listA.requestDate.compareTo(
+              listB.requestDate));
+    }
+
+    yield state.update(
+      currentSortColumn: columnIndex,
+      isAscending: isAscending,
+      productListFromDB: plist,
     );
   }
 }

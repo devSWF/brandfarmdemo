@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 
 class FMPurchase {
   final String purchaseID;
+  final String farmID;
   final String requester;
   final String receiver;
   final Timestamp requestDate;
@@ -12,7 +13,7 @@ class FMPurchase {
   final String amount;
   final String price;
   final String marketUrl;
-  final Field field;
+  final String fid;
   final String memo;
   final String officeReply;
   final int waitingState;
@@ -21,6 +22,7 @@ class FMPurchase {
 
   FMPurchase({
     @required this.purchaseID,
+    @required this.farmID,
     @required this.requester,
     @required this.receiver,
     @required this.requestDate,
@@ -29,7 +31,7 @@ class FMPurchase {
     @required this.amount,
     @required this.price,
     @required this.marketUrl,
-    @required this.field,
+    @required this.fid,
     @required this.memo,
     @required this.officeReply,
     @required this.waitingState,
@@ -39,27 +41,29 @@ class FMPurchase {
 
   factory FMPurchase.fromSnapshot(DocumentSnapshot ds) {
     return FMPurchase(
-      purchaseID: ds['purchaseID'],
-      requester: ds['requester'],
-      receiver: ds['receiver'],
-      requestDate: ds['requestDate'],
-      receiveDate: ds['receiveDate'],
-      productName: ds['productName'],
-      amount: ds['amount'],
-      price: ds['price'],
-      marketUrl: ds['marketUrl'],
-      field: ds['field'],
-      memo: ds['memo'],
-      officeReply: ds['officeReply'],
-      waitingState: ds['waitingState'],
-      isFieldSelectionButtonClicked: ds['isFieldSelectionButtonClicked'],
-      isThereUpdates: ds['isThereUpdates'],
+      purchaseID: ds.data()['purchaseID'],
+      farmID: ds.data()['farmID'],
+      requester: ds.data()['requester'],
+      receiver: ds.data()['receiver'],
+      requestDate: ds.data()['requestDate'],
+      receiveDate: ds.data()['receiveDate'],
+      productName: ds.data()['productName'],
+      amount: ds.data()['amount'],
+      price: ds.data()['price'],
+      marketUrl: ds.data()['marketUrl'],
+      fid: ds.data()['fid'],
+      memo: ds.data()['memo'],
+      officeReply: ds.data()['officeReply'],
+      waitingState: ds.data()['waitingState'],
+      isFieldSelectionButtonClicked: ds.data()['isFieldSelectionButtonClicked'],
+      isThereUpdates: ds.data()['isThereUpdates'],
     );
   }
 
   Map<String, Object> toDocument() {
     return {
       'planID': purchaseID,
+      'farmID': farmID,
       'requester': requester,
       'receiver': receiver,
       'requestDate': requestDate,
@@ -68,7 +72,7 @@ class FMPurchase {
       'amount': amount,
       'price': price,
       'marketUrl': marketUrl,
-      'field': field,
+      'fid': fid,
       'memo': memo,
       'officeReply': officeReply,
       'waitingState': waitingState,
