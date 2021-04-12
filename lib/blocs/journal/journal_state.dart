@@ -1,4 +1,3 @@
-
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 class JournalState {
   bool isLoading;
   bool isLoadingToGetMore;
+  bool isDetailLoading;
 
   List<Journal> orderByOldest;
   List<Journal> orderByRecent;
@@ -33,6 +33,7 @@ class JournalState {
     @required this.imageList,
     @required this.selectedJournal,
     @required this.selectedIssue,
+    @required this.isDetailLoading,
   });
 
   factory JournalState.empty() {
@@ -48,6 +49,7 @@ class JournalState {
       imageList: [],
       selectedJournal: Journal.empty(),
       selectedIssue: SubJournalIssue.empty(),
+      isDetailLoading: false,
     );
   }
 
@@ -63,6 +65,7 @@ class JournalState {
     List<ImagePicture> imageList,
     Journal selectedJournal,
     SubJournalIssue selectedIssue,
+    bool isDetailLoading,
   }) {
     return JournalState(
       isLoading: isLoading ?? this.isLoading,
@@ -71,11 +74,13 @@ class JournalState {
       orderByRecent: orderByRecent ?? this.orderByRecent,
       listBySelection: listBySelection ?? this.listBySelection,
       issueList: issueList ?? this.issueList,
-      issueListByCategorySelection: issueListByCategorySelection ?? this.issueListByCategorySelection,
+      issueListByCategorySelection:
+          issueListByCategorySelection ?? this.issueListByCategorySelection,
       reverseIssueList: reverseIssueList ?? this.reverseIssueList,
       imageList: imageList ?? this.imageList,
       selectedJournal: selectedJournal ?? this.selectedJournal,
       selectedIssue: selectedIssue ?? this.selectedIssue,
+      isDetailLoading: isDetailLoading ?? this.isDetailLoading,
     );
   }
 
@@ -91,6 +96,7 @@ class JournalState {
     List<ImagePicture> imageList,
     Journal selectedJournal,
     SubJournalIssue selectedIssue,
+    bool isDetailLoading,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -104,6 +110,7 @@ class JournalState {
       imageList: imageList,
       selectedIssue: selectedIssue,
       selectedJournal: selectedJournal,
+      isDetailLoading: isDetailLoading,
     );
   }
 
@@ -112,6 +119,7 @@ class JournalState {
     return '''JournalState{
     isLoading: $isLoading,
     isLoadingToGetMore: $isLoadingToGetMore,
+    isDetailLoading: $isDetailLoading,
     orderByOldest: ${orderByOldest.length},
     orderByRecent: ${orderByRecent.length},
     listBySelection: ${listBySelection.length},

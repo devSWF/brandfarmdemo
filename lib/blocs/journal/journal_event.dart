@@ -14,6 +14,9 @@ class LoadJournal extends JournalEvent {}
 
 class GetInitialList extends JournalEvent {}
 
+class LoadJournalDetail extends JournalEvent{}
+
+class JournalDetailLoaded extends JournalEvent{}
 
 class GetListBySelectedDate extends JournalEvent {
   final String year;
@@ -117,7 +120,7 @@ class AddJournalComment extends JournalEvent {
 class PassSelectedJournal extends JournalEvent{
   final Journal journal;
   const PassSelectedJournal({
-    @required this.journal,
+    this.journal,
   });
   @override
   String toString() {

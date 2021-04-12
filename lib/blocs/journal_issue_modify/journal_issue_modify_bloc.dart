@@ -32,7 +32,7 @@ class JournalIssueModifyBloc
       yield* _mapPressCompleteToState();
     } else if (event is DeleteImageFile) {
       yield* _mapDeleteImageFileToState(removedFile: event.removedFile);
-    } else if (event is UpdateJournal) {
+    } else if (event is UpdateIssue) {
       yield* _mapUpdateJournalToState(
         fid: event.fid,
         sfmid: event.sfmid,
@@ -45,6 +45,7 @@ class JournalIssueModifyBloc
         comments: event.comments,
         isReadByOffice: event.isReadByOffice,
         isReadByFM: event.isReadByFM,
+        selectedDate: event.selectedDate,
       );
     } else if (event is GetImageList) {
       yield* _mapGetImageListToState(
@@ -52,6 +53,8 @@ class JournalIssueModifyBloc
       );
     } else if (event is DeleteExistingImage) {
       yield* _mapDeleteExistingImageToState(obj: event.obj);
+    } else if (event is DateSelected) {
+      yield* _mapDateSelectedToState(event.selectedDate);
     }
   }
 
@@ -118,7 +121,9 @@ class JournalIssueModifyBloc
         String contents,
         int comments,
         bool isReadByFM,
-        bool isReadByOffice}) async* {
+        bool isReadByOffice,
+        Timestamp selectedDate,
+      }) async* {
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -130,7 +135,7 @@ class JournalIssueModifyBloc
     }
 
     SubJournalIssue subJournalIssue = SubJournalIssue(
-      date: Timestamp.now(),
+      date: selectedDate,
       fid: fid ?? await FieldUtil.getField().fid,
       sfmid: sfmid ?? '--',
       issid: issid ?? '--',
@@ -193,19 +198,26 @@ class JournalIssueModifyBloc
 
   Stream<JournalIssueModifyState> _mapDeleteExistingImageToState({ImagePicture obj}) async* {
     List<ImagePicture> img = [];
+    List<ImagePicture> existingImageList = state.existingImageList;
     img = state.deletedFromExistingImageList;
+
 
     // delete from bloc state list
     int index = state.existingImageList.indexWhere((element) => element.pid == obj.pid);
     if(img.isNotEmpty) {
       img.add(state.existingImageList[index]);
     } else {
-      img.removeAt(0);
-      img.insert(index, state.existingImageList[index]);
+      img.add(state.existingImageList[index]);
+      existingImageList.removeAt(index);
     }
     
     yield state.update(
       deletedFromExistingImageList: img,
+      existingImageList: existingImageList,
     );
+  }
+
+  Stream<JournalIssueModifyState> _mapDateSelectedToState(Timestamp selectedDate) async*{
+    yield state.update(selectedDate: selectedDate);
   }
 }

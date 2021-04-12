@@ -27,8 +27,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       yield* _mapContentChangedToState(event.content);
     } else if (event is CategoryChanged) {
       yield* _mapCategoryChangedToState(event.category);
-    } else if (event is CheckNewWriteChange) {
-      yield* _mapCheckNewWriteToState();
     } else if (event is AddImageFile) {
       yield* _mapAddImageFileToState(
           imageFile: event.imgFile, index: event.index, from: event.from);
@@ -41,38 +39,20 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     } else if (event is ChangeCategoryPressed) {
       yield* _mapChangeCategoryToState();
     } else if (event is JournalInitialized) {
-      yield* _mapJournalInitToState(
-          event.shipmentList,
-          event.fertilizeList,
-          event.pesticideList,
-          event.pestList,
-          event.plantingList,
-          event.seedingList,
-          event.weedingList,
-          event.wateringList,
-          event.workforceList,
-          event.farmingList,
-          event.widgetsList,
-          event.existJournal,
-      event.existImage);
-    } else if (event is CheckNewWriteChange) {
-      yield* _mapCheckNewWriteToState();
+      yield* _mapJournalInitToState(event.existJournal, event.existImage);
     } else if (event is WidgetListLoaded) {
       yield* _mapWidgetListLoadedToState(event.widgets);
     } else if (event is DeleteImageFile) {
       yield* _mapDeleteImageFileToState(removedFile: event.removedFile);
-    }
-    // else if (event is DeleteJournalButtonPressed) {
-    //   yield* _mapDeleteJournalBtnPressed(event.date);
-    // }
-    else if (event is DeleteJournalGrpPressed) {
+    } else if (event is DeleteJournalGrpPressed) {
       yield* _mapDeleteJournalGrpPressedToState();
-    }
-    else if (event is IsEditChanged) {
+    } else if (event is IsEditChanged) {
       yield* _mapIsEditChangedToState(event.isEdit);
-    }
-
-    else if (event is DeleteExistingImage){
+    } else if (event is ModifyLoading) {
+      yield* _mapModifyLoadingState();
+    } else if (event is ModifyLoaded) {
+      yield* _mapModifyLoadedToState();
+    } else if (event is DeleteExistingImage) {
       yield* _mapDeleteExistingImageToState(event.index);
     }
 
@@ -348,11 +328,9 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     ///completeBtn
     else if (event is UpdateJournal) {
       yield* _mapUpdateJournalState();
-    }
-    else if (event is AssetImageList) {
+    } else if (event is AssetImageList) {
       yield* _mapAssetImageListToState(event.assetImage);
-    }
-    else if (event is NewWriteCompleteChanged) {
+    } else if (event is NewWriteCompleteChanged) {
       yield* _mapNewWriteCompleteChangedToState();
     }
   }
@@ -380,6 +358,14 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
 
   Stream<JournalCreateState> _mapIsEditChangedToState(bool isEdit) async* {
     yield state.update(isEditDate: isEdit);
+  }
+
+  Stream<JournalCreateState> _mapModifyLoadingState() async* {
+    yield state.update(isModifyLoading: true);
+  }
+
+  Stream<JournalCreateState> _mapModifyLoadedToState() async* {
+    yield state.update(isModifyLoading: false);
   }
 
 //IsEditChanged
@@ -447,7 +433,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       journal: journal,
     );
 
-    if(state.removedImageList.isNotEmpty){
+    if (state.removedImageList.isNotEmpty) {
       await Future.forEach(state.removedImageList, (pic) async {
         await ImageRepository().deleteFromStorage(pic: pic);
         await ImageRepository().deleteFromDatabase(pic: pic);
@@ -460,16 +446,11 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
 
     if (imageList.isNotEmpty) {
       await Future.forEach(imageList, (File file) async {
-        pid = FirebaseFirestore.instance
-            .collection('Picture')
-            .doc()
-            .id;
+        pid = FirebaseFirestore.instance.collection('Picture').doc().id;
         ImagePicture _picture = ImagePicture(
           fid: '--',
           jid: state.existJournal.jid,
-          uid: UserUtil
-              .getUser()
-              .uid,
+          uid: UserUtil.getUser().uid,
           issid: '--',
           pid: pid,
           url: (await ImageRepository().uploadJournalImageFile(file, pid)),
@@ -488,24 +469,14 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     );
   }
 
-
   Stream<JournalCreateState> _mapNewWriteCompleteChangedToState() async* {
-    String jid = FirebaseFirestore.instance
-        .collection('Journal')
-        .doc()
-        .id;
-
+    String jid = FirebaseFirestore.instance.collection('Journal').doc().id;
 
     Journal journal = Journal(
-
       ///Todo: 여기 fid로 변경 해주
-      fid: UserUtil
-          .getUser()
-          .uid,
+      fid: UserUtil.getUser().uid,
       jid: state.jid.isNotEmpty ? state.jid : jid,
-      uid: UserUtil
-          .getUser()
-          .uid,
+      uid: UserUtil.getUser().uid,
       date: state.selectedDate,
       title: state.title,
       content: state.content,
@@ -534,16 +505,11 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
 
     if (imageList.isNotEmpty) {
       await Future.forEach(imageList, (File file) async {
-        pid = FirebaseFirestore.instance
-            .collection('Picture')
-            .doc()
-            .id;
+        pid = FirebaseFirestore.instance.collection('Picture').doc().id;
         ImagePicture _picture = ImagePicture(
           fid: '--',
           jid: jid,
-          uid: UserUtil
-              .getUser()
-              .uid,
+          uid: UserUtil.getUser().uid,
           issid: '--',
           pid: pid,
           url: (await ImageRepository().uploadJournalImageFile(file, pid)),
@@ -562,30 +528,29 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
   DocumentReference getJournalRef(String date) {
     return FirebaseFirestore.instance
         .collection('Journal')
-        .doc('$date&${UserUtil
-        .getUser()
-        .uid}');
+        .doc('$date&${UserUtil.getUser().uid}');
   }
 
   DocumentReference getJournalRecDateRef(String date) {
     return FirebaseFirestore.instance
         .collection('JournalRecodedDates')
-        .doc('${date.substring(0, 7)}&${UserUtil
-        .getUser()
-        .uid}');
+        .doc('${date.substring(0, 7)}&${UserUtil.getUser().uid}');
   }
 
-  Stream<JournalCreateState> _mapDeleteExistingImageToState(int index) async*{
+  Stream<JournalCreateState> _mapDeleteExistingImageToState(int index) async* {
     List<ImagePicture> bufferPictureList = state.existImageList;
     List<ImagePicture> removedPictureList = state.removedImageList;
 
     removedPictureList.add(bufferPictureList[index]);
     bufferPictureList.removeAt(index);
-    yield state.update(existImageList: bufferPictureList, removedImageList: removedPictureList);
+    yield state.update(
+        existImageList: bufferPictureList,
+        removedImageList: removedPictureList);
   }
 
   ///출하정보
-  Stream<JournalCreateState> _mapShipmentCompleteToState(String shipmentPlant,
+  Stream<JournalCreateState> _mapShipmentCompleteToState(
+      String shipmentPlant,
       String shipmentPath,
       double shipmentUnit,
       String shipmentUnitSelect,
@@ -621,7 +586,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
         widgetList: widgetList);
   }
 
-  Stream<JournalCreateState> _mapShipmentEditToState(String shipmentPlant,
+  Stream<JournalCreateState> _mapShipmentEditToState(
+      String shipmentPlant,
       String shipmentPath,
       double shipmentUnit,
       String shipmentUnitSelect,
@@ -698,8 +664,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     );
   }
 
-  Stream<JournalCreateState> _mapShipmentDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapShipmentDeleteToState(
+      int index, int listIndex) async* {
     List<Shipment> _list = state.shipmentList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -719,14 +685,15 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
 
   ///비료정보
   Stream<JournalCreateState> _mapFertilizerCompleteToState(
-      String fertilizerMethod,
-      double fertilizerArea,
-      String fertilizerAreaUnit,
-      String fertilizerMaterialName,
-      double fertilizerMaterialUse,
-      String fertilizerMaterialUnit,
-      double fertilizerWater,
-      String fertilizerWaterUnit,) async* {
+    String fertilizerMethod,
+    double fertilizerArea,
+    String fertilizerAreaUnit,
+    String fertilizerMaterialName,
+    double fertilizerMaterialUse,
+    String fertilizerMaterialUnit,
+    double fertilizerWater,
+    String fertilizerWaterUnit,
+  ) async* {
     Fertilize fertilize = Fertilize(
         fertilizerMethod: fertilizerMethod,
         fertilizerArea: fertilizerArea,
@@ -753,15 +720,17 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
         fertilizerList: _list, fertilizer: fertilize, widgets: widgets);
   }
 
-  Stream<JournalCreateState> _mapFertilizerEditToState(String fertilizerMethod,
-      double fertilizerArea,
-      String fertilizerAreaUnit,
-      String fertilizerMaterialName,
-      double fertilizerMaterialUse,
-      String fertilizerMaterialUnit,
-      double fertilizerWater,
-      String fertilizerWaterUnit,
-      int currentIndex,) async* {
+  Stream<JournalCreateState> _mapFertilizerEditToState(
+    String fertilizerMethod,
+    double fertilizerArea,
+    String fertilizerAreaUnit,
+    String fertilizerMaterialName,
+    double fertilizerMaterialUse,
+    String fertilizerMaterialUnit,
+    double fertilizerWater,
+    String fertilizerWaterUnit,
+    int currentIndex,
+  ) async* {
     Fertilize fertilize = Fertilize(
         fertilizerMethod: fertilizerMethod,
         fertilizerArea: fertilizerArea,
@@ -779,8 +748,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(fertilizerList: _list, fertilizer: fertilize);
   }
 
-  Stream<JournalCreateState> _mapFertilizerDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapFertilizerDeleteToState(
+      int index, int listIndex) async* {
     List<Fertilize> _list = state.fertilizerList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -915,7 +884,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
         pesticideList: _list, pesticide: pesticide, widgets: widgets);
   }
 
-  Stream<JournalCreateState> _mapPesticideEditToState(String pesticideMethod,
+  Stream<JournalCreateState> _mapPesticideEditToState(
+      String pesticideMethod,
       double pesticideArea,
       String pesticideAreaUnit,
       String pesticideMaterialName,
@@ -940,8 +910,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(pesticideList: _list, pesticide: pesticide);
   }
 
-  Stream<JournalCreateState> _mapPesticideDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapPesticideDeleteToState(
+      int index, int listIndex) async* {
     List<Pesticide> _list = state.pesticideList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -1055,9 +1025,11 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
   }
 
   ///병,해충 정보
-  Stream<JournalCreateState> _mapPestCompleteToState(String pestKind,
-      double spreadDegree,
-      String spreadDegreeUnit,) async* {
+  Stream<JournalCreateState> _mapPestCompleteToState(
+    String pestKind,
+    double spreadDegree,
+    String spreadDegreeUnit,
+  ) async* {
     Pest pest = Pest(
         pestKind: pestKind,
         spreadDegree: spreadDegree,
@@ -1076,10 +1048,12 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(pestList: _list, pest: pest, widgets: widgets);
   }
 
-  Stream<JournalCreateState> _mapPestEditToState(String pestKind,
-      double spreadDegree,
-      String spreadDegreeUnit,
-      int currentIndex,) async* {
+  Stream<JournalCreateState> _mapPestEditToState(
+    String pestKind,
+    double spreadDegree,
+    String spreadDegreeUnit,
+    int currentIndex,
+  ) async* {
     Pest pest = Pest(
         pestKind: pestKind,
         spreadDegree: spreadDegree,
@@ -1092,8 +1066,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(pestList: _list, pest: pest);
   }
 
-  Stream<JournalCreateState> _mapPestDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapPestDeleteToState(
+      int index, int listIndex) async* {
     List<Pest> _list = state.pestList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -1185,7 +1159,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
         plantingList: _list, planting: planting, widgets: widgets);
   }
 
-  Stream<JournalCreateState> _mapPlantingEditToState(double plantingArea,
+  Stream<JournalCreateState> _mapPlantingEditToState(
+      double plantingArea,
       String plantingAreaUnit,
       String plantingCount,
       int plantingPrice,
@@ -1210,8 +1185,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     );
   }
 
-  Stream<JournalCreateState> _mapPlantingDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapPlantingDeleteToState(
+      int index, int listIndex) async* {
     List<Planting> _list = state.plantingList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -1285,7 +1260,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
   }
 
   ///파종정보
-  Stream<JournalCreateState> _mapSeedingCompleteToState(double seedingArea,
+  Stream<JournalCreateState> _mapSeedingCompleteToState(
+      double seedingArea,
       String seedingAreaUnit,
       double seedingAmount,
       String seedingAmountUnit) async* {
@@ -1310,7 +1286,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(seedingList: _list, seeding: seeding, widgets: widgets);
   }
 
-  Stream<JournalCreateState> _mapSeedingEditToState(double seedingArea,
+  Stream<JournalCreateState> _mapSeedingEditToState(
+      double seedingArea,
       String seedingAreaUnit,
       double seedingAmount,
       String seedingAmountUnit,
@@ -1328,8 +1305,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(seedingList: _list, seeding: seeding);
   }
 
-  Stream<JournalCreateState> _mapSeedingDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapSeedingDeleteToState(
+      int index, int listIndex) async* {
     List<Seeding> _list = state.seedingList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -1407,8 +1384,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
   }
 
   ///제초정보
-  Stream<JournalCreateState> _mapWeedingCompleteToState(double weedingProgress,
-      String weedingUnit) async* {
+  Stream<JournalCreateState> _mapWeedingCompleteToState(
+      double weedingProgress, String weedingUnit) async* {
     Weeding weeding = Weeding(
         weedingProgress: weedingProgress,
         weedingUnit: weedingUnit,
@@ -1426,8 +1403,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(weedingList: _list, weeding: weeding, widgets: widgets);
   }
 
-  Stream<JournalCreateState> _mapWeedingEditToState(double weedingProgress,
-      String weedingUnit, int currentIndex) async* {
+  Stream<JournalCreateState> _mapWeedingEditToState(
+      double weedingProgress, String weedingUnit, int currentIndex) async* {
     Weeding weeding = Weeding(
         weedingProgress: weedingProgress,
         weedingUnit: weedingUnit,
@@ -1439,8 +1416,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(weedingList: _list, weeding: weeding);
   }
 
-  Stream<JournalCreateState> _mapWeedingDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapWeedingDeleteToState(
+      int index, int listIndex) async* {
     List<Weeding> _list = state.weedingList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -1503,7 +1480,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
   }
 
   ///관수정보
-  Stream<JournalCreateState> _mapWateringCompleteToState(double wateringArea,
+  Stream<JournalCreateState> _mapWateringCompleteToState(
+      double wateringArea,
       String wateringAreaUnit,
       double wateringAmount,
       String wateringAmountUnit) async* {
@@ -1529,7 +1507,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
         wateringList: _list, watering: watering, widgets: widgets);
   }
 
-  Stream<JournalCreateState> _mapWateringEditToState(double wateringArea,
+  Stream<JournalCreateState> _mapWateringEditToState(
+      double wateringArea,
       String wateringAreaUnit,
       double wateringAmount,
       String wateringAmountUnit,
@@ -1547,8 +1526,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(wateringList: _list, watering: watering);
   }
 
-  Stream<JournalCreateState> _mapWateringDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapWateringDeleteToState(
+      int index, int listIndex) async* {
     List<Watering> _list = state.wateringList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -1629,8 +1608,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
   }
 
   ///인력투입정보
-  Stream<JournalCreateState> _mapWorkforceCompleteToState(int workforceNum,
-      int workforcePrice) async* {
+  Stream<JournalCreateState> _mapWorkforceCompleteToState(
+      int workforceNum, int workforcePrice) async* {
     Workforce workforce = Workforce(
         workforceNum: workforceNum,
         workforcePrice: workforcePrice,
@@ -1649,8 +1628,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
         workforceList: _list, workforce: workforce, widgets: widgets);
   }
 
-  Stream<JournalCreateState> _mapWorkforceEditToState(int workforceNum,
-      int workforcePrice, int currentIndex) async* {
+  Stream<JournalCreateState> _mapWorkforceEditToState(
+      int workforceNum, int workforcePrice, int currentIndex) async* {
     Workforce workforce = Workforce(
         workforceNum: workforceNum,
         workforcePrice: workforcePrice,
@@ -1662,8 +1641,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(workforceList: _list, workforce: workforce);
   }
 
-  Stream<JournalCreateState> _mapWorkforceDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapWorkforceDeleteToState(
+      int index, int listIndex) async* {
     List<Workforce> _list = state.workforceList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -1725,7 +1704,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
   }
 
   ///경운정보
-  Stream<JournalCreateState> _mapFarmingCompleteToState(double farmingArea,
+  Stream<JournalCreateState> _mapFarmingCompleteToState(
+      double farmingArea,
       String farmingAreaUnit,
       String farmingMethod,
       String farmingMethodUnit) async* {
@@ -1748,7 +1728,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(farmingList: _list, farming: farming, widgets: widgets);
   }
 
-  Stream<JournalCreateState> _mapFarmingEditToState(double farmingArea,
+  Stream<JournalCreateState> _mapFarmingEditToState(
+      double farmingArea,
       String farmingAreaUnit,
       String farmingMethod,
       String farmingMethodUnit,
@@ -1766,8 +1747,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(farmingList: _list, farming: farming);
   }
 
-  Stream<JournalCreateState> _mapFarmingDeleteToState(int index,
-      int listIndex) async* {
+  Stream<JournalCreateState> _mapFarmingDeleteToState(
+      int index, int listIndex) async* {
     List<Farming> _list = state.farmingList;
     List<Widgets> _temp = state.widgets;
     List<String> _widgetList = state.widgetList;
@@ -2511,24 +2492,11 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
   Stream<JournalCreateState> _mapUnSelectDateTimePressedToState(
       DateTime picked) async* {
     DateTime pickedDate = picked;
-    if ((pickedDate.year == DateTime
-        .now()
-        .year) &&
-        (pickedDate.month == DateTime
-            .now()
-            .month) &&
-        (pickedDate.day == DateTime
-            .now()
-            .day)) {
+    if ((pickedDate.year == DateTime.now().year) &&
+        (pickedDate.month == DateTime.now().month) &&
+        (pickedDate.day == DateTime.now().day)) {
       pickedDate = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          0,
-          0,
-          0,
-          0,
-          0);
+          pickedDate.year, pickedDate.month, pickedDate.day, 0, 0, 0, 0, 0);
     }
     yield state.update(selectDatePressed: false, picked: pickedDate);
   }
@@ -2541,51 +2509,38 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     yield state.update(buttonSelected: true);
   }
 
-  Stream<JournalCreateState> _mapJournalInitToState(List<Shipment> shipmentList,
-      List<Fertilize> fertilizeList,
-      List<Pesticide> pesticideList,
-      List<Pest> pestList,
-      List<Planting> plantingList,
-      List<Seeding> seedingList,
-      List<Weeding> weedingList,
-      List<Watering> wateringList,
-      List<Workforce> workforceList,
-      List<Farming> farmingList,
-      List<String> widgetList,
-      Journal existJournal,
-      List<ImagePicture> existImage) async* {
+  Stream<JournalCreateState> _mapJournalInitToState(
+      Journal existJournal, List<ImagePicture> existImage) async* {
     List<Map<String, dynamic>> temp = journalCategory
         .where((Map<String, dynamic> category) =>
-    category["id"] == 0 ||
-        category["id"] == 1 ||
-        category["id"] == 2 ||
-        category["id"] == 3 ||
-        category["id"] == 4 ||
-        category["id"] == 5 ||
-        category["id"] == 6 ||
-        category["id"] == 7 ||
-        category["id"] == 8 ||
-        category["id"] == 9)
+            category["id"] == 0 ||
+            category["id"] == 1 ||
+            category["id"] == 2 ||
+            category["id"] == 3 ||
+            category["id"] == 4 ||
+            category["id"] == 5 ||
+            category["id"] == 6 ||
+            category["id"] == 7 ||
+            category["id"] == 8 ||
+            category["id"] == 9)
         .toList();
     yield state.update(
-        categories: temp,
-        shipmentList: shipmentList,
-        fertilizerList: fertilizeList,
-        pesticideList: pesticideList,
-        pestList: pestList,
-        plantingList: plantingList,
-        seedingList: seedingList,
-        weedingList: weedingList,
-        wateringList: wateringList,
-        workforceList: workforceList,
-        farmingList: farmingList,
-        widgetList: widgetList,
-        existJournal: existJournal,
-    existImageList: existImage);
-  }
-
-  Stream<JournalCreateState> _mapCheckNewWriteToState() async* {
-    yield state.update(isNewWrite: false);
+      categories: temp,
+      shipmentList: existJournal.shipment,
+      fertilizerList: existJournal.fertilize,
+      pesticideList: existJournal.pesticide,
+      pestList: existJournal.pest,
+      plantingList: existJournal.planting,
+      seedingList: existJournal.seeding,
+      weedingList: existJournal.weeding,
+      wateringList: existJournal.watering,
+      workforceList: existJournal.workforce,
+      farmingList: existJournal.farming,
+      widgetList: existJournal.widgetList,
+      existJournal: existJournal,
+      existImageList: existImage,
+      selectedDate: existJournal.date,
+    );
   }
 
   Stream<JournalCreateState> _mapWidgetListLoadedToState(

@@ -68,13 +68,12 @@ class _EditCategoryState extends State<EditCategory> {
                 Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 18.0),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text(
                 "완료",
                 style: Theme.of(context).textTheme.subtitle1,
               ),
               onPressed: () {
-                _journalCreateBloc.add(CheckNewWriteChange());
                 if (_category == "인력투입정보") {
                   _journalCreateBloc.add(WorkforceEdit(
                       workforceNum: _journalCreateBloc.state.workforceNum,

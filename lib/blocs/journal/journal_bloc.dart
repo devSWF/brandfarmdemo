@@ -20,6 +20,10 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
   Stream<JournalState> mapEventToState(JournalEvent event) async* {
     if (event is LoadJournal) {
       yield* _mapLoadJournalToState();
+    } else if (event is LoadJournalDetail) {
+      yield* _mapLoadJournalDetailToState();
+    } else if (event is JournalDetailLoaded) {
+      yield* _mapJournalDetailLoadedToState();
     } else if (event is GetInitialList) {
       yield* _mapGetInitialListToState();
     }else if (event is GetListBySelectedDate) {
@@ -52,6 +56,14 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
   Stream<JournalState> _mapLoadJournalToState() async* {
     yield state.update(isLoading: true);
+  }
+
+  Stream<JournalState> _mapLoadJournalDetailToState() async* {
+    yield state.update(isDetailLoading: true);
+  }
+
+  Stream<JournalState> _mapJournalDetailLoadedToState() async* {
+    yield state.update(isDetailLoading: false);
   }
 
   Stream<JournalState> _mapGetInitialListToState() async* {
@@ -264,6 +276,8 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       issid: issue[index1].issid,
       title: issue[index1].title,
       issueState: issue[index1].issueState,
+      isReadByFM: issue[index1].isReadByFM,
+      isReadByOffice: issue[index1].isReadByOffice,
     ));
 
     if (index1 != -1) {

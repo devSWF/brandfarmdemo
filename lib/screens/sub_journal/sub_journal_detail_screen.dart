@@ -20,16 +20,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class SubJournalDetailScreen extends StatefulWidget {
-  SubJournalDetailScreen({
-    Key key,
-    this.journal,
-    this.issueListOptions,
-    this.issueOrder,
-  }) : super(key: key);
-
-  final Journal journal;
-  final String issueListOptions;
-  final int issueOrder;
 
   @override
   _SubJournalDetailScreenState createState() => _SubJournalDetailScreenState();
@@ -39,9 +29,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   TextEditingController _textEditingController;
   ScrollController _scrollController;
   CommentBloc _commentBloc;
-  Journal journal;
   JournalBloc _journalBloc;
-  JournalCreateBloc _journalCreateBloc;
 
   //////////////////////////////////////////////////////////////////////////////
   double height;
@@ -61,12 +49,8 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   @override
   void initState() {
     super.initState();
-    journal = widget.journal;
     _journalBloc = BlocProvider.of<JournalBloc>(context);
     _commentBloc = BlocProvider.of<CommentBloc>(context);
-    _journalCreateBloc = BlocProvider.of<JournalCreateBloc>(context);
-    _commentBloc.add(LoadComment());
-    _commentBloc.add(GetComment(id: journal.jid, from: 'jid'));
     Future.delayed(Duration.zero, () {
       height = MediaQuery.of(context).size.height / 2;
       print(height);
@@ -131,11 +115,13 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<JournalBloc, JournalState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+
+      },
       builder: (context, state) {
         if (state.imageList.isNotEmpty) {
           _pic = state.imageList
-              .where((element) => element.jid == widget.journal.jid)
+              .where((element) => element.jid ==state.selectedJournal.jid)
               .toList();
         }
         return BlocBuilder<CommentBloc, CommentState>(
@@ -143,7 +129,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
             return (cstate.isLoading)
                 ? Loading()
                 : Scaffold(
-                    appBar: _appBar(context: context),
+                    appBar: _appBar(context: context, state: state),
                     body: Stack(
                       children: [
                         _journalBody(
@@ -158,7 +144,8 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                               _isVisible ? Alignment(0, 1) : Alignment(0, 1.5),
                           child: _writeComment(
                             context: context,
-                            state: cstate,
+                            commentState: cstate,
+                            state: state,
                           ),
                         ),
                       ],
@@ -169,7 +156,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     );
   }
 
-  Widget _appBar({BuildContext context}) {
+  Widget _appBar({BuildContext context, JournalState state}) {
     return AppBar(
       elevation: 1,
       leading: IconButton(
@@ -180,7 +167,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
       ),
       centerTitle: true,
       title: Text(
-        '${journal.title}',
+        '${state.selectedJournal.title}',
         style: TextStyle(
           fontWeight: FontWeight.normal,
           fontSize: 16,
@@ -190,48 +177,27 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
       actions: [
         TextButton(
           onPressed: () {
-            _journalCreateBloc
-                .add(WidgetListLoaded(widgets: journal.widgets));
-            _journalCreateBloc.add(CheckNewWriteChange());
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (BuildContext context) =>
                         MultiBlocProvider(
                           providers: [
-                            BlocProvider<JournalCreateBloc>.value(
-                              value: _journalCreateBloc,
+                            BlocProvider(
+                              create: (BuildContext context)=>
+                              JournalCreateBloc()..add(WidgetListLoaded(widgets: state.selectedJournal.widgets))
+                                ..add(JournalInitialized(
+                                existJournal: state.selectedJournal,
+                                existImage: _pic,
+                              ))..add(ModifyLoading()),
+                            ),
+                            BlocProvider.value(
+                              value: _journalBloc,
                             ),
                           ],
-                          child: SubJournalEditScreen(
-                              journal: Journal(
-                                fid: journal.fid,
-                                jid: journal.jid,
-                                date: journal.date,
-                                title: journal.title,
-                                content: journal.content,
-                                widgets: journal.widgets,
-                                widgetList: journal.widgetList,
-                                shipment: journal.shipment,
-                                fertilize: journal.fertilize,
-                                pesticide: journal.pesticide,
-                                pest: journal.pest,
-                                planting: journal.planting,
-                                seeding: journal.seeding,
-                                weeding: journal.weeding,
-                                watering: journal.watering,
-                                workforce: journal.workforce,
-                                farming: journal.farming,
-                                comments: journal.comments,
-                                uid: journal.uid,
-                              ),
-                              selectedImage: _pic,
-                              date: journal.date.toDate()),
-                        ))).then((value){
-                          setState(() {
-                            journal = value;
-                          });
-            });
+                          child: SubJournalEditScreen(),
+                        )
+                ));
           },
           child: Text(
             '편집',
@@ -320,7 +286,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
           SizedBox(
             height: 15,
           ),
-          _infoContainer(context: context),
+          _infoContainer(context: context,state: state),
           SizedBox(
             height: 31,
           ),
@@ -363,7 +329,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
           SizedBox(
             height: 12,
           ),
-          _record(context: context),
+          _record(context: context, state: state),
           SizedBox(
             height: 55,
           ),
@@ -397,14 +363,14 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
           child: Text(
-              '${DateFormat('yMMMMEEEEd', 'ko').format(widget.journal.date.toDate())}',
+              '${DateFormat('yMMMMEEEEd', 'ko').format(state.selectedJournal.date.toDate())}',
               style: Theme.of(context).textTheme.subtitle2.copyWith(
                   fontSize: 16.0, color: Theme.of(context).primaryColor))),
     );
   }
 
-  Widget _infoContainer({BuildContext context}) {
-    Journal selectedJournal = widget.journal;
+  Widget _infoContainer({BuildContext context, JournalState state}) {
+    Journal selectedJournal = state.selectedJournal;
     return ColumnBuilder(
         itemBuilder: (context, listIndex) {
           return Column(
@@ -647,7 +613,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     );
   }
 
-  Widget _record({BuildContext context}) {
+  Widget _record({BuildContext context, JournalState state}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Card(
@@ -658,7 +624,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
         child: Container(
           padding: EdgeInsets.fromLTRB(8, 11, 19, 11),
           child: Text(
-            widget.journal.content,
+            state.selectedJournal.content,
             style: TextStyle(
               fontSize: 16,
             ),
@@ -979,7 +945,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
     }
   }
 
-  Widget _writeComment({BuildContext context, CommentState state}) {
+  Widget _writeComment({BuildContext context, CommentState commentState, JournalState state}) {
     return Wrap(
       children: [
         (_isSubCommentClicked)
@@ -990,7 +956,7 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${state.comments[indx].name}님에게 답글 남기는 중. . .'),
+                    Text('${commentState.comments[indx].name}님에게 답글 남기는 중. . .'),
                     IconButton(
                       onPressed: () {
                         setState(() {
@@ -1055,27 +1021,27 @@ class _SubJournalDetailScreenState extends State<SubJournalDetailScreen> {
                               if (_isSubCommentClicked) {
                                 _commentBloc.add(AddSubComment(
                                   from: 'journal',
-                                  id: journal.jid,
+                                  id: state.selectedJournal.jid,
                                   comment: comment,
                                   cmtid: cmtid,
                                 ));
                               } else {
                                 _commentBloc.add(AddComment(
                                   from: 'journal',
-                                  id: journal.jid,
+                                  id: state.selectedJournal.jid,
                                   comment: comment,
                                 ));
                                 // setState(() {
                                 //   numOfComments += 1;
                                 // });
                                 _journalBloc.add(AddJournalComment(
-                                    id: journal.jid));
+                                    id: state.selectedJournal.jid));
                               }
                               setState(() {
                                 _isSubCommentClicked = false;
                               });
                               _commentBloc.add(LoadComment());
-                              _commentBloc.add(GetComment(id: journal.jid, from: 'jid'));
+                              _commentBloc.add(GetComment(id: state.selectedJournal.jid, from: 'jid'));
                               _textEditingController.clear();
                             },
                             child: Container(

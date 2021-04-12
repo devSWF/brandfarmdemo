@@ -1,6 +1,6 @@
+import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
-import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/screens/sub_journal/add/editCategory.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_input_activity_screen.dart';
 import 'package:BrandFarm/utils/column_builder.dart';
@@ -21,18 +21,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 class SubJournalEditScreen extends StatefulWidget {
-  const SubJournalEditScreen({this.journal, this.selectedImage, this.date});
-
-  final Journal journal;
-  final List<ImagePicture> selectedImage;
-  final DateTime date;
-
   @override
   _SubJournalEditScreenState createState() => _SubJournalEditScreenState();
 }
 
 class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
   JournalCreateBloc _journalCreateBloc;
+  JournalBloc _journalBloc;
   ScrollController _progressScrollController;
   FocusNode _focusNode;
   ScrollController _scrollController = ScrollController();
@@ -40,15 +35,14 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
   Color textFieldBorderColor;
   bool isFocus = false;
 
-  TextEditingController titleController = TextEditingController();
-  TextEditingController contentController = TextEditingController();
-
-  Journal _journal;
+  TextEditingController titleController;
+  TextEditingController contentController;
 
   @override
   void initState() {
     super.initState();
     _journalCreateBloc = BlocProvider.of<JournalCreateBloc>(context);
+    _journalBloc = BlocProvider.of<JournalBloc>(context);
     _progressScrollController = ScrollController(initialScrollOffset: 0.0);
     textFieldBorderColor = Color(0x4d000000);
     _focusNode = FocusNode()
@@ -64,32 +58,7 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
         }
         isFocus = !isFocus;
       });
-    _journal = widget.journal;
-    if (_journal == null) {
-      titleController = TextEditingController();
-      contentController = TextEditingController();
-    } else {
-      titleController = TextEditingController(text: _journal.title);
-      contentController = TextEditingController(text: _journal.content);
 
-      _journalCreateBloc.add(TitleChanged(title: _journal.title));
-      _journalCreateBloc.add(ContentChanged(content: _journal.content));
-    }
-    _journalCreateBloc.add(JournalInitialized(
-      shipmentList: _journal.shipment,
-      fertilizeList: _journal.fertilize,
-      pesticideList: _journal.pesticide,
-      pestList: _journal.pest,
-      plantingList: _journal.planting,
-      seedingList: _journal.seeding,
-      weedingList: _journal.weeding,
-      wateringList: _journal.watering,
-      workforceList: _journal.workforce,
-      farmingList: _journal.farming,
-      widgetsList: _journal.widgetList,
-      existJournal: _journal,
-      existImage: widget.selectedImage,
-    ));
   }
 
   @override
@@ -105,11 +74,17 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
                   curve: Curves.ease);
             });
           }
-          if(state.writeComplete==true){
+          if (state.writeComplete == true) {
+            _journalBloc.add(PassSelectedJournal(journal: state.bufferJournal));
             Navigator.pop(context);
-            Navigator.pop(context,
-              state.bufferJournal,
-            );
+            Navigator.pop(context);
+          }
+          if(state.isModifyLoading == true){
+            titleController = TextEditingController(text: _journalCreateBloc.state.existJournal.title);
+            contentController = TextEditingController(text: _journalCreateBloc.state.existJournal.content);
+            _journalCreateBloc.add(TitleChanged(title: _journalCreateBloc.state.existJournal.title));
+            _journalCreateBloc.add(ContentChanged(content: _journalCreateBloc.state.existJournal.content));
+            _journalCreateBloc.add(ModifyLoaded());
           }
         },
         child: BlocBuilder<JournalCreateBloc, JournalCreateState>(
@@ -124,7 +99,7 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
                   },
                 ),
                 title: Text(
-                  '성장일지 작성',
+                  '성장일지 수정',
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
                 centerTitle: true,
@@ -189,8 +164,8 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
                     ? null
                     : () {
                         // _journalCreateBloc.add(DailyJournal());
-                  LoadingDialog.onLoading(context);
-                  _journalCreateBloc.add(UpdateJournal());
+                        LoadingDialog.onLoading(context);
+                        _journalCreateBloc.add(UpdateJournal());
                       },
               ),
             );
@@ -315,8 +290,8 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
                           index: index,
                         )
                       : Container(
-                    width: defaultPadding,
-                  ),
+                          width: defaultPadding,
+                        ),
                   if (state.imageList.isEmpty && index == 0)
                     Row(
                       children:
