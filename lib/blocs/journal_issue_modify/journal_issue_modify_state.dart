@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
@@ -15,6 +16,8 @@ class JournalIssueModifyState {
 
   final bool isModifyLoading;
 
+  final Timestamp selectedDate;
+
   JournalIssueModifyState({
     @required this.title,
     @required this.imageList,
@@ -24,6 +27,7 @@ class JournalIssueModifyState {
     @required this.isComplete,
     @required this.isUploaded,
     @required this.isModifyLoading,
+    @required this.selectedDate,
   });
 
   factory JournalIssueModifyState.empty() {
@@ -36,6 +40,7 @@ class JournalIssueModifyState {
       isComplete: false,
       isUploaded: false,
       isModifyLoading: false,
+      selectedDate: null,
     );
   }
 
@@ -48,6 +53,7 @@ class JournalIssueModifyState {
     bool isComplete,
     bool isUploaded,
     bool isModifyLoading,
+    Timestamp selectedDate,
   }) {
     return JournalIssueModifyState(
       title: title ?? this.title,
@@ -58,6 +64,7 @@ class JournalIssueModifyState {
       isComplete: isComplete ?? this.isComplete,
       isUploaded: isUploaded ?? this.isUploaded,
       isModifyLoading: isModifyLoading ?? this.isModifyLoading,
+      selectedDate: selectedDate ?? this.selectedDate,
     );
   }
 
@@ -70,6 +77,7 @@ class JournalIssueModifyState {
     bool isComplete,
     bool isUploaded,
     bool isModifyLoading,
+    Timestamp selectedDate,
   }) {
     return copyWith(
       title: title,
@@ -80,6 +88,7 @@ class JournalIssueModifyState {
       isComplete: isComplete,
       isUploaded: isUploaded,
       isModifyLoading: isModifyLoading,
+      selectedDate: selectedDate,
     );
   }
 
@@ -94,6 +103,7 @@ class JournalIssueModifyState {
     isComplete: ${isComplete},
     isUploaded: ${isUploaded},
     isModifyLoading: $isModifyLoading,
+    selectedDate: $selectedDate,
    }''';
   }
 }

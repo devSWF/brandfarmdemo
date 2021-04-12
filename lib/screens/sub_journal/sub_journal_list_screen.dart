@@ -581,9 +581,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FlatButton(
-              padding: EdgeInsets.zero,
-              minWidth: 0,
+            TextButton(
               onPressed: () {
                 _showDatePicker(context: context);
               },
@@ -613,15 +611,17 @@ class _JournalListScreenState extends State<JournalListScreen> {
               height: 31,
               width: 86,
               child: (isDateSelected)
-                  ? OutlineButton(
+                  ? OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
                       onPressed: () {
                         setState(() {
                           isDateSelected = false;
                         });
                       },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
                       child: FittedBox(
                         child: Row(
                           children: [
@@ -636,13 +636,15 @@ class _JournalListScreenState extends State<JournalListScreen> {
                         ),
                       ),
                     )
-                  : OutlineButton(
+                  : OutlinedButton(
                       onPressed: () {
                         _settingModalBottomSheet(context: context);
                       },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
                       child: FittedBox(
                         child: Row(
                           children: [
@@ -678,9 +680,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FlatButton(
-              padding: EdgeInsets.zero,
-              minWidth: 0,
+            TextButton(
               onPressed: () {
                 _showCategory(context: context);
               },
@@ -701,13 +701,15 @@ class _JournalListScreenState extends State<JournalListScreen> {
             Container(
               height: 31,
               width: 86,
-              child: OutlineButton(
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
                 onPressed: () {
                   _settingModalBottomSheet2(context: context);
                 },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
                 child: FittedBox(
                   child: Row(
                     children: [
@@ -1276,8 +1278,10 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           value: _journalBloc,
                         ),
                         BlocProvider<CommentBloc>(
-                          create: (BuildContext context) =>
-                              CommentBloc()..add(LoadComment()),
+                          create: (BuildContext context) => CommentBloc()
+                            ..add(LoadComment())
+                            ..add(GetComment(
+                                id: list[index].issid, from: 'issid')),
                         ),
                       ],
                       child: SubJournalIssueDetailScreen(
@@ -1428,7 +1432,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
   }
 
   Widget _customListTile(
-      {int date, String week, List list, int index, List pic}) {
+      {int date, String week, List<Journal> list, int index, List pic}) {
     List<ImagePicture> _pic = [];
     if (pic.isNotEmpty) {
       _pic = pic.where((element) => element.jid == list[index].jid).toList();
@@ -1436,6 +1440,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
     return Container(
       child: InkWell(
         onTap: () {
+          _journalBloc.add(PassSelectedJournal(journal: list[index]));
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -1445,16 +1450,13 @@ class _JournalListScreenState extends State<JournalListScreen> {
                           value: _journalBloc,
                         ),
                         BlocProvider<CommentBloc>(
-                          create: (BuildContext context) => CommentBloc(),
+                          create: (BuildContext context) => CommentBloc()
+                            ..add(LoadComment())
+                            ..add(GetComment(id: list[index].jid, from: 'jid')),
                           // create: (BuildContext context) => CommentBloc()..add(LoadComment()),
                         ),
-                        BlocProvider<JournalCreateBloc>(
-                          create: (BuildContext context) => JournalCreateBloc(),
-                        )
                       ],
-                      child: SubJournalDetailScreen(
-                        journal: list[index],
-                      ),
+                      child: SubJournalDetailScreen(),
                     )),
           );
         },
@@ -2037,7 +2039,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      FlatButton(
+                      TextButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -2054,7 +2056,7 @@ class _JournalListScreenState extends State<JournalListScreen> {
                               fontSize: 16,
                             ),
                       ),
-                      FlatButton(
+                      TextButton(
                         onPressed: () {
                           _journalBloc.add(LoadJournal());
                           _journalBloc.add(GetListBySelectedDate(

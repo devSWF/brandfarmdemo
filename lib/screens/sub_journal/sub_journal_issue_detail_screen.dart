@@ -21,12 +21,10 @@ class SubJournalIssueDetailScreen extends StatefulWidget {
     Key key,
     this.issueListOptions,
     this.issueOrder,
-    this.issid,
   }) : super(key: key);
 
   final String issueListOptions;
   final int issueOrder;
-  final String issid;
 
   @override
   _SubJournalIssueDetailScreenState createState() =>
@@ -60,8 +58,6 @@ class _SubJournalIssueDetailScreenState
     super.initState();
     _journalBloc = BlocProvider.of<JournalBloc>(context);
     _commentBloc = BlocProvider.of<CommentBloc>(context);
-    _commentBloc.add(LoadComment());
-    _commentBloc.add(GetComment(id: widget.issid, from: 'issid'));
     Future.delayed(Duration.zero, () {
       height = MediaQuery.of(context).size.height / 2;
       print(height);
@@ -125,8 +121,10 @@ class _SubJournalIssueDetailScreenState
   Widget build(BuildContext context) {
     return BlocConsumer<JournalBloc, JournalState>(
       listener: (context, state) {},
+      cubit: _journalBloc,
       builder: (context, state) {
-        return BlocBuilder<CommentBloc, CommentState>(
+        return BlocConsumer<CommentBloc, CommentState>(
+          listener: (context, cstate) {},
           builder: (context, cstate) {
             return (cstate.isLoading)
                 ? Loading()
@@ -307,8 +305,8 @@ class _SubJournalIssueDetailScreenState
                         width: 11,
                       ),
                       DepartmentBadge(
-                          department:
-                              getIssueState(state: state.selectedIssue.issueState)),
+                          department: getIssueState(
+                              state: state.selectedIssue.issueState)),
                     ],
                   ),
                 ],
@@ -810,7 +808,8 @@ class _SubJournalIssueDetailScreenState
     }
   }
 
-  Widget _writeComment({BuildContext context, CommentState cstate, JournalState state}) {
+  Widget _writeComment(
+      {BuildContext context, CommentState cstate, JournalState state}) {
     return Wrap(
       children: [
         (_isSubCommentClicked)
@@ -897,15 +896,16 @@ class _SubJournalIssueDetailScreenState
                                   comment: comment,
                                 ));
                                 _journalBloc.add(AddIssueComment(
-                                    id: state.selectedIssue.issid,
-                                    ));
+                                  id: state.selectedIssue.issid,
+                                ));
                               }
                               setState(() {
                                 _isSubCommentClicked = false;
                               });
                               _commentBloc.add(LoadComment());
-                              _commentBloc
-                                  .add(GetComment(id: state.selectedIssue.issid, from: 'issid'));
+                              _commentBloc.add(GetComment(
+                                  id: state.selectedIssue.issid,
+                                  from: 'issid'));
                               _textEditingController.clear();
                             },
                             child: Container(

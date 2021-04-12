@@ -1,11 +1,13 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/widgets/brandfarm_date_picker.dart';
 import 'package:BrandFarm/widgets/customized_badge.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:badges/badges.dart';
@@ -20,7 +22,6 @@ import 'package:intl/intl.dart';
 import '../../utils/user/user_util.dart';
 
 class SubJournalIssueModifyScreen extends StatefulWidget {
-
   @override
   _SubJournalIssueModifyScreenState createState() =>
       _SubJournalIssueModifyScreenState();
@@ -28,8 +29,6 @@ class SubJournalIssueModifyScreen extends StatefulWidget {
 
 class _SubJournalIssueModifyScreenState
     extends State<SubJournalIssueModifyScreen> {
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   TextEditingController _title;
   TextEditingController _content;
@@ -40,21 +39,13 @@ class _SubJournalIssueModifyScreenState
   List list;
 
   //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
-  // Timestamp tnow = Timestamp.fromDate(DateTime.now());
   Timestamp tnow = Timestamp.now();
 
-  // DateTime dnow = Timestamp.now().toDate();
-  // DateTime dnow = DateTime.fromMicrosecondsSinceEpoch(tnow.microsecondsSinceEpoch);
-  // DateTime dnow = DateTime.fromMillisecondsSinceEpoch(tnow.millisecondsSinceEpoch);
-  // DateTime dnow = DateTime.now();
   String title = '';
   String contents = '';
   int category;
   int issueState;
-  //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////
+
   //////////////////////////////////////////////////////////////////////////////
 
   @override
@@ -68,124 +59,126 @@ class _SubJournalIssueModifyScreenState
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<JournalBloc, JournalState>(
-        builder: (context, state) {
-          return BlocConsumer<JournalIssueModifyBloc, JournalIssueModifyState>(
-            listener: (context, mstate) {
-              if (mstate.isComplete == true && mstate.isUploaded == false) {
-                // print('isUpload false');
-                LoadingDialog.onLoading(context);
-                _journalIssueModifyBloc.add(UpdateJournal(
-                  fid: FieldUtil.getField().fid,
-                  category: category,
-                  sfmid: FieldUtil.getField().sfmid,
-                  issid: state.selectedIssue.issid,
-                  contents: _content.text,
-                  title: _title.text,
-                  uid: UserUtil.getUser().uid,
-                  issueState: issueState,
-                  comments: state.selectedIssue.comments,
-                  isReadByFM: state.selectedIssue.isReadByFM,
-                  isReadByOffice: state.selectedIssue.isReadByOffice,
-                ));
-              } else if (mstate.isComplete == true && mstate.isUploaded == true) {
-                // print('isUpload true');
-                _journalBloc.add(GetInitialList());
-                LoadingDialog.dismiss(context, () {
-                  Navigator.pop(context,
-                      SubJournalIssue(
-                        date: Timestamp.now(),
-                        fid: FieldUtil.getField().fid,
-                        category: state.selectedIssue.category,
-                        sfmid: FieldUtil.getField().sfmid,
-                        issid: state.selectedIssue.issid,
-                        contents: _content.text,
-                        title: _title.text,
-                        uid: UserUtil.getUser().uid,
-                        issueState: state.selectedIssue.issueState,
-                        comments: state.selectedIssue.comments,
-                        isReadByFM: state.selectedIssue.isReadByFM,
-                        isReadByOffice: state.selectedIssue.isReadByOffice,
-                      ));
-                });
-              } else if (mstate.isModifyLoading){
-                _title = TextEditingController(text: '${state.selectedIssue.title}');
-                _content = TextEditingController(text: '${state.selectedIssue.contents}');
-                _journalIssueModifyBloc.add(GetImageList(issid: state.selectedIssue.issid));
-                print(state.selectedIssue.issid);
-                issueState = state.selectedIssue.issueState;
-                category = state.selectedIssue.category;
-                _journalIssueModifyBloc.add(ModifyLoaded());
-              }
-            },
-            builder: (context, mstate) {
-              return Scaffold(
-                appBar: AppBar(
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back_ios_rounded),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  title: Text(
-                    '이슈일지 작성',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  centerTitle: true,
-                ),
-                body: GestureDetector(
-                  onTap: () {
-                    _focusTitle.unfocus();
-                    _focusContent.unfocus();
-                  },
-                  child: SingleChildScrollView(
-                    physics: ClampingScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 24.0,
-                        ),
-                        _dateBar(context: context, state: state),
-                        SizedBox(
-                          height: 37.0,
-                        ),
-                        _inputTitleBar(context: context, state: state),
-                        SizedBox(
-                          height: 51.0,
-                        ),
-                        _chooseCategory(context: context, state: state),
-                        SizedBox(
-                          height: 45.0,
-                        ),
-                        _chooseIssueState(),
-                        SizedBox(
-                          height: 48.0,
-                        ),
-                        _addPictureBar(context: context, state: mstate),
-                        SizedBox(
-                          height: 43.0,
-                        ),
-                        _inputIssueContents(),
-                        SizedBox(
-                          height: 72,
-                        ),
-                      ],
+    return BlocBuilder<JournalBloc, JournalState>(builder: (context, state) {
+      return BlocConsumer<JournalIssueModifyBloc, JournalIssueModifyState>(
+        listener: (context, mstate) {
+          if (mstate.isComplete == true && mstate.isUploaded == false) {
+            // print('isUpload false');
+            LoadingDialog.onLoading(context);
+            _journalIssueModifyBloc.add(UpdateIssue(
+              fid: FieldUtil.getField().fid,
+              category: category,
+              sfmid: FieldUtil.getField().sfmid,
+              issid: state.selectedIssue.issid,
+              contents: _content.text,
+              title: _title.text,
+              uid: UserUtil.getUser().uid,
+              issueState: issueState,
+              comments: state.selectedIssue.comments,
+              isReadByFM: state.selectedIssue.isReadByFM,
+              isReadByOffice: state.selectedIssue.isReadByOffice,
+              selectedDate: mstate.selectedDate ??state.selectedIssue.date,
+            ));
+          } else if (mstate.isComplete == true && mstate.isUploaded == true) {
+            // print('isUpload true');
+            _journalBloc.add(GetInitialList());
+            LoadingDialog.dismiss(context, () {
+              _journalBloc.add(PassSelectedIssue(
+                  issue: SubJournalIssue(
+                date: mstate.selectedDate ?? state.selectedIssue.date,
+                fid: FieldUtil.getField().fid,
+                sfmid: FieldUtil.getField().sfmid ?? '--',
+                issid: state.selectedIssue.issid ?? '--',
+                uid: UserUtil.getUser().uid ?? '--',
+                title: _title.text,
+                category: category,
+                issueState: issueState,
+                contents: _content.text,
+                comments: state.selectedIssue.comments ?? 0,
+                isReadByFM: state.selectedIssue.isReadByFM ?? false,
+                isReadByOffice: state.selectedIssue.isReadByOffice ?? false,
+              )));
+              Navigator.pop(context);
+            });
+          } else if (mstate.isModifyLoading) {
+            _title =
+                TextEditingController(text: '${state.selectedIssue.title}');
+            _content =
+                TextEditingController(text: '${state.selectedIssue.contents}');
+            _journalIssueModifyBloc
+                .add(GetImageList(issid: state.selectedIssue.issid));
+            print(state.selectedIssue.issid);
+            issueState = state.selectedIssue.issueState;
+            category = state.selectedIssue.category;
+            _journalIssueModifyBloc.add(ModifyLoaded());
+          }
+        },
+        builder: (context, mstate) {
+          return Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios_rounded),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              title: Text(
+                '이슈일지 작성',
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+              centerTitle: true,
+            ),
+            body: GestureDetector(
+              onTap: () {
+                _focusTitle.unfocus();
+                _focusContent.unfocus();
+              },
+              child: SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 24.0,
                     ),
-                  ),
+                    _dateBar(context: context, state: state),
+                    SizedBox(
+                      height: 37.0,
+                    ),
+                    _inputTitleBar(context: context, state: state),
+                    SizedBox(
+                      height: 51.0,
+                    ),
+                    _chooseCategory(context: context, state: state),
+                    SizedBox(
+                      height: 45.0,
+                    ),
+                    _chooseIssueState(),
+                    SizedBox(
+                      height: 48.0,
+                    ),
+                    _addPictureBar(context: context, state: mstate),
+                    SizedBox(
+                      height: 43.0,
+                    ),
+                    _inputIssueContents(),
+                    SizedBox(
+                      height: 72,
+                    ),
+                  ],
                 ),
-                bottomNavigationBar: CustomBottomButton(
-                  title: '완료',
-                  onPressed: () {
-                    _journalIssueModifyBloc.add(PressComplete());
-                  },
-                ),
-              );
-
-            },
+              ),
+            ),
+            bottomNavigationBar: CustomBottomButton(
+              title: '완료',
+              onPressed: () {
+                _journalIssueModifyBloc.add(PressComplete());
+              },
+            ),
           );
-        }
-    );
+        },
+      );
+    });
   }
 
   Widget _dateBar({BuildContext context, JournalState state}) {
@@ -194,14 +187,33 @@ class _SubJournalIssueModifyScreenState
       child: Row(
         children: [
           Text(
-              '${DateFormat('yMMMMEEEEd', 'ko').format(state.selectedIssue.date.toDate())}',
+              '${DateFormat('yMMMMEEEEd', 'ko').format(_journalIssueModifyBloc.state.selectedDate == null ? state.selectedIssue.date.toDate() : _journalIssueModifyBloc.state.selectedDate.toDate())}',
               style: Theme.of(context).textTheme.subtitle2.copyWith(
                   fontSize: 16.0, color: Theme.of(context).primaryColor)),
           Spacer(),
-          SvgPicture.asset(
-            'assets/svg_icon/calendar_icon.svg',
-            color: Color(0xb3000000),
-          ),
+          IconButton(
+              icon: SvgPicture.asset(
+                'assets/svg_icon/calendar_icon.svg',
+                color: Color(0xb3000000),
+              ),
+              onPressed: () async {
+                final picked = await BrandFarmDatePicker(
+                  context: context,
+                  initialDate:
+                      _journalIssueModifyBloc.state.selectedDate == null
+                          ? state.selectedIssue.date.toDate()
+                          : _journalIssueModifyBloc.state.selectedDate.toDate(),
+                  firstDate: DateTime(2015, 1),
+                  lastDate: DateTime(2100),
+                  helpText: '날짜 선택',
+                  locale: Locale('ko', 'KO'),
+                );
+
+                if (picked != null) {
+                  _journalIssueModifyBloc.add(
+                      DateSelected(selectedDate: Timestamp.fromDate(picked)));
+                }
+              }),
         ],
       ),
     );
@@ -397,79 +409,65 @@ class _SubJournalIssueModifyScreenState
                 children: [
                   (index == 0)
                       ? SizedBox(
-                    width: defaultPadding,
-                  )
+                          width: defaultPadding,
+                        )
                       : Container(),
                   (index == 0)
                       ? Center(
-                    child: InkWell(
-                        onTap: () {
-                          _pickImage(context: context, state: state);
-                        },
-                        child: Container(
-                          height: 74.0,
-                          width: 74.0,
-                          decoration:
-                          BoxDecoration(color: Color(0x1a000000)),
-                          child: Center(
-                            child: Icon(
-                              Icons.add,
-                              size: 34.0,
-                            ),
-                          ),
-                        )),
-                  )
+                          child: InkWell(
+                              onTap: () {
+                                _pickImage(context: context, state: state);
+                              },
+                              child: Container(
+                                height: 74.0,
+                                width: 74.0,
+                                decoration:
+                                    BoxDecoration(color: Color(0x1a000000)),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 34.0,
+                                  ),
+                                ),
+                              )),
+                        )
                       : Container(),
                   (state.imageList.isNotEmpty && index == 0)
                       ? SizedBox(
-                    width: defaultPadding,
-                  )
+                          width: defaultPadding,
+                        )
                       : Container(),
                   (state?.imageList?.isNotEmpty ?? true)
                       ? _image(
-                    context: context,
-                    state: state,
-                    index: index,
-                  )
+                          context: context,
+                          state: state,
+                          index: index,
+                        )
                       : Container(
-                    width: defaultPadding,
-                  ),
+                          width: defaultPadding,
+                        ),
                   if (state.imageList.isEmpty && index == 0)
                     Row(
-                      children:
-                      List.generate(state.existingImageList.length, (index) {
-                        return Row(
-                          children: [
-                            _existingImage(
-                              context: context,
-                              url: state.existingImageList[index].url,
-                              obj: state.existingImageList[index],
-                              index: index,
-                            ),
-                            SizedBox(
-                              width: defaultPadding,
-                            ),
-                          ],
+                      children: List.generate(state.existingImageList.length,
+                          (index) {
+                        return _existingImage(
+                          context: context,
+                          url: state.existingImageList[index].url,
+                          obj: state.existingImageList[index],
+                          index: index,
                         );
                       }),
                     )
                   else if (index + 1 == state.imageList.length &&
                       state.existingImageList.isNotEmpty)
                     Row(
-                      children:
-                      List.generate(state.existingImageList.length, (index) {
-                        return Row(
-                          children: [
-                            _existingImage(
-                                context: context,
-                                url: state.existingImageList[index].url,
-                                obj: state.existingImageList[index],
-                                index: index),
-                            SizedBox(
-                              width: defaultPadding,
-                            ),
-                          ],
-                        );
+                      children: List.generate(state.existingImageList.length,
+                          (index) {
+                        return _existingImage(
+                            context: context,
+                            url: state.existingImageList[index].url,
+                            obj: state.existingImageList[index],
+                            index: index);
                       }),
                     )
                   else
@@ -481,9 +479,7 @@ class _SubJournalIssueModifyScreenState
         ),
       ],
     );
-
   }
-
 
   Widget _existingImage(
       {BuildContext context, String url, ImagePicture obj, int index}) {
@@ -526,7 +522,8 @@ class _SubJournalIssueModifyScreenState
     );
   }
 
-  Widget _image({BuildContext context, JournalIssueModifyState state, int index}) {
+  Widget _image(
+      {BuildContext context, JournalIssueModifyState state, int index}) {
     bool isNull = state.imageList[index] == null;
     return CustomizedBadge(
       onPressed: () {
@@ -546,51 +543,51 @@ class _SubJournalIssueModifyScreenState
       shape: BadgeShape.circle,
       child: isNull
           ? Stack(
-        children: [
-          Container(
-            height: 87.0,
-            width: 87.0,
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                height: 74.0,
-                width: 74.0,
-                color: Colors.grey,
-                child: Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                          Color.fromARGB(255, 0, 61, 165)),
-                    )),
-              ),
-            ),
-          ),
-        ],
-      )
-          : Stack(
-        children: [
-          Container(
-            height: 87.0,
-            width: 87.0,
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                height: 74.0,
-                width: 74.0,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: FileImage(
-                      state.imageList[index],
+              children: [
+                Container(
+                  height: 87.0,
+                  width: 87.0,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      height: 74.0,
+                      width: 74.0,
+                      color: Colors.grey,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Color.fromARGB(255, 0, 61, 165)),
+                      )),
                     ),
-                    fit: BoxFit.cover,
-                    // colorFilter: ColorFilter.mode(
-                    //     Colors.black.withOpacity(0.5), BlendMode.srcATop),
                   ),
                 ),
-              ),
+              ],
+            )
+          : Stack(
+              children: [
+                Container(
+                  height: 87.0,
+                  width: 87.0,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      height: 74.0,
+                      width: 74.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: FileImage(
+                            state.imageList[index],
+                          ),
+                          fit: BoxFit.cover,
+                          // colorFilter: ColorFilter.mode(
+                          //     Colors.black.withOpacity(0.5), BlendMode.srcATop),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 

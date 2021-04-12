@@ -1,18 +1,8 @@
 import 'dart:io';
 
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
-import 'package:BrandFarm/models/journal/farming_model.dart';
-import 'package:BrandFarm/models/journal/fertilize_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
-import 'package:BrandFarm/models/journal/pest_model.dart';
-import 'package:BrandFarm/models/journal/pesticide_model.dart';
-import 'package:BrandFarm/models/journal/planting_model.dart';
-import 'package:BrandFarm/models/journal/seeding_model.dart';
-import 'package:BrandFarm/models/journal/shipment_model.dart';
-import 'package:BrandFarm/models/journal/watering_model.dart';
-import 'package:BrandFarm/models/journal/weeding_model.dart';
 import 'package:BrandFarm/models/journal/widget_model.dart';
-import 'package:BrandFarm/models/journal/workforce_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -126,6 +116,10 @@ class DeleteExistingImage extends JournalCreateEvent {
     }''';
   }
 }
+
+class ModifyLoading extends JournalCreateEvent{}
+
+class ModifyLoaded extends JournalCreateEvent{}
 
 ///출하정보
 class ShipmentPlantChanged extends JournalCreateEvent {
@@ -1124,33 +1118,11 @@ class ChangeCategoryPressed extends JournalCreateEvent {
 }
 
 class JournalInitialized extends JournalCreateEvent {
-  final List<Shipment> shipmentList;
-  final List<Fertilize> fertilizeList;
-  final List<Pesticide> pesticideList;
-  final List<Pest> pestList;
-  final List<Planting> plantingList;
-  final List<Seeding> seedingList;
-  final List<Weeding> weedingList;
-  final List<Watering> wateringList;
-  final List<Workforce> workforceList;
-  final List<Farming> farmingList;
-  final List<String> widgetsList;
   final Journal existJournal;
   final List<ImagePicture> existImage;
 
   JournalInitialized(
-      {this.shipmentList,
-      this.fertilizeList,
-      this.pesticideList,
-      this.pestList,
-      this.plantingList,
-      this.seedingList,
-      this.weedingList,
-      this.wateringList,
-      this.workforceList,
-      this.farmingList,
-      this.widgetsList,
-      this.existJournal,
+      {this.existJournal,
       this.existImage});
 
   @override
@@ -1163,10 +1135,6 @@ class GetInitWroteDate extends JournalCreateEvent {
   String toString() => "GetInitWroteDate";
 }
 
-class CheckNewWriteChange extends JournalCreateEvent {
-  @override
-  String toString() => "WriteCheck state Chaned";
-}
 
 class WidgetListLoaded extends JournalCreateEvent {
   final List<Widgets> widgets;

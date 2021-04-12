@@ -5,6 +5,8 @@ import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 abstract class JournalIssueModifyEvent extends Equatable{
   const JournalIssueModifyEvent();
@@ -13,12 +15,7 @@ abstract class JournalIssueModifyEvent extends Equatable{
   List<Object> get props => [];
 }
 
-class ModifyLoading extends JournalIssueModifyEvent{
-  @override
-  String toString() {
-    return 'abcabc';
-  }
-}
+class ModifyLoading extends JournalIssueModifyEvent{}
 
 class ModifyLoaded extends JournalIssueModifyEvent{}
 
@@ -55,7 +52,7 @@ class DeleteImageFile extends JournalIssueModifyEvent{
 
 class PressComplete extends JournalIssueModifyEvent{}
 
-class UpdateJournal extends JournalIssueModifyEvent {
+class UpdateIssue extends JournalIssueModifyEvent {
   final String fid;
   final String sfmid;
   final String uid;
@@ -67,8 +64,9 @@ class UpdateJournal extends JournalIssueModifyEvent {
   final int comments;
   final bool isReadByFM;
   final bool isReadByOffice;
+  final Timestamp selectedDate;
 
-  const UpdateJournal({
+  const UpdateIssue({
     @required this.fid,
     @required this.sfmid,
     @required this.uid,
@@ -80,6 +78,7 @@ class UpdateJournal extends JournalIssueModifyEvent {
     @required this.comments,
     @required this.isReadByFM,
     @required this.isReadByOffice,
+    @required this.selectedDate,
   });
 
   @override
@@ -128,4 +127,13 @@ class DeleteExistingImage extends JournalIssueModifyEvent {
       obj, ${obj},
     }''';
   }
+}
+
+class DateSelected extends JournalIssueModifyEvent {
+  final Timestamp selectedDate;
+
+  const DateSelected({@required this.selectedDate});
+
+  @override
+  String toString() => 'DateSelected{ SelectedDate: $selectedDate}';
 }

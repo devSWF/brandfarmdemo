@@ -136,7 +136,6 @@ class _SubJournalInputActivityScreenState
   }
 
   completeValid() {
-    _journalCreateBloc.add(CheckNewWriteChange());
     if (_journalCreateBloc.state.category == 8) {
       _journalCreateBloc.add(WorkforceComplete(
           workforceNum: _journalCreateBloc.state.workforceNum,
@@ -208,27 +207,27 @@ class _SubJournalInputActivityScreenState
     }
     Navigator.of(context).pop();
   }
-
-  Widget categoryItem(String buttonText, int id, BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.5,
-      child: FlatButton(
-        // focusColor: mainColor,
-        // highlightColor: mainColor,
-        // splashColor: mainColor,
-        onPressed: () {
-          // _JournalCreateBloc.add(CategoryChanged(
-          //     category: getJournalCategoryId(name: buttonText)));
-          // Navigator.of(context).pop();
-        },
-        padding: EdgeInsets.only(top: 20, bottom: 20),
-        child: Text(
-          buttonText,
-          // style: button5,
-        ),
-      ),
-    );
-  }
+  //
+  // Widget categoryItem(String buttonText, int id, BuildContext context) {
+  //   return Container(
+  //     width: MediaQuery.of(context).size.width * 0.5,
+  //     child: FlatButton(
+  //       // focusColor: mainColor,
+  //       // highlightColor: mainColor,
+  //       // splashColor: mainColor,
+  //       onPressed: () {
+  //         // _JournalCreateBloc.add(CategoryChanged(
+  //         //     category: getJournalCategoryId(name: buttonText)));
+  //         // Navigator.of(context).pop();
+  //       },
+  //       padding: EdgeInsets.only(top: 20, bottom: 20),
+  //       child: Text(
+  //         buttonText,
+  //         // style: button5,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _selectedCategory(BuildContext context, JournalCreateState state){
     TextStyle _titleStyle = textTheme.bodyText1.copyWith(fontSize: 18.0);
