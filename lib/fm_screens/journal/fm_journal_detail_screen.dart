@@ -119,7 +119,7 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FlatButton(
+                    TextButton(
                       onPressed: (){
                         _fmJournalBloc.add(ChangeScreen(navTo: 1, index: 0));
                       },
@@ -165,8 +165,6 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
                   fontWeight: FontWeight.w600,
                   color: Color(0xB3000000),
                 ),),
-              SizedBox(width: 10,),
-              Icon(Icons.arrow_drop_down_outlined, color: Color(0xFFBEBEBE),)
             ],
           ),
         ),
@@ -248,8 +246,6 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
                   fontSize: 18,
                   color: Color(0xFF15B85B),
                 ),),
-              SizedBox(width: 6,),
-              Icon(Icons.arrow_drop_down_outlined, color: Color(0xFFBEBEBE),),
             ],
           ),
         ),
@@ -291,8 +287,6 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
                   fontSize: 18,
                   color: Colors.black,
                 ),),
-              SizedBox(width: 6,),
-              Icon(Icons.arrow_drop_down_outlined, color: Color(0xFFBEBEBE),),
             ],
           ),
         ),

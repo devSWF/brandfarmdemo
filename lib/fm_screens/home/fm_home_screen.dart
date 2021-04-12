@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
+import 'package:BrandFarm/blocs/fm_contact/fm_contact_bloc.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
@@ -11,6 +12,7 @@ import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
 import 'package:BrandFarm/empty_screen.dart';
+import 'package:BrandFarm/fm_screens/contact/fm_contact_screen.dart';
 import 'package:BrandFarm/fm_screens/journal/fm_journal_screen.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_screen.dart';
@@ -485,7 +487,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                             width: 76,
                           ),
                           Text(
-                            '일지관리',
+                            '보고서 작성',
                             style: Theme.of(context).textTheme.bodyText2.copyWith(
                                   fontSize: 13,
                                   color: (state.pageIndex == 5 &&
@@ -664,7 +666,10 @@ class _GetPageState extends State<GetPage> {
         break;
       case 3:
         {
-          return EmptyScreen(); // 연락처
+          return BlocProvider<FMContactBloc>(
+            create: (BuildContext context) => FMContactBloc(),
+            child: FMContactScreen(),
+          ); // 연락처
         }
         break;
       case 4:

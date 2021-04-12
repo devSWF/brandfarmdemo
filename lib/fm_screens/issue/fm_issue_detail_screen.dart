@@ -336,13 +336,6 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                       color: Color(0xFF15B85B),
                     ),
               ),
-              SizedBox(
-                width: 6,
-              ),
-              Icon(
-                Icons.arrow_drop_down_outlined,
-                color: Color(0xFFBEBEBE),
-              ),
             ],
           ),
         ),
@@ -393,13 +386,6 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                       fontSize: 18,
                       color: Colors.black,
                     ),
-              ),
-              SizedBox(
-                width: 6,
-              ),
-              Icon(
-                Icons.arrow_drop_down_outlined,
-                color: Color(0xFFBEBEBE),
               ),
             ],
           ),
