@@ -48,12 +48,20 @@ class FMPurchaseRepository {
     QuerySnapshot item = await _firestore
         .collection('Purchase')
         .where('farmID', isEqualTo: farmID)
+        .orderBy('requestDate', descending: true)
         .get();
     item.docs.forEach((ds) {
       plist.add(FMPurchase.fromSnapshot(ds));
     });
 
     return plist;
+  }
+
+  Future<void> updatePurchaseInfo({
+    FMPurchase obj,
+  }) async {
+    DocumentReference reference = _firestore.collection('Purchase').doc(obj.purchaseID);
+    await reference.update(obj.toDocument());
   }
 
 // Future<User> getDetailUserInfo(uid) async {
@@ -86,13 +94,6 @@ class FMPurchaseRepository {
 //   });
 //
 //   return issueList;
-// }
-//
-// Future<void> updateIssue({
-//   SubJournalIssue obj,
-// }) async {
-//   DocumentReference reference = _firestore.collection('Issue').doc(obj.issid);
-//   await reference.update(obj.toMap());
 // }
 
 // Future<List<Comment>> getComment(String issid) async {

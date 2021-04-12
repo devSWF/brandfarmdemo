@@ -1,4 +1,5 @@
 
+import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -165,3 +166,56 @@ class SetListOrder extends FMPurchaseEvent {
   }''';
 }
 
+class SetSubmissionState extends FMPurchaseEvent {}
+
+class UpdateDropdownMenuState extends FMPurchaseEvent {}
+
+class UpdateMenuIndex extends FMPurchaseEvent {
+  final int menuIndex;
+
+  const UpdateMenuIndex({
+    @required this.menuIndex,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''UpdateMenuIndex { 
+    menuIndex : $menuIndex,
+  }''';
+}
+
+class GetPurchaseListBySearch extends FMPurchaseEvent {
+  final String word;
+
+  const GetPurchaseListBySearch({
+    @required this.word,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''GetPurchaseListBySearch { 
+    word : $word,
+  }''';
+}
+
+class SetProduct extends FMPurchaseEvent {
+  final FMPurchase product;
+
+  const SetProduct({
+    @required this.product,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''SetProduct { 
+    product : $product,
+  }''';
+}
+
+class MarkAsRead extends FMPurchaseEvent {}

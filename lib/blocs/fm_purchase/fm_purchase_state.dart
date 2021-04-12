@@ -14,8 +14,15 @@ class FMPurchaseState {
   Field field;
   List<FMPurchase> productList;
   List<FMPurchase> productListFromDB;
+  List<FMPurchase> productListBySearch;
   int currentSortColumn;
   bool isAscending;
+  bool isSubmitted;
+
+  List<String> menu;
+  int menuIndex;
+  bool showDropdownMenu;
+  FMPurchase product;
 
   FMPurchaseState({
     @required this.isLoading,
@@ -25,8 +32,14 @@ class FMPurchaseState {
     @required this.field,
     @required this.productList,
     @required this.productListFromDB,
+    @required this.productListBySearch,
     @required this.currentSortColumn,
     @required this.isAscending,
+    @required this.isSubmitted,
+    @required this.menu,
+    @required this.menuIndex,
+    @required this.showDropdownMenu,
+    @required this.product,
   });
 
   factory FMPurchaseState.empty() {
@@ -46,8 +59,14 @@ class FMPurchaseState {
           name: ''),
       productList: [],
       productListFromDB: [],
+      productListBySearch: [],
       currentSortColumn: 0,
-      isAscending: true,
+      isAscending: false,
+      isSubmitted: false,
+      menu: ['자재명', '신청자', '수령인'],
+      menuIndex: 0,
+      showDropdownMenu: false,
+      product: null,
     );
   }
 
@@ -59,8 +78,14 @@ class FMPurchaseState {
     Field field,
     List<FMPurchase> productList,
     List<FMPurchase> productListFromDB,
+    List<FMPurchase> productListBySearch,
     int currentSortColumn,
     bool isAscending,
+    bool isSubmitted,
+    List<String> menu,
+    int menuIndex,
+    bool showDropdownMenu,
+    FMPurchase product,
   }) {
     return FMPurchaseState(
       isLoading: isLoading ?? this.isLoading,
@@ -70,8 +95,14 @@ class FMPurchaseState {
       field: field ?? this.field,
       productList: productList ?? this.productList,
       productListFromDB: productListFromDB ?? this.productListFromDB,
+      productListBySearch: productListBySearch ?? this.productListBySearch,
       currentSortColumn: currentSortColumn ?? this.currentSortColumn,
       isAscending: isAscending ?? this.isAscending,
+      isSubmitted: isSubmitted ?? this.isSubmitted,
+      menu: menu ?? this.menu,
+      menuIndex: menuIndex ?? this.menuIndex,
+      showDropdownMenu: showDropdownMenu ?? this.showDropdownMenu,
+      product: product ?? this.product,
     );
   }
 
@@ -83,8 +114,14 @@ class FMPurchaseState {
     Field field,
     List<FMPurchase> productList,
     List<FMPurchase> productListFromDB,
+    List<FMPurchase> productListBySearch,
     int currentSortColumn,
     bool isAscending,
+    bool isSubmitted,
+    List<String> menu,
+    int menuIndex,
+    bool showDropdownMenu,
+    FMPurchase product,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -94,8 +131,14 @@ class FMPurchaseState {
       field: field,
       productList: productList,
       productListFromDB: productListFromDB,
+      productListBySearch: productListBySearch,
       currentSortColumn: currentSortColumn,
       isAscending: isAscending,
+      isSubmitted: isSubmitted,
+      menu: menu,
+      menuIndex: menuIndex,
+      showDropdownMenu: showDropdownMenu,
+      product: product,
     );
   }
 
@@ -109,8 +152,14 @@ class FMPurchaseState {
     field: ${field},
     productList: ${productList.length},
     productListFromDB: ${productListFromDB.length},
+    productListBySearch: ${productListBySearch.length},
     currentSortColumn: ${currentSortColumn},
     isAscending: ${isAscending},
+    isSubmitted: ${isSubmitted},
+    menu: ${menu.length},
+    menuIndex: ${menuIndex},
+    showDropdownMenu: ${showDropdownMenu},
+    product: ${product},
     }
     ''';
   }
