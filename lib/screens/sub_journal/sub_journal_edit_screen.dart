@@ -75,6 +75,7 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
             });
           }
           if (state.writeComplete == true) {
+            _journalBloc.add(GetInitialList());
             _journalBloc.add(PassSelectedJournal(journal: state.bufferJournal));
             Navigator.pop(context);
             Navigator.pop(context);
@@ -296,18 +297,11 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
                     Row(
                       children:
                           List.generate(state.existImageList.length, (index) {
-                        return Row(
-                          children: [
-                            _existingImage(
-                              context: context,
-                              url: state.existImageList[index].url,
-                              obj: state.existImageList[index],
-                              index: index,
-                            ),
-                            SizedBox(
-                              width: defaultPadding,
-                            ),
-                          ],
+                        return _existingImage(
+                          context: context,
+                          url: state.existImageList[index].url,
+                          obj: state.existImageList[index],
+                          index: index,
                         );
                       }),
                     )
@@ -316,18 +310,11 @@ class _SubJournalEditScreenState extends State<SubJournalEditScreen> {
                     Row(
                       children:
                           List.generate(state.existImageList.length, (index) {
-                        return Row(
-                          children: [
-                            _existingImage(
-                                context: context,
-                                url: state.existImageList[index].url,
-                                obj: state.existImageList[index],
-                                index: index),
-                            SizedBox(
-                              width: defaultPadding,
-                            ),
-                          ],
-                        );
+                        return _existingImage(
+                            context: context,
+                            url: state.existImageList[index].url,
+                            obj: state.existImageList[index],
+                            index: index);
                       }),
                     )
                   else
