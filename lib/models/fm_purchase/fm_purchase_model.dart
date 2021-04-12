@@ -62,7 +62,7 @@ class FMPurchase {
 
   Map<String, Object> toDocument() {
     return {
-      'planID': purchaseID,
+      'purchaseID': purchaseID,
       'farmID': farmID,
       'requester': requester,
       'receiver': receiver,

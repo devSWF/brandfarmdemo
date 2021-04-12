@@ -44,6 +44,18 @@ class FMPurchaseBloc
       yield* _mapGetPurchaseListToState();
     } else if (event is SetListOrder) {
       yield* _mapSetListOrderToState(event.columnIndex);
+    } else if (event is SetSubmissionState) {
+      yield* _mapSetSubmissionStateToState();
+    } else if (event is UpdateDropdownMenuState) {
+      yield* _mapUpdateDropdownMenuStateToState();
+    } else if (event is UpdateMenuIndex) {
+      yield* _mapUpdateMenuIndexToState(event.menuIndex);
+    } else if (event is GetPurchaseListBySearch) {
+      yield* _mapGetPurchaseListBySearchToState(event.word);
+    } else if (event is SetProduct) {
+      yield* _mapSetProductToState(event.product);
+    } else if (event is MarkAsRead) {
+      yield* _mapMarkAsReadToState();
     }
   }
 
@@ -374,29 +386,30 @@ class FMPurchaseBloc
     });
 
     List<FMPurchase> pList = [];
-    FMPurchase product = FMPurchase(
-      purchaseID: '',
-      farmID: state.farm.farmID,
-      requester: UserUtil.getUser().name,
-      receiver: '', // field worker name
-      requestDate: state.curr,
-      receiveDate: null,
-      productName: '',
-      amount: '',
-      price: '',
-      marketUrl: '',
-      fid: null,
-      memo: '',
-      officeReply: '',
-      waitingState: 1, // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
-      isFieldSelectionButtonClicked: false,
-      isThereUpdates: true,
-    );
-    pList.insert(0, product);
+    // FMPurchase product = FMPurchase(
+    //   purchaseID: '',
+    //   farmID: state.farm.farmID,
+    //   requester: UserUtil.getUser().name,
+    //   receiver: '', // field worker name
+    //   requestDate: state.curr,
+    //   receiveDate: null,
+    //   productName: '',
+    //   amount: '',
+    //   price: '',
+    //   marketUrl: '',
+    //   fid: null,
+    //   memo: '',
+    //   officeReply: '',
+    //   waitingState: 1, // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
+    //   isFieldSelectionButtonClicked: false,
+    //   isThereUpdates: true,
+    // );
+    // pList.insert(0, product);
 
     yield state.update(
       productList: pList,
       isLoading: false,
+      isSubmitted: true,
     );
   }
 
@@ -407,13 +420,14 @@ class FMPurchaseBloc
 
     yield state.update(
       productListFromDB: plist,
+      productListBySearch: plist,
       isLoading: false,
     );
   }
 
   Stream<FMPurchaseState> _mapSetListOrderToState(int columnIndex) async* {
     // get purchase list from firebase
-    List<FMPurchase> plist = state.productListFromDB;
+    List<FMPurchase> plist = state.productListBySearch;
     bool isAscending;
     if (state.isAscending == true) {
       isAscending = false;
@@ -432,7 +446,91 @@ class FMPurchaseBloc
     yield state.update(
       currentSortColumn: columnIndex,
       isAscending: isAscending,
-      productListFromDB: plist,
+      productListBySearch: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapSetSubmissionStateToState() async* {
+    yield state.update(
+      isSubmitted: false,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapUpdateDropdownMenuStateToState() async* {
+    yield state.update(
+      showDropdownMenu: !state.showDropdownMenu,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapUpdateMenuIndexToState(int index) async* {
+    yield state.update(
+      menuIndex: index,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapGetPurchaseListBySearchToState(String word) async* {
+    // product list by search
+    List<FMPurchase> plist = [];
+
+    if(state.menu[state.menuIndex].contains('자재명')) {
+      plist = state.productListFromDB.where((element) => element.productName.contains(word)).toList();
+    } else if(state.menu[state.menuIndex].contains('신청자')) {
+      plist = state.productListFromDB.where((element) => element.requester.contains(word)).toList();
+    } else {
+      plist = state.productListFromDB.where((element) => element.receiver.contains(word)).toList();
+    }
+
+    yield state.update(
+      productListBySearch: plist,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapSetProductToState(FMPurchase product) async* {
+    yield state.update(
+      product: product,
+    );
+  }
+
+  Stream<FMPurchaseState> _mapMarkAsReadToState() async* {
+    FMPurchase obj = state.product;
+    FMPurchase newObj = FMPurchase(
+        purchaseID: obj.purchaseID,
+        farmID: obj.farmID,
+        requester: obj.requester,
+        receiver: obj.receiver,
+        requestDate: obj.requestDate,
+        receiveDate: obj.receiveDate,
+        productName: obj.productName,
+        amount: obj.amount,
+        price: obj.price,
+        marketUrl: obj.marketUrl,
+        fid: obj.fid,
+        memo: obj.memo,
+        officeReply: obj.officeReply,
+        waitingState: obj.waitingState,
+        isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
+        isThereUpdates: false,
+    );
+
+    FMPurchaseRepository().updatePurchaseInfo(obj: newObj);
+
+    int index1 = state.productListFromDB.indexWhere((element) => element.purchaseID == newObj.purchaseID) ?? -1;
+    int index2 = state.productListBySearch.indexWhere((element) => element.purchaseID == newObj.purchaseID) ?? -1;
+    List<FMPurchase> fromDB = state.productListFromDB;
+    List<FMPurchase> bySearch = state.productListBySearch;
+
+    if(index1 != -1 && index2 != -1) {
+      fromDB.removeAt(index1);
+      fromDB.insert(index1, newObj);
+      bySearch.removeAt(index2);
+      bySearch.insert(index2, newObj);
+    }
+
+
+    yield state.update(
+      product: newObj,
+      productListFromDB: fromDB,
+      productListBySearch: bySearch,
     );
   }
 }

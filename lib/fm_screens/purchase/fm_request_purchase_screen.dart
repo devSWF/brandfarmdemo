@@ -17,6 +17,12 @@ class FMRequestPurchaseScreen extends StatefulWidget {
 
 class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
   FMPurchaseBloc _fmPurchaseBloc;
+  List<TextEditingController> productTextEditingController;
+  List<TextEditingController> amountTextEditingController;
+  List<TextEditingController> priceTextEditingController;
+  List<TextEditingController> urlTextEditingController;
+  List<TextEditingController> memoTextEditingController;
+
 
   @override
   void initState() {
@@ -24,6 +30,11 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
     _fmPurchaseBloc.add(LoadFMPurchase());
     _fmPurchaseBloc.add(SetInitialProductList());
+    productTextEditingController = List.generate(10, (index) => TextEditingController());
+    amountTextEditingController = List.generate(10, (index) => TextEditingController());
+    priceTextEditingController = List.generate(10, (index) => TextEditingController());
+    urlTextEditingController = List.generate(10, (index) => TextEditingController());
+    memoTextEditingController = List.generate(10, (index) => TextEditingController());
   }
 
   String _getDateTimeString(Timestamp curr) {
@@ -233,15 +244,15 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _materialName(index),
+              _materialName(state, index),
               SizedBox(
                 height: 14,
               ),
-              _materialAmount(index),
+              _materialAmount(state, index),
               SizedBox(
                 height: 14,
               ),
-              _materialPrice(index),
+              _materialPrice(state, index),
             ],
           ),
           SizedBox(
@@ -251,7 +262,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _materialUrl(index),
+              _materialUrl(state, index),
               SizedBox(
                 height: 14,
               ),
@@ -263,7 +274,10 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialName(int index) {
+  Widget _materialName(FMPurchaseState state, int index) {
+    if(state.isSubmitted){
+      productTextEditingController[index].clear();
+    }
     return Container(
       height: 23,
       width: 157,
@@ -273,6 +287,10 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: TextField(
+        controller: productTextEditingController[index],
+        onTap: (){
+          _fmPurchaseBloc.add(SetSubmissionState());
+        },
         onChanged: (text) {
           _fmPurchaseBloc.add(UpdateProductName(index: index, name: text));
         },
@@ -292,7 +310,10 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialAmount(int index) {
+  Widget _materialAmount(FMPurchaseState state, int index) {
+    if(state.isSubmitted){
+      amountTextEditingController[index].clear();
+    }
     return Container(
       height: 23,
       width: 157,
@@ -308,6 +329,10 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
               borderRadius: BorderRadius.circular(5),
             ),
             child: TextField(
+              controller: amountTextEditingController[index],
+              onTap: (){
+                _fmPurchaseBloc.add(SetSubmissionState());
+              },
               onChanged: (text) {
                 _fmPurchaseBloc.add(UpdateAmount(index: index, amount: text));
               },
@@ -337,7 +362,10 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialPrice(int index) {
+  Widget _materialPrice(FMPurchaseState state, int index) {
+    if(state.isSubmitted){
+      priceTextEditingController[index].clear();
+    }
     return Container(
       height: 23,
       width: 157,
@@ -353,6 +381,10 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
               borderRadius: BorderRadius.circular(5),
             ),
             child: TextField(
+              controller: priceTextEditingController[index],
+              onTap: (){
+                _fmPurchaseBloc.add(SetSubmissionState());
+              },
               onChanged: (text) {
                 _fmPurchaseBloc.add(UpdatePrice(index: index, price: text));
               },
@@ -382,7 +414,10 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialUrl(int index) {
+  Widget _materialUrl(FMPurchaseState state, int index) {
+    if(state.isSubmitted){
+      urlTextEditingController[index].clear();
+    }
     return Container(
       height: 23,
       width: 310,
@@ -392,6 +427,10 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
         borderRadius: BorderRadius.circular(5),
       ),
       child: TextField(
+        controller: urlTextEditingController[index],
+        onTap: (){
+          _fmPurchaseBloc.add(SetSubmissionState());
+        },
         onChanged: (text) {
           _fmPurchaseBloc.add(UpdateMarketUrl(index: index, url: text));
         },
@@ -498,6 +537,9 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
   }
 
   Widget _writeMemo(FMPurchaseState state, int index) {
+    if(state.isSubmitted){
+      memoTextEditingController[index].clear();
+    }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -524,6 +566,10 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
           ),
           padding: EdgeInsets.fromLTRB(9, 5, 0, 5),
           child: TextField(
+            controller: memoTextEditingController[index],
+            onTap: (){
+              _fmPurchaseBloc.add(SetSubmissionState());
+            },
             onChanged: (text) {
               _fmPurchaseBloc.add(UpdateMemo(index: index, memo: text));
             },
@@ -693,8 +739,8 @@ class _PurchaseCompleteState extends State<PurchaseComplete> {
               ),
               child: TextButton(
                 onPressed: (){
-                  _fmPurchaseBloc.add(LoadFMPurchase());
                   _fmPurchaseBloc.add(CompletePurchase());
+                  _fmPurchaseBloc.add(SetInitialProductList());
                   Navigator.pop(context);
                 },
                 child: Text('확인',
