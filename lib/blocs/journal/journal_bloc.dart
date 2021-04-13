@@ -320,6 +320,8 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       pesticide: journal[index1].pesticide,
       uid: journal[index1].uid,
       comments: journal[index1].comments +1,
+      isReadByFM: journal[index1].isReadByFM,
+      isReadByOffice: journal[index1].isReadByOffice,
       date: journal[index1].date,
       title: journal[index1].title,
       farming: journal[index1].farming,
