@@ -23,6 +23,8 @@ class Journal {
   final List<Widgets> widgets;
   final List<String> widgetList;
   final int comments;
+  final bool isReadByFM;
+  final bool isReadByOffice;
 
 
   ///출하정보
@@ -65,6 +67,8 @@ class Journal {
     @required this.widgets,
     @required this.widgetList,
     @required this.comments,
+    @required this.isReadByFM,
+    @required this.isReadByOffice,
     @required this.shipment,
     @required this.fertilize,
     @required this.pesticide,
@@ -88,6 +92,8 @@ class Journal {
       widgetList: [],
       widgets: [],
       comments: 0,
+      isReadByFM: false,
+      isReadByOffice: false,
       shipment: [],
       farming: [],
       fertilize: [],
@@ -119,6 +125,8 @@ class Journal {
       widgets: ds["widgets"] == null ? null : _temp,
       widgetList: List.from(ds["widgetList"]),
       comments: ds['comments'],
+      isReadByFM: ds['isReadByFM'],
+      isReadByOffice: ds['isReadByOffice'],
       shipment: ds['shipment'] == null
           ? null
           : ds["shipment"]
@@ -298,6 +306,8 @@ class Journal {
       'widgets': this.widgets == null ? null : widgets,
       'widgetList': this.widgetList,
       'comments' : this.comments,
+      'isReadByFM' : this.isReadByFM,
+      'isReadByOffice' : this.isReadByOffice,
       'shipment': this.shipment == null ? null : shipment,
       'fertilize': this.fertilize == null ? null : fertilize,
       'pesticide': this.pesticide == null ? null : pesticide,
