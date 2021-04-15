@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
 import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
@@ -40,11 +41,6 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
   TextEditingController _subTextEditingController;
   FocusNode _focusNode;
   FocusNode _subFocusNode;
-
-  //  for testing //
-  List pic = [1, 2, 3];
-
-  // for testing //
 
   bool wroteComments;
   String date;
@@ -141,7 +137,7 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                         ],
                       ),
                     ),
-                    (pic.isNotEmpty) ? _imageList() : Container(),
+                    _imageList(state),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Column(
@@ -309,67 +305,72 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
     );
   }
 
-  Widget _imageList() {
-    return Column(
-      children: [
-        InkWell(
-          onTap: () {},
-          child: Row(
+  Widget _imageList(FMIssueState state) {
+    List<ImagePicture> pic = state.imageList
+        .where((element) => widget.obj.issid == element.issid)
+        .toList();
+    return (pic.isNotEmpty)
+        ? Column(
             children: [
-              SizedBox(
-                width: 32,
-              ),
-              Text(
-                '사진',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 18,
-                      color: Colors.black,
+              InkWell(
+                onTap: () {},
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 32,
                     ),
+                    Text(
+                      '사진',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      '${pic.length}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontSize: 18,
+                            color: Color(0xFF15B85B),
+                          ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
-                width: 6,
+                height: 22,
               ),
-              Text(
-                '${pic.length}',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 18,
-                      color: Color(0xFF15B85B),
-                    ),
+              Row(
+                children: List.generate(pic.length, (index) {
+                  return Row(
+                    children: [
+                      (index == 0)
+                          ? SizedBox(
+                              width: 32,
+                            )
+                          : Container(),
+                      Container(
+                        width: 144,
+                        height: 144,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider(pic[index].url),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                    ],
+                  );
+                }),
               ),
             ],
-          ),
-        ),
-        SizedBox(
-          height: 22,
-        ),
-        Row(
-          children: List.generate(pic.length, (index) {
-            return Row(
-              children: [
-                (index == 0)
-                    ? SizedBox(
-                        width: 32,
-                      )
-                    : Container(),
-                Container(
-                  width: 144,
-                  height: 144,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('assets/strawberry.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-              ],
-            );
-          }),
-        ),
-      ],
-    );
+          )
+        : Container();
   }
 
   Widget _contents(User detailUser, String fieldName) {
@@ -578,7 +579,8 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                       ),
                       InkWell(
                         onTap: () {
-                          if(state.commentList[index].isWriteSubCommentClicked) {
+                          if (state
+                              .commentList[index].isWriteSubCommentClicked) {
                             _subFocusNode.unfocus();
                             _subTextEditingController.clear();
                           }
@@ -848,8 +850,8 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                     });
                   },
                   onSubmitted: (text) {
-                    _fmIssueBloc
-                        .add(WriteReply(cmt: text, obj: widget.obj, index: index));
+                    _fmIssueBloc.add(
+                        WriteReply(cmt: text, obj: widget.obj, index: index));
                     _subFocusNode.unfocus();
                     _subTextEditingController.clear();
                   },

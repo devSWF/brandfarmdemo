@@ -111,9 +111,12 @@ class _JournalDatePickerState extends State<JournalDatePicker> {
               width: 24,
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                _fmJournalBloc.add(ReloadFMJournal());
+                _fmJournalBloc.add(GetJournalList());
+              },
               icon: Icon(
-                Icons.double_arrow_outlined,
+                Icons.search,
                 color: Colors.black,
               ),
             ),
@@ -245,7 +248,7 @@ class _IssueDatePickerState extends State<IssueDatePicker> {
                 _fmIssueBloc.add(GetIssueList(field: widget.field));
               },
               icon: Icon(
-                Icons.double_arrow_outlined,
+                Icons.search,
                 color: Colors.black,
               ),
             ),
