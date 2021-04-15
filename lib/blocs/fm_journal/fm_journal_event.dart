@@ -93,3 +93,47 @@ class SetJourMonth extends FMJournalEvent {
   @override
   String toString() => 'SetJourMonth { month : $month}';
 }
+
+class SetFieldButtonSize extends FMJournalEvent {
+  final double height;
+  final double width;
+
+  const SetFieldButtonSize({
+    @required this.height,
+    @required this.width,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''SetFieldButtonSize { 
+    height : $height,
+    width : $width,
+  }''';
+}
+
+class SetFieldButtonPosition extends FMJournalEvent {
+  final double x;
+  final double y;
+
+  const SetFieldButtonPosition({
+    @required this.x,
+    @required this.y,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''SetFieldButtonPosition { 
+    x : $x,
+    y : $y,
+  }''';
+}
+
+class UpdateFieldButtonState extends FMJournalEvent {}
+
+class GetJournalList extends FMJournalEvent {}
+
+class SetJournal extends FMJournalEvent {}

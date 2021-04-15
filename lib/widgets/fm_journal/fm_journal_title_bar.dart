@@ -16,6 +16,7 @@ class FMJournalTitle extends StatefulWidget {
 
 class _FMJournalTitleState extends State<FMJournalTitle> {
   FMJournalBloc _fmJournalBloc;
+  GlobalKey _textButton = GlobalKey();
 
   @override
   void initState() {
@@ -23,7 +24,24 @@ class _FMJournalTitleState extends State<FMJournalTitle> {
     _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     if(widget.shouldReload) {
       _fmJournalBloc.add(GetFieldList());
-    } // get + set
+    }// get + set
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getSize();
+      _getPosition();
+    });
+  }
+
+  void _getSize() {
+    final RenderBox renderBox = _textButton.currentContext.findRenderObject();
+    final buttonSize = renderBox.size;
+    _fmJournalBloc.add(SetFieldButtonSize(
+        height: buttonSize.height, width: buttonSize.width));
+  }
+
+  void _getPosition() {
+    final RenderBox renderBox = _textButton.currentContext.findRenderObject();
+    final buttonPosition = renderBox.localToGlobal(Offset.zero);
+    _fmJournalBloc.add(SetFieldButtonPosition(x: buttonPosition.dx, y: buttonPosition.dy));
   }
 
   @override
@@ -45,7 +63,8 @@ class _FMJournalTitleState extends State<FMJournalTitle> {
             SizedBox(
               height: 28,
             ),
-            _selectFieldDropdown(state: state),
+            // _selectFieldDropdown(state: state),
+            _dropdownButton(state),
             Divider(
               height: 36,
               thickness: 1,
@@ -54,6 +73,30 @@ class _FMJournalTitleState extends State<FMJournalTitle> {
           ],
         );
       },
+    );
+  }
+
+  Widget _dropdownButton(FMJournalState state) {
+    return InkResponse(
+      onTap: (){
+        _fmJournalBloc.add(UpdateFieldButtonState());
+      },
+      child: Container(
+        key: _textButton,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('${state.field.name}',
+              style: Theme.of(context).textTheme.bodyText2.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 18,
+                color: Color(0xFF15B85B),
+              ),),
+            SizedBox(width: 8,),
+            Icon(Icons.keyboard_arrow_down, color: Color(0x61000000),),
+          ],
+        ),
+      ),
     );
   }
 

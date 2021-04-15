@@ -5,15 +5,9 @@ import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
 import 'package:BrandFarm/fm_screens/issue/fm_issue_detail_screen.dart';
 import 'package:BrandFarm/fm_screens/issue/fm_issue_screen.dart';
 import 'package:BrandFarm/fm_screens/journal/fm_journal_detail_screen.dart';
-import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
-import 'package:BrandFarm/utils/themes/constants.dart';
-import 'package:BrandFarm/utils/todays_date.dart';
-import 'package:BrandFarm/widgets/department_badge.dart';
+import 'package:BrandFarm/fm_screens/journal/fm_journal_list.dart';
 import 'package:BrandFarm/widgets/fm_journal/fm_journal_date_picker.dart';
-import 'package:BrandFarm/widgets/fm_journal/fm_journal_list.dart';
-import 'package:BrandFarm/widgets/fm_journal/fm_journal_list_picker.dart';
 import 'package:BrandFarm/widgets/fm_journal/fm_journal_title_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,53 +38,114 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
         return BlocConsumer<FMJournalBloc, FMJournalState>(
           listener: (context, state) {},
           builder: (context, state) {
-            return Scaffold(
-              backgroundColor: Color(0xFFEEEEEE),
-              body: SingleChildScrollView(
-                controller: _scrollController,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 11, 20, 11),
-                  child: Container(
-                    // height: 800,
-                    width: 814,
-                    padding: EdgeInsets.fromLTRB(19, 29, 24, 0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: (state.navTo == 1)
-                        ? _homeList(state)
-                        : (state.navTo == 2)
-                            ? BlocProvider.value(
-                                value: _fmJournalBloc,
-                                child: FMJournalDetailScreen(),
-                              )
-                            : MultiBlocProvider(
-                                providers: [
-                                  BlocProvider.value(
-                                    value: _fmIssueBloc,
-                                  ),
-                                  BlocProvider.value(
-                                    value: _fmJournalBloc,
-                                  ),
-                                ],
-                                child: (state.order == '최신 순')
-                                    ? FMIssueDetailScreen(
-                                    obj: istate.issueList[state.index],
-                                    index: state.index,
-                                    order: state.order)
-                                    : FMIssueDetailScreen(
-                                    obj: istate.reverseList[state.index],
-                                    index: state.index,
-                                    order: state.order),
+            return (state.year.isNotEmpty && state.month.isNotEmpty)
+                ? Scaffold(
+                    backgroundColor: Color(0xFFEEEEEE),
+                    body: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 11, 20, 11),
+                        child: Stack(
+                          children: [
+                            Container(
+                              // height: 800,
+                              width: 814,
+                              padding: EdgeInsets.fromLTRB(19, 29, 24, 0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                  ),
-                ),
-              ),
-            );
+                              child: (state.navTo == 1)
+                                  ? _homeList(state)
+                                  : (state.navTo == 2)
+                                      ? BlocProvider.value(
+                                          value: _fmJournalBloc,
+                                          child: FMJournalDetailScreen(),
+                                        )
+                                      : MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider.value(
+                                              value: _fmIssueBloc,
+                                            ),
+                                            BlocProvider.value(
+                                              value: _fmJournalBloc,
+                                            ),
+                                          ],
+                                          child: (state.order == '최신 순')
+                                              ? FMIssueDetailScreen(
+                                                  obj: istate
+                                                      .issueList[state.index],
+                                                  index: state.index,
+                                                  order: state.order)
+                                              : FMIssueDetailScreen(
+                                                  obj: istate
+                                                      .reverseList[state.index],
+                                                  index: state.index,
+                                                  order: state.order),
+                                        ),
+                            ),
+                            (state.isFieldMenuButtonVisible)
+                                ? Positioned(
+                                    top: state.fieldMenuButtonY -
+                                        state.fieldMenuButtonHeight -
+                                        10,
+                                    left: state.fieldMenuButtonX + 20,
+                                    child: _dropdownMenu(state),
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : LinearProgressIndicator();
           },
         );
       },
+    );
+  }
+
+  Widget _dropdownMenu(FMJournalState state) {
+    return Card(
+      color: Colors.white,
+      elevation: 3,
+      child: Container(
+        child: Column(
+          children: List.generate(state.fieldList.length, (index) {
+            return InkResponse(
+              onTap: () {
+                _fmJournalBloc.add(SetField(field: state.fieldList[index]));
+              },
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        '${state.fieldList[index].name}',
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: Color(0xFF15B85B),
+                            ),
+                      ),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_down,
+                        color: Colors.transparent,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+      ),
     );
   }
 
@@ -143,7 +198,9 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
               ),
             ],
             child: FMIssueList(
-                field: state.field, shouldReload: state.shouldReload,),
+              field: state.field,
+              shouldReload: state.shouldReload,
+            ),
           );
         }
         break;
@@ -151,7 +208,7 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
         {
           return BlocProvider.value(
             value: _fmJournalBloc,
-            child: FMJournalList(),
+            child: FMJournalList(shouldReload: state.shouldReload,),
           );
         }
         break;
@@ -262,10 +319,10 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
       //       color: Color(0xB3000000),
       //     ),
       itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
-            fontSize: 13,
+            fontSize: 10,
             color: Color(0xB3000000),
           ),
-      itemWidth: 120,
+      itemWidth: 100,
       boxPadding: EdgeInsets.symmetric(horizontal: 6),
       boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
             fontSize: 13,
