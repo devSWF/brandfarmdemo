@@ -137,3 +137,76 @@ class UpdateFieldButtonState extends FMJournalEvent {}
 class GetJournalList extends FMJournalEvent {}
 
 class SetJournal extends FMJournalEvent {}
+
+class UpdateReadState extends FMJournalEvent {}
+
+class GetJournalComments extends FMJournalEvent {}
+
+class GetJournalDetailUserInfo extends FMJournalEvent {}
+
+class ChangeJournalWriteReplyState extends FMJournalEvent {
+  final int index;
+
+  const ChangeJournalWriteReplyState({
+    @required this.index,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''ChangeJournalWriteReplyState { 
+    index : $index,
+  }''';
+}
+
+class ChangeJournalExpandState extends FMJournalEvent {
+  final int index;
+
+  const ChangeJournalExpandState({
+    @required this.index,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''ChangeJournalExpandState { 
+    index : $index,
+  }''';
+}
+
+class WriteJournalReply extends FMJournalEvent {
+  final String cmt;
+  final int index;
+
+  const WriteJournalReply({
+    @required this.cmt,
+    @required this.index,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''WriteJournalReply { 
+    cmt : $cmt,
+    index : $index,
+  }''';
+}
+
+class WriteJournalComment extends FMJournalEvent {
+  final String cmt;
+
+  const WriteJournalComment({
+    @required this.cmt,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''WriteJournalComment { 
+    cmt : $cmt,
+  }''';
+}

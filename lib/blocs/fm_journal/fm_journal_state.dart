@@ -214,7 +214,7 @@ class FMJournalState {
 
   @override
   String toString() {
-    return '''FMIssueState{
+    return '''FMJournalState{
     isLoading: $isLoading,
     navTo: $navTo,
     index: $index,
