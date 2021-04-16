@@ -3,6 +3,7 @@ import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_models.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -97,24 +98,30 @@ class FMJournalRepository {
     return scmt;
   }
 
-  // Future<void> uploadIssue({
-  //   SubJournalIssue subJournalIssue,
-  // }) async {
-  //   DocumentReference reference =
-  //   _firestore.collection('Issue').doc(subJournalIssue.issid);
-  //   await reference.set(subJournalIssue.toMap());
-  // }
-  //
-  // Future<void> updateIssue({
-  //   SubJournalIssue subJournalIssue,
-  // }) async {
-  //   DocumentReference reference =
-  //   _firestore.collection('Issue').doc(subJournalIssue.issid);
-  //   await reference.update(subJournalIssue.toMap());
-  // }
-  //
-  // Future<void> updateIssueComment({String issid, int cmts}) async {
-  //   DocumentReference reference = _firestore.collection('Issue').doc(issid);
-  //   await reference.update({"comments": cmts});
-  // }
+  Future<void> updateJournal({
+    Journal journal,
+  }) async {
+    DocumentReference reference =
+    _firestore.collection('Journal').doc(journal.jid);
+    await reference.update(journal.toMap());
+  }
+
+  Future<User> getDetailUserInfo(uid) async {
+    User user;
+    await _firestore
+        .collection('User')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        user = User.fromSnapshot(ds);
+      });
+    });
+    return user;
+  }
+
+  Future<void> updateJournalComment({String jid, int cmts}) async {
+    DocumentReference reference = _firestore.collection('Journal').doc(jid);
+    await reference.update({"comments": cmts});
+  }
 }
