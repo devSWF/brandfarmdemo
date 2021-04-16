@@ -1,6 +1,7 @@
 import 'package:BrandFarm/blocs/fm_contact/bloc.dart';
 import 'package:BrandFarm/blocs/fm_contact/fm_contact_bloc.dart';
 import 'package:BrandFarm/blocs/fm_contact/fm_contact_state.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,30 +55,42 @@ class _FMContactScreenState extends State<FMContactScreen> {
                           ),
                           SizedBox(height: 40,),
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _titleBar('내 연락처', 1),
+                              Divider(
+                                height: 30,
+                                thickness: 1,
+                                color: Color(0x33000000),
+                              ),
+                              _profileCard(state, 1000, 1000),
+                            ],
+                          ),
+                          SizedBox(height: 42,),
+                          _titleBar('관계자 연락처', 2),
+                          Divider(
+                            height: 30,
+                            thickness: 1,
+                            color: Color(0x33000000),
+                          ),
+                          Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(state.contactList.length, (index) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    height: 93,
-                                    width: 258,
-                                    padding: EdgeInsets.fromLTRB(6, 7, 6, 7),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(width: 1, color: Color(0xB3000000)),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        _profileAvatar(state, index),
-                                        SizedBox(width: 13,),
-                                        _detailInfo(state, index),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: 20,),
-                                ],
+                            children: List.generate(state.col, (col) {
+                              return Row(
+                                children: List.generate(state.row, (row) {
+                                  return Row(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          _profileCard(state, col, row),
+                                          SizedBox(height: 20,),
+                                        ],
+                                      ),
+                                      SizedBox(width: 41,),
+                                    ],
+                                  );
+                                }),
                               );
                             }),
                           )
@@ -92,46 +105,116 @@ class _FMContactScreenState extends State<FMContactScreen> {
     );
   }
 
-  Widget _profileAvatar(FMContactState state, int index) {
+  Widget _titleBar(String title, int from){
     return Container(
-      height: 56,
-      width: 56,
-      decoration: BoxDecoration(
-        color: Colors.black12,
-        shape: BoxShape.circle,
-        image: DecorationImage(
-          image: (state.contactList[index].imgUrl.isNotEmpty)
-              ? CachedNetworkImageProvider(state.contactList[index].imgUrl,)
-              : AssetImage('assets/profile.png'),
-          fit: BoxFit.fill,
-        )
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('${title}',
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+              color: Colors.black,
+            ),),
+          (from == 1)
+              ? Icon(Icons.settings, color: Colors.black,) : Container(),
+        ],
       ),
     );
   }
 
-  Widget _detailInfo(FMContactState state, int index) {
+  Widget _profileCard(FMContactState state, int col, int row) {
+    return Container(
+      height: 82,
+      width: 249,
+      padding: EdgeInsets.fromLTRB(18, 16, 0, 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(width: 1, color: Color(0xB3000000)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _profileAvatar(state, col, row),
+          SizedBox(width: 14,),
+          _detailInfo(state, col, row),
+        ],
+      ),
+    );
+  }
+
+  Widget _profileAvatar(FMContactState state, int col, int row) {
+    return Container(
+      height: 50,
+      width: 50,
+      decoration: BoxDecoration(
+          color: Color(0xFF15B85B),
+          shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: Container(
+          height: 44,
+          width: 44,
+          decoration: BoxDecoration(
+            color: Colors.lightGreen,
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: (col == 1000 && UserUtil.getUser().imgUrl.isNotEmpty)
+                  ? CachedNetworkImageProvider(UserUtil.getUser().imgUrl)
+                  : (col == 1000 && UserUtil.getUser().imgUrl.isEmpty)
+                  ? AssetImage('assets/profile.png')
+                  : (state.cList[col][row].imgUrl.isNotEmpty)
+                  ? CachedNetworkImageProvider(state.cList[col][row].imgUrl,)
+                  : AssetImage('assets/profile.png'),
+              fit: BoxFit.fitWidth,
+            )
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _detailInfo(FMContactState state, int col, int row) {
+    String name = (col == 1000)
+        ? UserUtil.getUser().name
+        : state.cList[col][row].name;
+    String position = (col == 1000)
+        ? '필드매니저'
+        : state.cList[col][row].position;
+    String phoneNum = (col == 1000)
+        ? UserUtil.getUser().phone
+        : state.cList[col][row].phoneNum;
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${state.contactList[index].position}',
-          style: Theme.of(context).textTheme.bodyText1.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 15,
-            color: Color(0xB3000000),
-          ),),
-        Text('${state.contactList[index].name}',
-          style: Theme.of(context).textTheme.bodyText1.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 20,
-            color: Color(0xB3000000),
-          ),),
-        Text('${state.contactList[index].phoneNum}',
+        // SizedBox(height: 5,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text('${name}',
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                color: Color(0xB3000000),
+              ),),
+            SizedBox(width: 5,),
+            Text('${position}',
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 12,
+                color: Color(0x80000000),
+              ),),
+          ],
+        ),
+        SizedBox(height: 3,),
+        Text('${phoneNum}',
           style: GoogleFonts.lato(
             fontWeight: FontWeight.normal,
-            fontSize: 18,
-            color: Color(0xB3000000),
+            fontSize: 16,
+            color: Colors.black,
           )),
+        // SizedBox(height: 5,),
       ],
     );
   }
