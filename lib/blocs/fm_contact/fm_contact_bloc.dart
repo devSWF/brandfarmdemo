@@ -32,8 +32,45 @@ class FMContactBloc extends Bloc<FMContactEvent, FMContactState> {
 
     List<FMContact> contactList = await FMContactRepository().getContactList(fieldList);
 
+    int len = contactList.length;
+    int num;
+    if(len % 2 != 0) {
+      num = len + 1;
+    } else {
+      num = len;
+    }
+
+    double x = num / 2;
+    int col = x.toInt();
+    int row = 2;
+
+    print('col: ${col} // row: ${row}');
+
+    List<List<FMContact>> cList = [];
+    List<FMContact> tmp = [];
+    int obj = 0;
+    for(int i=0; i<col; i++) {
+      for(int j=0; j<row; j++) {
+        if(tmp.isEmpty) {
+          tmp.insert(0, contactList[obj]);
+          obj += 1;
+        } else {
+          tmp.add(contactList[obj]);
+          obj += 1;
+        }
+      }
+      if(cList.isEmpty) {
+        cList.insert(0, tmp);
+      } else {
+        cList.add(tmp);
+      }
+    }
+
     yield state.update(
       contactList: contactList,
+      col: col,
+      row: row,
+      cList: cList,
     );
   }
 }
