@@ -8,6 +8,7 @@ import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/home/fm_home_screen.dart';
+import 'package:BrandFarm/om_screens/home/om_home_screen.dart';
 import 'package:BrandFarm/screens/home/sub_home_screen.dart';
 import 'package:BrandFarm/screens/splash/splash_screen.dart';
 import 'package:BrandFarm/screens/login/login_screen.dart';
@@ -141,7 +142,7 @@ class _AppState extends State<App> {
                     child: FMHomeScreen(),
                 );
               } else {
-                return EmptyScreen();
+                return OMHomeScreen();
               }
               // return (UserUtil.getUser().position == 3)
               //     ? MultiBlocProvider(providers: [
