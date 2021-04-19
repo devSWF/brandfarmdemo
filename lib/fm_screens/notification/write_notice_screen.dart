@@ -1,10 +1,8 @@
 import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
-import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,7 +46,6 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
   void initState() {
     super.initState();
     _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
-    _fmNotificationBloc.add(GetFieldList());
     _titleController = TextEditingController();
     _noticeController = TextEditingController();
     _titleNode = FocusNode();
@@ -239,32 +236,32 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
     );
   }
 
-  Widget _selectField(FMNotificationState state) {
-    return DropdownBelow(
-      value: state.field,
-      items: state.fieldList.map<DropdownMenuItem<Field>>((Field value) {
-        return DropdownMenuItem<Field>(
-          value: value,
-          child: Text(value.name),
-        );
-      }).toList(),
-      itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
-            color: Color(0xFF6F6F6F),
-          ),
-      itemWidth: 93,
-      boxPadding: EdgeInsets.symmetric(horizontal: 8),
-      boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
-            color: Color(0xFF6F6F6F),
-          ),
-      boxWidth: 93,
-      boxHeight: 24,
-      onChanged: (Field value) {
-        setState(() {
-          _fmNotificationBloc.add(SetField(field: value));
-        });
-      },
-    );
-  }
+  // Widget _selectField(FMNotificationState state) {
+  //   return DropdownBelow(
+  //     value: state.field,
+  //     items: state.fieldList.map<DropdownMenuItem<Field>>((Field value) {
+  //       return DropdownMenuItem<Field>(
+  //         value: value,
+  //         child: Text(value.name),
+  //       );
+  //     }).toList(),
+  //     itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+  //           color: Color(0xFF6F6F6F),
+  //         ),
+  //     itemWidth: 93,
+  //     boxPadding: EdgeInsets.symmetric(horizontal: 8),
+  //     boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+  //           color: Color(0xFF6F6F6F),
+  //         ),
+  //     boxWidth: 93,
+  //     boxHeight: 24,
+  //     onChanged: (Field value) {
+  //       setState(() {
+  //         _fmNotificationBloc.add(SetField(field: value));
+  //       });
+  //     },
+  //   );
+  // }
 
   Widget _selectFieldCategory(FMNotificationState state) {
     return OutlinedButton(
@@ -406,32 +403,32 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
     );
   }
 
-  Widget _noticeType() {
-    return DropdownBelow(
-      value: noticeType,
-      items: <String>['일반', '중요'].map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-      itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
-            color: Color(0xFF6F6F6F),
-          ),
-      itemWidth: 93,
-      boxPadding: EdgeInsets.symmetric(horizontal: 8),
-      boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
-            color: Color(0xFF6F6F6F),
-          ),
-      boxWidth: 93,
-      boxHeight: 24,
-      onChanged: (String value) {
-        setState(() {
-          noticeType = value;
-        });
-      },
-    );
-  }
+  // Widget _noticeType() {
+  //   return DropdownBelow(
+  //     value: noticeType,
+  //     items: <String>['일반', '중요'].map<DropdownMenuItem<String>>((String value) {
+  //       return DropdownMenuItem<String>(
+  //         value: value,
+  //         child: Text(value),
+  //       );
+  //     }).toList(),
+  //     itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+  //           color: Color(0xFF6F6F6F),
+  //         ),
+  //     itemWidth: 93,
+  //     boxPadding: EdgeInsets.symmetric(horizontal: 8),
+  //     boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+  //           color: Color(0xFF6F6F6F),
+  //         ),
+  //     boxWidth: 93,
+  //     boxHeight: 24,
+  //     onChanged: (String value) {
+  //       setState(() {
+  //         noticeType = value;
+  //       });
+  //     },
+  //   );
+  // }
 
   Widget _writeTitle() {
     return Container(
@@ -522,6 +519,7 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
           } else {
             _fmNotificationBloc.add(PostNotification(
                 obj: NotificationNotice(
+              no: '',
               uid: UserUtil.getUser().uid,
               name: UserUtil.getUser().name,
               imgUrl: UserUtil.getUser().imgUrl,

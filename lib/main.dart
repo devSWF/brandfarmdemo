@@ -2,11 +2,11 @@
 import 'dart:io';
 
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
+import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
-import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/home/fm_home_screen.dart';
 import 'package:BrandFarm/om_screens/home/om_home_screen.dart';
 import 'package:BrandFarm/screens/home/sub_home_screen.dart';
@@ -137,6 +137,9 @@ class _AppState extends State<App> {
                       ),
                       BlocProvider<FMHomeBloc>(
                         create: (BuildContext context) => FMHomeBloc(),
+                      ),
+                      BlocProvider<FMNotificationBloc>(
+                        create: (BuildContext context) => FMNotificationBloc(),
                       ),
                     ],
                     child: FMHomeScreen(),

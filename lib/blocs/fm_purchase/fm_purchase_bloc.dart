@@ -426,7 +426,7 @@ class FMPurchaseBloc
   }
 
   Stream<FMPurchaseState> _mapSetListOrderToState(int columnIndex) async* {
-    // get purchase list from firebase
+    // set list order
     List<FMPurchase> plist = state.productListBySearch;
     bool isAscending;
     if (state.isAscending == true) {

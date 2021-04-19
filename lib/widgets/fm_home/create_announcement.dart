@@ -10,6 +10,14 @@ class CreateAnnouncement extends StatefulWidget {
 }
 
 class _CreateAnnouncementState extends State<CreateAnnouncement> {
+  FMNotificationBloc _fmNotificationBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -78,8 +86,8 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return BlocProvider(
-            create: (BuildContext context) => FMNotificationBloc(),
+          return BlocProvider.value(
+            value: _fmNotificationBloc,
             child: WriteNoticeScreen(),
           );
         }

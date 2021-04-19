@@ -41,6 +41,28 @@ class FMNotificationRepository {
     await reference.set(notice.toDocument());
   }
 
+  Future<List<NotificationNotice>> getNotificationList(String farmID) async {
+    List<NotificationNotice> nlist = [];
+    QuerySnapshot _nlist = await _firestore
+        .collection('Notification')
+        .where('farmid', isEqualTo: farmID)
+        .orderBy('postedDate', descending: true)
+        .get();
+
+    _nlist.docs.forEach((ds) {
+      nlist.add(NotificationNotice.fromSnapshot(ds));
+    });
+
+    return nlist;
+  }
+
+  Future<void> updateNotice({
+    NotificationNotice obj,
+  }) async {
+    DocumentReference reference = _firestore.collection('Notification').doc(obj.notid);
+    await reference.update(obj.toDocument());
+  }
+
   // Future<User> getDetailUserInfo(uid) async {
   //   User user;
   //   await _firestore
@@ -72,14 +94,7 @@ class FMNotificationRepository {
   //
   //   return issueList;
   // }
-  //
-  // Future<void> updateIssue({
-  //   SubJournalIssue obj,
-  // }) async {
-  //   DocumentReference reference = _firestore.collection('Issue').doc(obj.issid);
-  //   await reference.update(obj.toMap());
-  // }
-  //
+
   // Future<List<ImagePicture>> getImage(Field field) async {
   //   List<ImagePicture> image = [];
   //   QuerySnapshot img = await _firestore

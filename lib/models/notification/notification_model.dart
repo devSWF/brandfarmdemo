@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
 class NotificationNotice {
+  final String no;
   final String uid;
   final String name;
   final String imgUrl;
@@ -19,6 +20,7 @@ class NotificationNotice {
   final String department;
 
   NotificationNotice({
+    @required this.no,
     @required this.uid,
     @required this.name,
     @required this.imgUrl,
@@ -38,6 +40,7 @@ class NotificationNotice {
 
   factory NotificationNotice.fromSnapshot(DocumentSnapshot ds) {
     return NotificationNotice(
+      no: ds['no'].toString(),
       uid: ds['uid'].toString(),
       name: ds['name'].toString(),
       imgUrl: ds['imgUrl'].toString(),
@@ -58,6 +61,7 @@ class NotificationNotice {
 
   Map<String, Object> toDocument() {
     return {
+      'no': no,
       'uid': uid,
       'name': name,
       'imgUrl': imgUrl,
