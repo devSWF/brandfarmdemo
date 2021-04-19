@@ -1,4 +1,5 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
+import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
@@ -20,6 +21,7 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody> {
   FMPlanBloc _fmPlanBloc;
   FMHomeBloc _fmHomeBloc;
+  FMNotificationBloc _fmNotificationBloc;
   ScrollController _scrollController;
 
   @override
@@ -27,6 +29,7 @@ class _HomeBodyState extends State<HomeBody> {
     super.initState();
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
     _scrollController = ScrollController();
   }
 
@@ -50,7 +53,10 @@ class _HomeBodyState extends State<HomeBody> {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                        CreateAnnouncement(),
+                        BlocProvider.value(
+                          value: _fmNotificationBloc,
+                          child: CreateAnnouncement(),
+                        ),
                         SizedBox(
                           height: defaultPadding,
                         ),

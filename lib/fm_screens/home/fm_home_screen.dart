@@ -7,6 +7,7 @@ import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
+import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
 import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/contact/fm_contact_screen.dart';
 import 'package:BrandFarm/fm_screens/journal/fm_journal_screen.dart';
+import 'package:BrandFarm/fm_screens/notification/fm_notification_screen.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_request_purchase_screen.dart';
@@ -32,6 +34,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
   FMPurchaseBloc _fmPurchaseBloc;
   FMPlanBloc _fmPlanBloc;
   FMHomeBloc _fmHomeBloc;
+  FMNotificationBloc _fmNotificationBloc;
   bool isVisible;
   bool showDrawer;
 
@@ -46,6 +49,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     _fmPlanBloc.add(GetShortDetailList());
     _fmPlanBloc.add(GetSortedDetailList());
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
+    _fmNotificationBloc.add(GetFieldList());
     isVisible = true;
     showDrawer = true;
   }
@@ -141,6 +146,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
               BlocProvider.value(
                 value: _fmHomeBloc,
               ),
+              BlocProvider.value(
+                value: _fmNotificationBloc,
+              ),
             ],
             child: GetPage(
               index: state.selectedIndex,
@@ -168,6 +176,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
               ),
               BlocProvider.value(
                 value: _fmHomeBloc,
+              ),
+              BlocProvider.value(
+                value: _fmNotificationBloc,
               ),
             ],
             child: GetPage(
@@ -213,85 +224,27 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                       ),
                 ),
               ),
-              Theme(
-                data: theme,
-                child: MyExpansionTile(
-                  onExpansionChanged: (value) {
-                    if (value) {
-                      setState(() {
-                        _fmHomeBloc.add(SetPageIndex(index: 1));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                      });
-                    }
-                  },
-                  leading: Icon(
-                    Icons.view_agenda_outlined,
-                    color:
-                        (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
-                    size: 18,
+              ListTile(
+                onTap: () {
+                  setState(() {
+                    _fmHomeBloc.add(SetPageIndex(index: 1));
+                  });
+                },
+                leading: Icon(
+                  Icons.view_agenda_outlined,
+                  color:
+                  (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                  size: 18,
+                ),
+                title: Text(
+                  '공지사항',
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    color: (state.pageIndex == 1)
+                        ? Color(0xFF15B85B)
+                        : Colors.black,
                   ),
-                  title: Text(
-                    '공지사항',
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 13,
-                          color: (state.pageIndex == 1)
-                              ? Color(0xFF15B85B)
-                              : Colors.black,
-                        ),
-                  ),
-                  children: [
-                    ListTile(
-                      onTap: () {
-                        setState(() {
-                          _fmHomeBloc.add(SetPageIndex(index: 1));
-                          _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                        });
-                      },
-                      title: Row(
-                        children: [
-                          SizedBox(
-                            width: 76,
-                          ),
-                          Text(
-                            '테스트',
-                            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                  fontSize: 13,
-                                  color: (state.pageIndex == 1 &&
-                                          state.subPageIndex == 1)
-                                      ? Color(0xFF15B85B)
-                                      : Colors.black,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ListTile(
-                      onTap: () {
-                        setState(() {
-                          _fmHomeBloc.add(SetPageIndex(index: 1));
-                          _fmHomeBloc.add(SetSubPageIndex(index: 2));
-                        });
-                      },
-                      title: Row(
-                        children: [
-                          SizedBox(
-                            width: 76,
-                          ),
-                          Text(
-                            '테스트',
-                            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                  fontSize: 13,
-                                  color: (state.pageIndex == 1 &&
-                                          state.subPageIndex == 2)
-                                      ? Color(0xFF15B85B)
-                                      : Colors.black,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
               ),
               ListTile(
@@ -639,6 +592,7 @@ class _GetPageState extends State<GetPage> {
   FMPurchaseBloc _fmPurchaseBloc;
   FMPlanBloc _fmPlanBloc;
   FMHomeBloc _fmHomeBloc;
+  FMNotificationBloc _fmNotificationBloc;
 
   @override
   void initState() {
@@ -646,6 +600,7 @@ class _GetPageState extends State<GetPage> {
     _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
   }
 
   @override
@@ -653,7 +608,10 @@ class _GetPageState extends State<GetPage> {
     switch (widget.index) {
       case 1:
         {
-          return EmptyScreen(); // 공지사항
+          return BlocProvider.value(
+            value: _fmNotificationBloc,
+            child: FMNotificationScreen(),
+          ); // 공지사항
         }
         break;
       case 2:
@@ -724,6 +682,9 @@ class _GetPageState extends State<GetPage> {
               ),
               BlocProvider.value(
                 value: _fmHomeBloc,
+              ),
+              BlocProvider.value(
+                value: _fmNotificationBloc,
               ),
             ],
             child: HomeBody(),

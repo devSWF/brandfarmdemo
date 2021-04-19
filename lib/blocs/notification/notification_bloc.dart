@@ -58,6 +58,7 @@ class NotificationBloc
 
   Stream<NotificationState> _mapCheckAsReadToState(NotificationNotice obj) async* {
     NotificationNotice isRead = NotificationNotice(
+        no: obj.no,
         uid: obj.uid,
         name: obj.name,
         imgUrl: obj.imgUrl,
