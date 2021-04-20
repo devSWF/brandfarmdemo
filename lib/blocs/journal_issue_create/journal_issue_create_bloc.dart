@@ -106,6 +106,7 @@ class JournalIssueCreateBloc
     SubJournalIssue subJournalIssue = SubJournalIssue(
       date: Timestamp.now(),
       fid: fid ?? await FieldUtil.getField().fid,
+      fieldCategory: await FieldUtil.getField().fieldCategory,
       sfmid: sfmid ?? '--',
       issid: issid ?? '--',
       uid: uid ?? '--',

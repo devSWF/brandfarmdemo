@@ -7,7 +7,6 @@ import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/comment/comment_repository.dart';
 import 'package:BrandFarm/repository/fm_issue/fm_issue_repository.dart';
-import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -96,6 +95,7 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     SubJournalIssue _obj = SubJournalIssue(
       date: obj.date,
       fid: obj.fid,
+      fieldCategory: obj.fieldCategory,
       sfmid: obj.sfmid,
       issid: obj.issid,
       uid: obj.uid,
@@ -186,6 +186,7 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     SubJournalIssue _issue = SubJournalIssue(
       date: obj.date,
       fid: obj.fid,
+      fieldCategory: obj.fieldCategory,
       sfmid: obj.sfmid,
       issid: obj.issid,
       uid: obj.uid,

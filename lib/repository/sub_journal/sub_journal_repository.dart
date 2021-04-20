@@ -1,6 +1,7 @@
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -12,7 +13,7 @@ class SubJournalRepository {
     List<SubJournalIssue> issueList = [];
     QuerySnapshot _issue = await FirebaseFirestore.instance
         .collection('Issue')
-        .where('uid', isEqualTo: UserUtil.getUser().uid)
+        .where('fieldCategory', isEqualTo: FieldUtil.getField().fieldCategory)
         .orderBy('date', descending: true)
         .limit(20)
         .get();
@@ -50,7 +51,7 @@ class SubJournalRepository {
     List<Journal> journal = [];
     QuerySnapshot jour = await FirebaseFirestore.instance
         .collection('Journal')
-        .where('uid', isEqualTo: UserUtil.getUser().uid)
+        .where('fieldCategory', isEqualTo: FieldUtil.getField().fieldCategory)
         .orderBy('date', descending: true)
         .limit(20)
         .get();

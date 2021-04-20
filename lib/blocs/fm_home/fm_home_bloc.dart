@@ -1,7 +1,12 @@
-
-
 import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
+import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
+import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
+import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/repository/fm_home/fm_home_repository.dart';
 import 'package:bloc/bloc.dart';
 
 class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
@@ -17,6 +22,8 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       yield* _mapSetSubPageIndexToState(event.index);
     } else if (event is SetSelectedIndex) {
       yield* _mapSetSelectedIndexToState(event.index);
+    } else if (event is GetRecentUpdates) {
+      yield* _mapGetRecentUpdatesToState();
     }
   }
 
@@ -34,5 +41,20 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
 
   Stream<FMHomeState> _mapSetSelectedIndexToState(int index) async* {
     yield state.update(selectedIndex: index);
+  }
+
+  Stream<FMHomeState> _mapGetRecentUpdatesToState() async* {
+    List<FMHomeRecentUpdates> updateList = [];
+    List<NotificationNotice> notice = await FMHomeRepository().getRecentNoticeList(state.farm.farmID);
+    List<FMPlan> plan = await FMHomeRepository().getRecentPlanList(state.farm.farmID);
+    List<FMPurchase> purchase = await FMHomeRepository().getRecentPurchaseList(state.farm.farmID);
+    List<Journal> journal = await FMHomeRepository().getRecentJournalList(state.farm.fieldCategory);
+    List<SubJournalIssue> issue = await FMHomeRepository().getRecentIssueList(state.farm.fieldCategory);
+    // List<Comment> comment = await FMHomeRepository().getRecentCommentList();
+    // List<SubComment> subComment = await FMHomeRepository().getRecentSubCommentList();
+
+    yield state.update(
+      recentUpdateList: updateList,
+    );
   }
 }

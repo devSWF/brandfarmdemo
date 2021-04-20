@@ -5,6 +5,7 @@ import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_models.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
 import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/journal.category.dart';
 import 'package:BrandFarm/utils/resize_image.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
@@ -409,6 +410,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
   Stream<JournalCreateState> _mapUpdateJournalState() async* {
     Journal journal = Journal(
       fid: state.existJournal.fid,
+      fieldCategory: state.existJournal.fieldCategory,
       jid: state.existJournal.jid,
       uid: state.existJournal.uid,
       date: state.selectedDate,
@@ -475,8 +477,8 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
     String jid = FirebaseFirestore.instance.collection('Journal').doc().id;
 
     Journal journal = Journal(
-      ///Todo: 여기 fid로 변경 해주
-      fid: UserUtil.getUser().uid,
+      fid: await FieldUtil.getField().fid,
+      fieldCategory: await FieldUtil.getField().fieldCategory,
       jid: state.jid.isNotEmpty ? state.jid : jid,
       uid: UserUtil.getUser().uid,
       date: state.selectedDate,

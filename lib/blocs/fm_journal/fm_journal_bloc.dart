@@ -191,6 +191,7 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
 
     Journal _obj = Journal(
         fid: state.journal.fid,
+        fieldCategory: state.journal.fieldCategory,
         jid: state.journal.jid,
         uid: state.journal.uid,
         date: state.journal.date,
@@ -395,6 +396,7 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     List<Journal> reverseList = state.reverseList;
     Journal _jour = Journal(
         fid: state.journal.fid,
+        fieldCategory: state.journal.fieldCategory,
         jid: state.journal.jid,
         uid: state.journal.uid,
         date: state.journal.date,
