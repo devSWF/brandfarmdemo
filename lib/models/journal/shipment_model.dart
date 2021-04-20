@@ -33,7 +33,7 @@ class Shipment {
     return Shipment(
       shipmentPlant: shipment['shipmentPlant'],
       shipmentPath: shipment['shipmentPath'],
-      shipmentUnit: shipment['shipmentUnit'],
+      shipmentUnit: shipment['shipmentUnit'].toDouble(),
       shipmentUnitSelect: shipment['shipmentUnitSelect'],
       shipmentAmount: shipment['shipmentAmount'],
       shipmentGrade: shipment['shipmentGrade'],

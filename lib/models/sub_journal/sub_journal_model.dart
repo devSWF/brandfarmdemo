@@ -39,6 +39,7 @@ class SubJournal {
 class SubJournalIssue {
   final Timestamp date;
   final String fid;
+  final String fieldCategory;
   final String sfmid;
   final String issid;
   final String uid;
@@ -53,6 +54,7 @@ class SubJournalIssue {
   SubJournalIssue({
     @required this.date,
     @required this.fid,
+    @required this.fieldCategory,
     @required this.sfmid,
     @required this.issid,
     @required this.uid,
@@ -69,6 +71,7 @@ class SubJournalIssue {
     return SubJournalIssue(
       date: ds['date'],
       fid: ds['fid'],
+      fieldCategory: ds['fieldCategory'],
       sfmid: ds['sfmid'],
       issid: ds['issid'],
       uid: ds['uid'],
@@ -86,6 +89,7 @@ class SubJournalIssue {
     return SubJournalIssue(
         date: Timestamp.now(),
         fid: '',
+        fieldCategory: '',
         sfmid: '',
         issid: '',
         uid: '',
@@ -102,6 +106,7 @@ class SubJournalIssue {
     return {
       'date': date,
       'fid': fid,
+      'fieldCategory': fieldCategory,
       'sfmid': sfmid,
       'issid': issid,
       'uid': uid,

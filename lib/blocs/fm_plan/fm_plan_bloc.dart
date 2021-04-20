@@ -94,6 +94,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
       imgUrl: UserUtil.getUser().imgUrl,
       startDate: Timestamp.fromDate(state.wPlan.startDate),
       endDate: Timestamp.fromDate(state.wPlan.endDate),
+      postedDate: Timestamp.now(),
       title: state.wPlan.title,
       content: state.wPlan.content,
       isReadByFM: true,

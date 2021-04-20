@@ -1,7 +1,6 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
-import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/screens/sub_journal/sub_journal_create_screen.dart';
 import 'package:BrandFarm/utils/field_util.dart';
@@ -77,7 +76,7 @@ class _SubJournalIssueModifyScreenState
               comments: state.selectedIssue.comments,
               isReadByFM: state.selectedIssue.isReadByFM,
               isReadByOffice: state.selectedIssue.isReadByOffice,
-              selectedDate: mstate.selectedDate ??state.selectedIssue.date,
+              selectedDate: mstate.selectedDate ?? state.selectedIssue.date,
             ));
           } else if (mstate.isComplete == true && mstate.isUploaded == true) {
             // print('isUpload true');
@@ -87,6 +86,7 @@ class _SubJournalIssueModifyScreenState
                   issue: SubJournalIssue(
                 date: mstate.selectedDate ?? state.selectedIssue.date,
                 fid: FieldUtil.getField().fid,
+                fieldCategory: FieldUtil.getField().fieldCategory,
                 sfmid: FieldUtil.getField().sfmid ?? '--',
                 issid: state.selectedIssue.issid ?? '--',
                 uid: UserUtil.getUser().uid ?? '--',

@@ -43,7 +43,7 @@ class FMJournalRepository {
     List<Journal> journal = [];
     QuerySnapshot jour = await _firestore
         .collection('Journal')
-        .where('fid', isEqualTo: field.sfmid)
+        .where('fid', isEqualTo: field.fid)
         .where('date', isGreaterThanOrEqualTo: firstDayOfMonth)
         .where('date', isLessThanOrEqualTo: lastDayOfMonth)
         .orderBy('date', descending: true)

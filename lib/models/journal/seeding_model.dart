@@ -33,9 +33,9 @@ class Seeding {
 
   factory Seeding.fromMap(Map<String, dynamic> seeding) {
     return Seeding(
-      seedingArea: seeding['seedingArea'],
+      seedingArea: seeding['seedingArea'].toDouble(),
       seedingAreaUnit: seeding['seedingAreaUnit'],
-      seedingAmount: seeding['seedingAmount'],
+      seedingAmount: seeding['seedingAmount'].toDouble(),
       seedingAmountUnit: seeding['seedingAmountUnit'],
       seedingValid: seeding['seedingValid'],
       index: seeding['index'],

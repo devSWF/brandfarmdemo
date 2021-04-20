@@ -49,3 +49,5 @@ class SetSelectedIndex extends FMHomeEvent{
     index: $index,
   }''';
 }
+
+class GetRecentUpdates extends FMHomeEvent {}

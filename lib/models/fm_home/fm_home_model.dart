@@ -1,0 +1,52 @@
+import 'package:BrandFarm/models/comment/comment_model.dart';
+import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
+import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+class FMHomeRecentUpdates {
+  final FMPlan plan;
+  final NotificationNotice notice;
+  final FMPurchase purchase;
+  final Journal journal;
+  final SubJournalIssue issue;
+  final Comment comment;
+  final SubComment subComment;
+
+  FMHomeRecentUpdates({
+    @required this.plan,
+    @required this.notice,
+    @required this.purchase,
+    @required this.journal,
+    @required this.issue,
+    @required this.comment,
+    @required this.subComment,
+  });
+
+  factory FMHomeRecentUpdates.fromSnapshot(DocumentSnapshot ds) {
+    return FMHomeRecentUpdates(
+      plan: ds['plan'],
+      notice: ds['notice'],
+      purchase: ds['purchase'],
+      journal: ds['journal'],
+      issue: ds['issue'],
+      comment: ds['comment'],
+      subComment: ds['subComment'],
+    );
+  }
+
+  Map<String, Object> toDocument() {
+    return {
+      'plan': plan,
+      'notice': notice,
+      'purchase': purchase,
+      'journal': journal,
+      'issue': issue,
+      'comment': comment,
+      'subComment': subComment,
+    };
+  }
+}

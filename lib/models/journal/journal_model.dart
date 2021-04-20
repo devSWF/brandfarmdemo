@@ -15,6 +15,7 @@ import 'workforce_model.dart';
 
 class Journal {
   final String fid;
+  final String fieldCategory;
   final String jid;
   final String uid;
   final Timestamp date;
@@ -59,6 +60,7 @@ class Journal {
 
   Journal({
     @required this.fid,
+    @required this.fieldCategory,
     @required this.jid,
     @required this.uid,
     @required this.date,
@@ -84,6 +86,7 @@ class Journal {
   factory Journal.empty(){
     return Journal(
       fid: '',
+      fieldCategory: '',
       jid: '',
       uid: '',
       date: Timestamp.now(),
@@ -117,6 +120,7 @@ class Journal {
 
     return Journal(
       fid: ds['fid'],
+      fieldCategory: ds['fieldCategory'],
       jid: ds['jid'],
       uid: ds['uid'],
       date: ds['date'],
@@ -298,6 +302,7 @@ class Journal {
 
     return {
       'fid': this.fid,
+      'fieldCategory': this.fieldCategory,
       'jid': this.jid,
       'uid' : this.uid,
       'date': this.date,

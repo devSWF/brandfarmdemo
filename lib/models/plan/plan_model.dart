@@ -8,6 +8,7 @@ class FMPlan {
   final String imgUrl;
   final Timestamp startDate;
   final Timestamp endDate;
+  final Timestamp postedDate;
   final String title;
   final String content;
   final bool isReadByFM; // farm manager
@@ -24,6 +25,7 @@ class FMPlan {
     @required this.imgUrl,
     @required this.startDate,
     @required this.endDate,
+    @required this.postedDate,
     @required this.title,
     @required this.content,
     @required this.isReadByFM,
@@ -42,6 +44,7 @@ class FMPlan {
       imgUrl: ds['imgUrl'].toString(),
       startDate: ds['startDate'],
       endDate: ds['endDate'],
+      postedDate: ds['postedDate'],
       title: ds['title'].toString(),
       content: ds['content'].toString(),
       isReadByFM: ds['isReadByFM'],
@@ -61,6 +64,7 @@ class FMPlan {
       'imgUrl': imgUrl,
       'startDate': startDate,
       'endDate': endDate,
+      'postedDate': postedDate,
       'title': title,
       'content': content,
       'isReadByFM': isReadByFM,
