@@ -2,20 +2,18 @@ import 'package:BrandFarm/blocs/fm_issue/bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
-import 'package:BrandFarm/fm_screens/issue/fm_issue_detail_screen.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:BrandFarm/utils/unicode/unicode_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FMIssueList extends StatefulWidget {
-  Field field;
-  bool shouldReload;
+  final Field field;
+  final bool shouldReload;
 
   FMIssueList({
     Key key,
@@ -245,11 +243,11 @@ class _CardBodyState extends State<CardBody> {
     );
   }
 
-  String _getImageUrl({List<ImagePicture> pic, SubJournalIssue obj}) {
-    List<ImagePicture> img =
-        pic.where((element) => element.issid == obj.issid).toList();
-    return img[0].url;
-  }
+  // String _getImageUrl({List<ImagePicture> pic, SubJournalIssue obj}) {
+  //   List<ImagePicture> img =
+  //       pic.where((element) => element.issid == obj.issid).toList();
+  //   return img[0].url;
+  // }
 
   String getIssueState({int state}) {
     switch (state) {

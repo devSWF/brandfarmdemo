@@ -254,8 +254,15 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
 
   Stream<FMJournalState> _mapGetJournalCommentsToState() async* {
     // get comments
-    List<Comment> cmt = await FMJournalRepository().getComment(state.journal.jid);
-    List<SubComment> scmt = await FMJournalRepository().getSubComment(state.journal.jid);
+    List<Comment> cmt = [];
+    List<SubComment> scmt = [];
+    if(state.order == '최신 순'){
+      cmt = await FMJournalRepository().getComment(state.journalList[state.index].jid);
+      scmt = await FMJournalRepository().getSubComment(state.journalList[state.index].jid);
+    } else {
+      cmt = await FMJournalRepository().getComment(state.reverseList[state.index].jid);
+      scmt = await FMJournalRepository().getSubComment(state.reverseList[state.index].jid);
+    }
 
     yield state.update(
       commentList: cmt,

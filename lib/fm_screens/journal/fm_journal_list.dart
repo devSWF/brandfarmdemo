@@ -12,7 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class FMJournalList extends StatefulWidget {
-  bool shouldReload;
+  final bool shouldReload;
 
   FMJournalList({
     Key key,
