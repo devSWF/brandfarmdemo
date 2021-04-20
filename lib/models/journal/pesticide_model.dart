@@ -31,12 +31,12 @@ class Pesticide {
   factory Pesticide.fromMap(Map<String, dynamic> pesticide) {
     return Pesticide(
       pesticideMethod: pesticide['pesticideMethod'],
-      pesticideArea: pesticide['pesticideArea'],
+      pesticideArea: pesticide['pesticideArea'].toDouble(),
       pesticideAreaUnit: pesticide['pesticideAreaUnit'],
       pesticideMaterialName: pesticide['pesticideMaterialName'],
-      pesticideMaterialUse: pesticide['pesticideMaterialUse'],
+      pesticideMaterialUse: pesticide['pesticideMaterialUse'].toDouble(),
       pesticideMaterialUnit: pesticide['pesticideMaterialUnit'],
-      pesticideWater: pesticide['pesticideWater'],
+      pesticideWater: pesticide['pesticideWater'].toDouble(),
       pesticideWaterUnit: pesticide['pesticideWaterUnit'],
       index: pesticide['index'],
     );

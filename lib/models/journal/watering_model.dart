@@ -32,9 +32,9 @@ class Watering {
 
   factory Watering.fromMap(Map<String, dynamic> watering) {
     return Watering(
-      wateringArea: watering['wateringArea'],
+      wateringArea: watering['wateringArea'].toDouble(),
       wateringAreaUnit: watering['wateringAreaUnit'],
-      wateringAmount: watering['wateringAmount'],
+      wateringAmount: watering['wateringAmount'].toDouble(),
       wateringAmountUnit: watering['wateringAmountUnit'],
       wateringValid: watering['wateringValid'],
       index: watering['index'],

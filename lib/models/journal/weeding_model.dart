@@ -25,7 +25,7 @@ class Weeding {
 
   factory Weeding.fromMap(Map<String, dynamic> weeding) {
     return Weeding(
-      weedingProgress: weeding['weedingProgress'],
+      weedingProgress: weeding['weedingProgress'].toDouble(),
       weedingUnit: weeding['weedingUnit'],
       weedingValid: weeding['weedingValid'],
       index: weeding['index'],
