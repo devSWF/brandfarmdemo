@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class FMHomeRecentUpdates {
+  final Timestamp date;
   final FMPlan plan;
   final NotificationNotice notice;
   final FMPurchase purchase;
@@ -17,6 +18,7 @@ class FMHomeRecentUpdates {
   final SubComment subComment;
 
   FMHomeRecentUpdates({
+    @required this.date,
     @required this.plan,
     @required this.notice,
     @required this.purchase,
@@ -28,6 +30,7 @@ class FMHomeRecentUpdates {
 
   factory FMHomeRecentUpdates.fromSnapshot(DocumentSnapshot ds) {
     return FMHomeRecentUpdates(
+      date: ds['date'],
       plan: ds['plan'],
       notice: ds['notice'],
       purchase: ds['purchase'],
@@ -41,6 +44,7 @@ class FMHomeRecentUpdates {
   Map<String, Object> toDocument() {
     return {
       'plan': plan,
+      'date': date,
       'notice': notice,
       'purchase': purchase,
       'journal': journal,

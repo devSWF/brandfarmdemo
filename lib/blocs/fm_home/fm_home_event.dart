@@ -51,3 +51,5 @@ class SetSelectedIndex extends FMHomeEvent{
 }
 
 class GetRecentUpdates extends FMHomeEvent {}
+
+class GetFieldListForFMHome extends FMHomeEvent {}
