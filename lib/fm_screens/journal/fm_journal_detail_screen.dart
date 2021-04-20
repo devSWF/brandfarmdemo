@@ -190,7 +190,7 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
 
   String getFieldName(FMJournalState state) {
     int index = state.fieldList.indexWhere((element) {
-          return element.sfmid == state.journal.fid;
+          return element.fid == state.journal.fid;
         }) ?? -1;
 
     String field = state.fieldList[index].name;
