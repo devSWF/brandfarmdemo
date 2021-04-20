@@ -1,9 +1,13 @@
 
+import 'package:BrandFarm/models/comment/comment_model.dart';
+import 'package:BrandFarm/models/farm/farm_model.dart';
+import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FMHomeRepository {
@@ -22,6 +26,34 @@ class FMHomeRepository {
   //   });
   //   return user;
   // }
+
+  Future<Farm> getFarmInfo() async {
+    Farm farm;
+    await _firestore
+        .collection('Farm')
+        .where('managerID', isEqualTo: UserUtil.getUser().uid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        farm = Farm.fromSnapshot(ds);
+      });
+    });
+    return farm;
+  }
+
+  Future<List<Field>> getFieldList(String fieldCategory) async {
+    List<Field> fieldList = [];
+    QuerySnapshot _fieldList = await _firestore
+        .collection('Field')
+        .where('fieldCategory', isEqualTo: fieldCategory)
+        .get();
+
+    _fieldList.docs.forEach((ds) {
+      fieldList.add(Field.fromSnapshot(ds));
+    });
+
+    return fieldList;
+  }
 
   Future<List<NotificationNotice>> getRecentNoticeList(String farmID) async {
     List<NotificationNotice> notice = [];
@@ -101,6 +133,38 @@ class FMHomeRepository {
     });
 
     return issue;
+  }
+
+  Future<List<Comment>> getRecentCommentList(String fieldCategory) async {
+    List<Comment> comment = [];
+    QuerySnapshot _comment = await _firestore
+        .collection('Comment')
+        .where('fieldCategory', isEqualTo: fieldCategory)
+        .orderBy('date', descending: true)
+        .limit(10)
+        .get();
+
+    _comment.docs.forEach((ds) {
+      comment.add(Comment.fromSnapshot(ds));
+    });
+
+    return comment;
+  }
+
+  Future<List<SubComment>> getRecentSubCommentList(String fieldCategory) async {
+    List<SubComment> subComment = [];
+    QuerySnapshot _subComment = await _firestore
+        .collection('SubComment')
+        .where('fieldCategory', isEqualTo: fieldCategory)
+        .orderBy('date', descending: true)
+        .limit(10)
+        .get();
+
+    _subComment.docs.forEach((ds) {
+      subComment.add(SubComment.fromSnapshot(ds));
+    });
+
+    return subComment;
   }
 
   // Future<void> updateIssue({

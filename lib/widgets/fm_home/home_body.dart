@@ -74,7 +74,10 @@ class _HomeBodyState extends State<HomeBody> {
                         SizedBox(
                           height: defaultPadding,
                         ),
-                        Comments(),
+                        BlocProvider.value(
+                          value: _fmHomeBloc,
+                          child: Comments(),
+                        ),
                         SizedBox(
                           height: defaultPadding,
                         ),
