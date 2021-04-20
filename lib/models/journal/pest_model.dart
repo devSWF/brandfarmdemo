@@ -30,7 +30,7 @@ class Pest {
   factory Pest.fromMap(Map<String, dynamic> pest) {
     return Pest(
       pestKind: pest['pestKind'],
-      spreadDegree: pest['spreadDegree'],
+      spreadDegree: pest['spreadDegree'].toDouble(),
       spreadDegreeUnit: pest['spreadDegreeUnit'],
       pestValid: pest['pestValid'],
       index: pest['index'],

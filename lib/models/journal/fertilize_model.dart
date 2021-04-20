@@ -49,12 +49,12 @@ class Fertilize {
   factory Fertilize.fromMap(Map<String, dynamic> fertilize) {
     return Fertilize(
       fertilizerMethod: fertilize['fertilizerMethod'],
-      fertilizerArea: fertilize['fertilizerArea'],
+      fertilizerArea: fertilize['fertilizerArea'].toDouble(),
       fertilizerAreaUnit: fertilize['fertilizerAreaUnit'],
       fertilizerMaterialName: fertilize['fertilizerMaterialName'],
-      fertilizerMaterialUse: fertilize['fertilizerMaterialUse'],
+      fertilizerMaterialUse: fertilize['fertilizerMaterialUse'].toDouble(),
       fertilizerMaterialUnit: fertilize['fertilizerMaterialUnit'],
-      fertilizerWater: fertilize['fertilizerWater'],
+      fertilizerWater: fertilize['fertilizerWater'].toDouble(),
       fertilizerWaterUnit: fertilize['fertilizerWaterUnit'],
       index: fertilize['index'],
     );

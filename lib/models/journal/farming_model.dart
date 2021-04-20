@@ -32,7 +32,7 @@ class Farming {
 
   factory Farming.fromMap(Map<String, dynamic> farming) {
     return Farming(
-      farmingArea: farming['farmingArea'],
+      farmingArea: farming['farmingArea'].toDouble(),
       farmingAreaUnit: farming['farmingAreaUnit'],
       farmingMethod: farming['farmingMethod'],
       farmingMethodUnit: farming['farmingMethodUnit'],

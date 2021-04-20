@@ -33,7 +33,7 @@ class Planting {
 
   factory Planting.fromMap(Map<String, dynamic> planting) {
     return Planting(
-      plantingArea: planting['plantingArea'],
+      plantingArea: planting['plantingArea'].toDouble(),
       plantingAreaUnit: planting['plantingAreaUnit'],
       plantingCount: planting['plantingCount'],
       plantingPrice: planting['plantingPrice'],
