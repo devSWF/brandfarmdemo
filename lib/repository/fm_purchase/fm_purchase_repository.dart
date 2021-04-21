@@ -3,11 +3,26 @@
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FMPurchaseRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<User> getDetailUserInfo(uid) async {
+    User user;
+    await _firestore
+        .collection('User')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        user = User.fromSnapshot(ds);
+      });
+    });
+    return user;
+  }
 
   Future<Farm> getFarmInfo() async {
     Farm farm;

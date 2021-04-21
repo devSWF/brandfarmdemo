@@ -7,25 +7,26 @@ import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FMHomeRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Future<User> getDetailUserInfo(uid) async {
-  //   User user;
-  //   await _firestore
-  //       .collection('User')
-  //       .where('uid', isEqualTo: uid)
-  //       .get()
-  //       .then((qs) {
-  //     qs.docs.forEach((ds) {
-  //       user = User.fromSnapshot(ds);
-  //     });
-  //   });
-  //   return user;
-  // }
+  Future<User> getDetailUserInfo(uid) async {
+    User user;
+    await _firestore
+        .collection('User')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        user = User.fromSnapshot(ds);
+      });
+    });
+    return user;
+  }
 
   Future<Farm> getFarmInfo() async {
     Farm farm;

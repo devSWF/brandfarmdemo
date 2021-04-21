@@ -38,6 +38,20 @@ class User {
     );
   }
 
+  factory User.fromMap(Map<String, dynamic> user) {
+    return User(
+      email: user['email'].toString(),
+      fcmToken: user['fcmToken'].toString(),
+      name: user['name'].toString(),
+      position: user['position'],
+      uid: user['uid'].toString(),
+      psw: user['psw'].toString(),
+      id: user['id'].toString(),
+      imgUrl: user['imgUrl'].toString(),
+      phone: user['phone'].toString(),
+    );
+  }
+
   Map<String, Object> toDocument() {
     return {
       'email': email,
