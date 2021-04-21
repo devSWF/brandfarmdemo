@@ -3,8 +3,6 @@ import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
-import 'package:BrandFarm/models/field_model.dart';
-import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -427,7 +425,7 @@ class _CalendarBarState extends State<CalendarBar> {
   Widget _horizontalViewCalendarFront(FMPlanState state) {
     return Row(
       children: List.generate(5, (index) {
-        String date = getDate(index: index, date: now);
+        // String date = getDate(index: index, date: now);
         return InkResponse(
           onTap: () {
             _fmPlanBloc.add(SetCalendarIndex(index: index));

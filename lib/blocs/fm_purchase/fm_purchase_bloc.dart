@@ -4,6 +4,7 @@ import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/fm_purchase/fm_purchase_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
@@ -97,7 +98,7 @@ class FMPurchaseBloc
     FMPurchase product = FMPurchase(
       purchaseID: '',
       farmID: state.farm.farmID,
-      requester: UserUtil.getUser().name,
+      requester: await UserUtil.getUser().name,
       receiver: '', // field worker name
       requestDate: now,
       receiveDate: null,
@@ -111,6 +112,8 @@ class FMPurchaseBloc
       waitingState: 1, // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
       isFieldSelectionButtonClicked: false,
       isThereUpdates: true,
+      reqUser: await UserUtil.getUser(),
+      recUser: null,
     );
     pList.insert(0, product);
     yield state.update(
@@ -138,7 +141,9 @@ class FMPurchaseBloc
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
         isFieldSelectionButtonClicked: !obj.isFieldSelectionButtonClicked,
-        isThereUpdates: obj.isThereUpdates
+        isThereUpdates: obj.isThereUpdates,
+      reqUser: obj.reqUser,
+      recUser: obj.recUser,
     );
 
     List<FMPurchase> plist = state.productList;
@@ -151,6 +156,7 @@ class FMPurchaseBloc
   }
 
   Stream<FMPurchaseState> _mapUpdateFieldNameToState(int index, int field) async* {
+    User recUser = await FMPurchaseRepository().getDetailUserInfo(state.fieldList[field].sfmid);
     FMPurchase obj = state.productList[index];
     FMPurchase newObj = FMPurchase(
         purchaseID: obj.purchaseID,
@@ -168,7 +174,9 @@ class FMPurchaseBloc
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
         isFieldSelectionButtonClicked: !obj.isFieldSelectionButtonClicked,
-        isThereUpdates: obj.isThereUpdates
+        isThereUpdates: obj.isThereUpdates,
+      reqUser: obj.reqUser,
+      recUser: recUser,
     );
 
     List<FMPurchase> plist = state.productList;
@@ -198,7 +206,9 @@ class FMPurchaseBloc
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
         isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
-        isThereUpdates: obj.isThereUpdates
+        isThereUpdates: obj.isThereUpdates,
+      reqUser: obj.reqUser,
+      recUser: obj.recUser,
     );
 
     List<FMPurchase> plist = state.productList;
@@ -228,7 +238,9 @@ class FMPurchaseBloc
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
         isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
-        isThereUpdates: obj.isThereUpdates
+        isThereUpdates: obj.isThereUpdates,
+      reqUser: obj.reqUser,
+      recUser: obj.recUser,
     );
 
     List<FMPurchase> plist = state.productList;
@@ -258,7 +270,9 @@ class FMPurchaseBloc
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
         isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
-        isThereUpdates: obj.isThereUpdates
+        isThereUpdates: obj.isThereUpdates,
+      reqUser: obj.reqUser,
+      recUser: obj.recUser,
     );
 
     List<FMPurchase> plist = state.productList;
@@ -288,7 +302,9 @@ class FMPurchaseBloc
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
         isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
-        isThereUpdates: obj.isThereUpdates
+        isThereUpdates: obj.isThereUpdates,
+      reqUser: obj.reqUser,
+      recUser: obj.recUser,
     );
 
     List<FMPurchase> plist = state.productList;
@@ -318,7 +334,9 @@ class FMPurchaseBloc
         officeReply: obj.officeReply,
         waitingState: obj.waitingState,
         isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
-        isThereUpdates: obj.isThereUpdates
+        isThereUpdates: obj.isThereUpdates,
+      reqUser: obj.reqUser,
+      recUser: obj.recUser,
     );
 
     List<FMPurchase> plist = state.productList;
@@ -334,7 +352,7 @@ class FMPurchaseBloc
     FMPurchase product = FMPurchase(
       purchaseID: '',
       farmID: state.farm.farmID,
-      requester: UserUtil.getUser().name,
+      requester: await UserUtil.getUser().name,
       receiver: '', // field worker name
       requestDate: state.curr,
       receiveDate: null,
@@ -348,6 +366,8 @@ class FMPurchaseBloc
       waitingState: 1, // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
       isFieldSelectionButtonClicked: false,
       isThereUpdates: true,
+      reqUser: await UserUtil.getUser(),
+      recUser: null,
     );
 
     List<FMPurchase> plist = state.productList;
@@ -380,7 +400,9 @@ class FMPurchaseBloc
           officeReply: item.officeReply,
           waitingState: item.waitingState,
           isFieldSelectionButtonClicked: item.isFieldSelectionButtonClicked,
-          isThereUpdates: item.isThereUpdates
+          isThereUpdates: item.isThereUpdates,
+        reqUser: item.reqUser,
+        recUser: item.recUser,
       );
       FMPurchaseRepository().postPurchaseItem(newObj);
     });
@@ -510,6 +532,8 @@ class FMPurchaseBloc
         waitingState: obj.waitingState,
         isFieldSelectionButtonClicked: obj.isFieldSelectionButtonClicked,
         isThereUpdates: false,
+      reqUser: obj.reqUser,
+      recUser: obj.recUser,
     );
 
     FMPurchaseRepository().updatePurchaseInfo(obj: newObj);

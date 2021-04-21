@@ -2,8 +2,6 @@ import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_detail_screen.dart';
-import 'package:date_format/date_format.dart';
-import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,16 +36,18 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
     return BlocConsumer<FMPurchaseBloc, FMPurchaseState>(
       listener: (context, state) {},
       builder: (context, state) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          final RenderBox renderBox =
-              _searchMenu.currentContext.findRenderObject();
-          final position = renderBox.localToGlobal(Offset.zero);
-          setState(() {
-            x = position.dx;
-            y = position.dy;
+        if(!state.isLoading){
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final RenderBox renderBox =
+                _searchMenu.currentContext.findRenderObject();
+            final position = renderBox.localToGlobal(Offset.zero);
+            setState(() {
+              x = position.dx;
+              y = position.dy;
+            });
+            // print('${x} ${y}');
           });
-          // print('${x} ${y}');
-        });
+        }
         return (!state.isLoading)
             ? Scaffold(
                 backgroundColor: Color(0xFFEEEEEE),
