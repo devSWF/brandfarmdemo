@@ -42,7 +42,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
   void initState() {
     super.initState();
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
+    _fmHomeBloc.add(LoadFMHome());
     _fmHomeBloc.add(GetFieldListForFMHome());
+    _fmHomeBloc.add(GetRecentUpdates());
     _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
     _fmPurchaseBloc.add(GetFieldListForFMPurchase());
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);

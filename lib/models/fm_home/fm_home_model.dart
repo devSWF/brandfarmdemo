@@ -4,10 +4,12 @@ import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class FMHomeRecentUpdates {
+  final User user;
   final Timestamp date;
   final FMPlan plan;
   final NotificationNotice notice;
@@ -19,6 +21,7 @@ class FMHomeRecentUpdates {
 
   FMHomeRecentUpdates({
     @required this.date,
+    @required this.user,
     @required this.plan,
     @required this.notice,
     @required this.purchase,
@@ -30,6 +33,7 @@ class FMHomeRecentUpdates {
 
   factory FMHomeRecentUpdates.fromSnapshot(DocumentSnapshot ds) {
     return FMHomeRecentUpdates(
+      user: ds['user'],
       date: ds['date'],
       plan: ds['plan'],
       notice: ds['notice'],
@@ -43,6 +47,7 @@ class FMHomeRecentUpdates {
 
   Map<String, Object> toDocument() {
     return {
+      'user': user,
       'plan': plan,
       'date': date,
       'notice': notice,
