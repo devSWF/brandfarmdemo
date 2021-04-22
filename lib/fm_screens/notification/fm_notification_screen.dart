@@ -135,7 +135,7 @@ class _FMNotificationScreenState extends State<FMNotificationScreen> {
                                             DataCell(Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                (state.notificationList[index]
+                                                (!state.notificationList[index]
                                                     .isReadByFM)
                                                     ? Container(
                                                   height: 6,
@@ -171,7 +171,11 @@ class _FMNotificationScreenState extends State<FMNotificationScreen> {
                                                     notice:
                                                         state.notificationList[
                                                             index]));
-                                            _fmNotificationBloc.add(SetNoticeAsRead(index: index));
+                                            if(!state.notificationList[index].isReadByFM){
+                                              _fmNotificationBloc.add(
+                                                  SetNoticeAsRead(
+                                                      index: index));
+                                            }
                                             await _showDetail();
                                           });
                                     }),
