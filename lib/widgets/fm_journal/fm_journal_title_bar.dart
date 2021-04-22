@@ -1,8 +1,6 @@
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
-import 'package:BrandFarm/models/field_model.dart';
-import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -100,39 +98,39 @@ class _FMJournalTitleState extends State<FMJournalTitle> {
     );
   }
 
-  Widget _selectFieldDropdown({FMJournalState state}) {
-    return DropdownButton(
-      value: state.field,
-      items: state.fieldList.map<DropdownMenuItem<Field>>((Field value) {
-        return DropdownMenuItem<Field>(
-          value: value,
-          child: Text(value.name),
-        );
-      }).toList(),
-      style: Theme.of(context).textTheme.bodyText2.copyWith(
-        fontWeight: FontWeight.w500,
-        fontSize: 18,
-        color: Color(0xFF15B85B),
-      ),
-      // itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
-      //       fontSize: 18,
-      //       color: Color(0xFF15B85B),
-      //     ),
-      // itemWidth: 200,
-      // boxPadding: EdgeInsets.symmetric(horizontal: 6),
-      // boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
-      //       fontSize: 18,
-      //       color: Color(0xFF15B85B),
-      //     ),
-      // boxWidth: 200,
-      // boxHeight: 45,
-      icon: Icon(Icons.keyboard_arrow_down_sharp, color: Color(0x66000000),),
-      onChanged: (Field value) {
-        setState(() {
-          _fmJournalBloc.add(SetField(field: value));
-        });
-      },
-      underline: Container(),
-    );
-  }
+  // Widget _selectFieldDropdown({FMJournalState state}) {
+  //   return DropdownButton(
+  //     value: state.field,
+  //     items: state.fieldList.map<DropdownMenuItem<Field>>((Field value) {
+  //       return DropdownMenuItem<Field>(
+  //         value: value,
+  //         child: Text(value.name),
+  //       );
+  //     }).toList(),
+  //     style: Theme.of(context).textTheme.bodyText2.copyWith(
+  //       fontWeight: FontWeight.w500,
+  //       fontSize: 18,
+  //       color: Color(0xFF15B85B),
+  //     ),
+  //     // itemTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+  //     //       fontSize: 18,
+  //     //       color: Color(0xFF15B85B),
+  //     //     ),
+  //     // itemWidth: 200,
+  //     // boxPadding: EdgeInsets.symmetric(horizontal: 6),
+  //     // boxTextstyle: Theme.of(context).textTheme.bodyText2.copyWith(
+  //     //       fontSize: 18,
+  //     //       color: Color(0xFF15B85B),
+  //     //     ),
+  //     // boxWidth: 200,
+  //     // boxHeight: 45,
+  //     icon: Icon(Icons.keyboard_arrow_down_sharp, color: Color(0x66000000),),
+  //     onChanged: (Field value) {
+  //       setState(() {
+  //         _fmJournalBloc.add(SetField(field: value));
+  //       });
+  //     },
+  //     underline: Container(),
+  //   );
+  // }
 }

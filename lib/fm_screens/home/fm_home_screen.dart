@@ -20,8 +20,10 @@ import 'package:BrandFarm/fm_screens/plan/fm_plan_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_request_purchase_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:BrandFarm/widgets/fm_home/home_body.dart';
 import 'package:BrandFarm/widgets/fm_shared_widgets/fm_expansiontile.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,6 +56,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     _fmPlanBloc.add(GetSortedDetailList());
     _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
     _fmNotificationBloc.add(GetFieldList());
+    _fmNotificationBloc.add(GetNotificationList());
     isVisible = true;
     showDrawer = true;
   }
@@ -65,39 +68,157 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
   }
 
   Widget _webScreen({BuildContext context, ThemeData theme}) {
-    return Scaffold(
-      backgroundColor: Color(0xFFEEEEEE),
-      appBar: _appBar(context: context),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return BlocConsumer<FMHomeBloc, FMHomeState>(
-            listener: (context, state) {},
-            builder: (context, state) {
-              if (constraints.maxWidth >= 1000) {
-                return _big(context: context, theme: theme, state: state);
-              } else {
-                return _small(context: context, theme: theme, state: state);
-              }
-            },
-          );
-        },
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return BlocConsumer<FMHomeBloc, FMHomeState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            if (constraints.maxWidth >= 1250) {
+              return Scaffold(
+                backgroundColor: Color(0xFFEEEEEE),
+                appBar: _appBar(context: context, constraints: constraints),
+                body: _big(context: context, theme: theme, state: state),
+              );
+            } else {
+              return Scaffold(
+                backgroundColor: Color(0xFFEEEEEE),
+                appBar: _appBar(context: context, constraints: constraints),
+                body: _small(context: context, theme: theme, state: state),
+              );
+            }
+          },
+        );
+      },
     );
   }
 
-  Widget _appBar({BuildContext context}) {
+  // Widget _webScreen({BuildContext context, ThemeData theme}) {
+  //   return Scaffold(
+  //     backgroundColor: Color(0xFFEEEEEE),
+  //     appBar: _appBar(context: context),
+  //     body: LayoutBuilder(
+  //       builder: (context, constraints) {
+  //         return BlocConsumer<FMHomeBloc, FMHomeState>(
+  //           listener: (context, state) {},
+  //           builder: (context, state) {
+  //             if (constraints.maxWidth >= 1400) {
+  //               return _big(context: context, theme: theme, state: state);
+  //             } else {
+  //               return _small(context: context, theme: theme, state: state);
+  //             }
+  //           },
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
+
+  Widget _appBar({BuildContext context, BoxConstraints constraints}) {
     return PreferredSize(
       preferredSize: Size.fromHeight(50),
       child: AppBar(
         elevation: 1,
-        title: Center(
-          child: Row(
-            children: [
-              Image.asset('assets/fm_home_logo.png'),
-              SizedBox(
-                width: 114,
+        title: Row(
+          children: [
+            Image.asset('assets/fm_home_logo.png'),
+            SizedBox(
+              width: 180,
+            ),
+            (constraints.maxWidth >= 1250)
+                ? _appBarNotification(context: context)
+                : Container(),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      _appBarNotificationIcon(),
+                      SizedBox(width: 25,),
+                      _appBarProfile(),
+                    ],
+                  ),
+                ],
               ),
-              _appBarNotification(context: context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _appBarNotification({BuildContext context}) {
+    return BlocConsumer<FMNotificationBloc, FMNotificationState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+          return (state.notificationList.isNotEmpty)
+              ? InkResponse(
+                onTap: (){
+                  _fmHomeBloc.add(SetPageIndex(index: 1));
+                  _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                },
+                child: Container(
+                  height: 28,
+                  width: 777,
+                  padding: EdgeInsets.fromLTRB(15, 4, 15, 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(width: 1, color: Color(0xFFBCBCBC)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      (state.notificationList[0].type == '중요')
+                          ? Icon(
+                              Icons.error_outline_rounded,
+                              color: Color(0xFFFDD015),
+                              size: 20,)
+                          : Image.asset('assets/megaphone.png',
+                              scale: 20,),
+                      SizedBox(
+                        width: 13,
+                      ),
+                      Text(
+                        '${state.notificationList[0].content}',
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : Container();
+      },
+    );
+  }
+
+  Widget _appBarNotificationIcon() {
+    return Container(
+      height: 50,
+      child: Card(
+        margin: EdgeInsets.symmetric(vertical: 10),
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(45),
+        ),
+        child: FittedBox(
+          child: Stack(
+            children: [
+              Container(
+                // height: 42,
+                // width: 42,
+                padding: EdgeInsets.zero,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.notifications_none, size: 28, color: Color(0x80000000),),
+              ),
+              Positioned(top: 0, right: 0, child: _notificationBadge()),
             ],
           ),
         ),
@@ -105,30 +226,46 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     );
   }
 
-  Widget _appBarNotification({BuildContext context}) {
+  Widget _notificationBadge() {
     return Container(
-      padding: EdgeInsets.fromLTRB(15, 4, 15, 4),
+      height: 12,
+      width: 12,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(width: 1, color: Color(0xFFBCBCBC)),
+        color: Colors.red,
+        shape: BoxShape.circle,
       ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.error_outline_rounded,
-            color: Color(0xFFFDD015),
+      child: Align(
+        alignment: Alignment.center,
+        child: FittedBox(
+          child: Text('1',
+            style: Theme.of(context).textTheme.bodyText1.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),),
+        ),
+      ),
+    );
+  }
+
+  Widget _appBarProfile() {
+    return Container(
+      height: 50,
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: FittedBox(
+        child: Container(
+          height: 42,
+          width: 42,
+          decoration: BoxDecoration(
+            color: Colors.blue[100],
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: (UserUtil.getUser().imgUrl.length > 0)
+                  ? CachedNetworkImageProvider(UserUtil.getUser().imgUrl)
+                  : AssetImage('assets/profile.png'),
+              fit: BoxFit.fill
+            )
           ),
-          SizedBox(
-            width: 13,
-          ),
-          Text(
-            '날씨가 아직 춥습니다. 매니저분들 모두 농작물 관리에 주의해 주시길 바랍니다',
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-          ),
-        ],
+        ),
       ),
     );
   }
