@@ -1,4 +1,5 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
+import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
 import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
@@ -16,13 +17,6 @@ class Comments extends StatefulWidget {
 
 class _CommentsState extends State<Comments> {
   FMHomeBloc _fmHomeBloc;
-  // User noticeUser;
-  // User planUser;
-  // User purchaseUser;
-  // User journalUser;
-  // User issueUser;
-  // User commentUser;
-  // User subCommentUser;
 
   @override
   void initState() {
@@ -37,97 +31,99 @@ class _CommentsState extends State<Comments> {
       builder: (context, state) {
         return (state.isLoading)
             ? LinearProgressIndicator()
-            :(state.recentUpdateList.isNotEmpty)
-            ? Row(
-                children: [
-                  Card(
-                    margin: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(16, 26, 18, 0),
-                      // height: 1000,
-                      width: 814,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+            : (state.recentUpdateList.isNotEmpty)
+                ? Row(
+                    children: [
+                      Card(
+                        margin: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(16, 26, 18, 0),
+                          // height: 1000,
+                          width: 814,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListView(
+                            shrinkWrap: true,
                             children: [
-                              SizedBox(
-                                width: 31,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  SizedBox(
+                                    width: 31,
+                                  ),
+                                  Text(
+                                    '최근 업데이트',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                        ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    '+${10}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF15B85B),
+                                        ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                '최근 업데이트',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                    ),
+                              Divider(
+                                height: 40,
+                                thickness: 1,
+                                color: Color(0xFFDFDFDF),
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                '+${10}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    .copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xFF15B85B),
-                                    ),
+                              Column(
+                                children: List.generate(10, (index) {
+                                  if (state.recentUpdateList[index].notice !=
+                                      null) {
+                                    return _notice(state, index);
+                                  } else if (state
+                                          .recentUpdateList[index].plan !=
+                                      null) {
+                                    return _plan(state, index);
+                                  } else if (state
+                                          .recentUpdateList[index].purchase !=
+                                      null) {
+                                    return _purchase(state, index);
+                                  } else if (state
+                                          .recentUpdateList[index].journal !=
+                                      null) {
+                                    return _journal(state, index);
+                                  } else if (state
+                                          .recentUpdateList[index].issue !=
+                                      null) {
+                                    return _issue(state, index);
+                                    // } else if(state.recentUpdateList[index].comment != null) {
+                                    //   return Container();
+                                    // } else if(state.recentUpdateList[index].subComment != null) {
+                                    //   return Container();
+                                  } else {
+                                    return Container();
+                                  }
+                                }),
                               ),
                             ],
                           ),
-                          Divider(
-                            height: 40,
-                            thickness: 1,
-                            color: Color(0xFFDFDFDF),
-                          ),
-                          Column(
-                            children: List.generate(10, (index) {
-                              if (state.recentUpdateList[index].notice !=
-                                  null) {
-                                return _notice(state, index);
-                              } else if (state.recentUpdateList[index].plan !=
-                                  null) {
-                                return _plan(state, index);
-                              } else if (state
-                                      .recentUpdateList[index].purchase !=
-                                  null) {
-                                return _purchase(state, index);
-                              } else if (state
-                                      .recentUpdateList[index].journal !=
-                                  null) {
-                                return _journal(state, index);
-                              } else if (state.recentUpdateList[index].issue !=
-                                  null) {
-                                return _issue(state, index);
-                                // } else if(state.recentUpdateList[index].comment != null) {
-                                //   return Container();
-                                // } else if(state.recentUpdateList[index].subComment != null) {
-                                //   return Container();
-                              } else {
-                                return Container();
-                              }
-                            }),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              )
-            : _emptyScreen();
+                    ],
+                  )
+                : _emptyScreen();
       },
     );
   }
@@ -160,13 +156,10 @@ class _CommentsState extends State<Comments> {
                     ),
                     Text(
                       '최근 업데이트',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          .copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
                     ),
                   ],
                 ),
@@ -180,14 +173,22 @@ class _CommentsState extends State<Comments> {
                   child: Center(
                     child: Column(
                       children: [
-                        Icon(Icons.category, color: Colors.grey[300], size: 100,),
-                        SizedBox(height: 10,),
-                        Text('최신 정보가 없습니다',
+                        Icon(
+                          Icons.category,
+                          color: Colors.grey[300],
+                          size: 100,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          '최신 정보가 없습니다',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[300],
-                          ),),
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[300],
+                              ),
+                        ),
                       ],
                     ),
                   ),
@@ -235,54 +236,6 @@ class _CommentsState extends State<Comments> {
     }
   }
 
-  Future<User> getUserInfo(String uid) async {
-    User obj;
-    obj = await FMHomeRepository().getDetailUserInfo(uid);
-    return obj;
-  }
-
-  void setUserInfo(String uid, int from) async {
-    User obj;
-    obj = await getUserInfo(uid);
-    switch (from) {
-      case 1:
-        {
-          setState(() {
-            // noticeUser = obj;
-          });
-        }
-        break;
-      case 2:
-        {
-          setState(() {
-            // planUser = obj;
-          });
-        }
-        break;
-      case 3:
-        {
-          setState(() {
-            // purchaseUser = obj;
-          });
-        }
-        break;
-      case 4:
-        {
-          setState(() {
-            // journalUser = obj;
-          });
-        }
-        break;
-      case 5:
-        {
-          setState(() {
-            // issueUser = obj;
-          });
-        }
-        break;
-    }
-  }
-
   Widget _notice(FMHomeState state, int index) {
     FMHomeRecentUpdates obj = state.recentUpdateList[index];
     // setUserInfo(obj.user.uid, 1);
@@ -290,88 +243,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.notice != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 31,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.notice.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(
-                                    obj.notice.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.notice.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (obj.notice.isReadByFM)
+                          ? Text(
+                              '확인',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                    color: Color(0xFF15B85B),
+                                  ),
+                            )
+                          : Text(
+                              '미확인',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                    color: Colors.red,
+                                  ),
                             ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.notice.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.notice.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.notice.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 1));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
                               color: Color(0xFF2489FF),
                             ),
                       ),
-                      Text(
-                        '에 공지사항을 남겼습니다',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 공지사항을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 
@@ -382,87 +367,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.plan != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 31,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.plan.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(obj.plan.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.plan.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (obj.plan.isReadByFM)
+                          ? Text(
+                            '확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Color(0xFF15B85B),
                             ),
-                      ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                          )
+                          : Text(
+                            '미확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Colors.red,
                             ),
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.plan.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.plan.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.plan.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 2));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
                               color: Color(0xFF2489FF),
                             ),
                       ),
-                      Text(
-                        '에 영농계획을 남겼습니다',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 영농계획을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 
@@ -473,88 +491,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.purchase != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 31,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.user.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(
-                                obj.user.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.user.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (!obj.purchase.isThereUpdates)
+                          ? Text(
+                            '확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Color(0xFF15B85B),
                             ),
-                      ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                          )
+                          : Text(
+                            '미확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Colors.red,
                             ),
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.user.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.user.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.user.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 4));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
                               color: Color(0xFF2489FF),
                             ),
                       ),
-                      Text(
-                        '에 구매요청을 남겼습니다',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 구매요청을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 
@@ -565,88 +615,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.journal != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 31,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.user.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(
-                                obj.user.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.user.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (obj.journal.isReadByFM)
+                          ? Text(
+                            '확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Color(0xFF15B85B),
                             ),
-                      ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                          )
+                          : Text(
+                            '미확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Colors.red,
                             ),
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.user.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.user.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.user.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 5));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
                               color: Color(0xFF2489FF),
                             ),
                       ),
-                      Text(
-                        '에 성장일지을 남겼습니다',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 성장일지을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 
@@ -657,87 +739,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.issue != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 31,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.user.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(obj.user.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.user.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (obj.issue.isReadByFM)
+                          ? Text(
+                            '확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Color(0xFF15B85B),
                             ),
-                      ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                          )
+                          : Text(
+                            '미확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Colors.red,
                             ),
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Text(
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.user.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.user.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.user.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 5));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
                               color: Color(0xFF2489FF),
                             ),
                       ),
-                      Text(
-                        '에 이슈일지을 남겼습니다',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 이슈일지을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 }
