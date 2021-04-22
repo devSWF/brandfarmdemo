@@ -55,7 +55,7 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                   },
                   child: Container(
                     height: 29,
-                    width: 600,
+                    width: 698,
                     padding: EdgeInsets.only(left: 18),
                     decoration: BoxDecoration(
                       color: Color(0xFFEEEEEE),

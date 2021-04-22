@@ -21,7 +21,7 @@ class _FMNotificationScreenState extends State<FMNotificationScreen> {
   void initState() {
     super.initState();
     _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
-    _fmNotificationBloc.add(GetNotificationList());
+    // _fmNotificationBloc.add(GetNotificationList());
     _searchController = TextEditingController();
     _searchNode = FocusNode();
   }

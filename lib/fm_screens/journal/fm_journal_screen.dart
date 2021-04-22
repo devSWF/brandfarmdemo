@@ -115,6 +115,9 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
             return InkResponse(
               onTap: () {
                 _fmJournalBloc.add(SetField(field: state.fieldList[index]));
+                _fmJournalBloc.add(ReloadFMJournal());
+                _fmJournalBloc.add(GetJournalList());
+                _fmIssueBloc.add(GetIssueList(field: state.fieldList[index]));
               },
               child: Column(
                 children: [
