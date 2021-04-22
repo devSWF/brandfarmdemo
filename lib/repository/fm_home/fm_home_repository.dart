@@ -93,7 +93,7 @@ class FMHomeRepository {
     QuerySnapshot _purchase = await _firestore
         .collection('Purchase')
         .where('farmID', isEqualTo: farmID)
-        .orderBy('requestedDate', descending: true)
+        .orderBy('requestDate', descending: true)
         .limit(10)
         .get();
 
