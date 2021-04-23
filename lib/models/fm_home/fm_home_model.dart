@@ -59,3 +59,10 @@ class FMHomeRecentUpdates {
     };
   }
 }
+
+class FMHomeUpdateState {
+  bool state;
+  int num;
+
+  FMHomeUpdateState({this.state, this.num});
+}

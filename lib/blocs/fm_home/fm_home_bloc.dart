@@ -205,82 +205,6 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     //   }
     // });
 
-    // plan.asMap().forEach((index, element) async {
-    //   User user = await FMHomeRepository().getDetailUserInfo(element.uid);
-    //   FMHomeRecentUpdates obj = FMHomeRecentUpdates(
-    //       user: user,
-    //       date: element.postedDate,
-    //       plan: element,
-    //       notice: null,
-    //       purchase: null,
-    //       journal: null,
-    //       issue: null,
-    //       comment: null,
-    //       subComment: null);
-    //   if (index > 0) {
-    //     planList.insert(0, obj);
-    //   } else {
-    //     planList.add(obj);
-    //   }
-    // });
-
-    // purchase.asMap().forEach((index, element) async {
-    //   User user = await FMHomeRepository().getDetailUserInfo(element.reqUser.uid);
-    //   FMHomeRecentUpdates obj = FMHomeRecentUpdates(
-    //       user: user,
-    //       date: element.requestDate,
-    //       plan: null,
-    //       notice: null,
-    //       purchase: element,
-    //       journal: null,
-    //       issue: null,
-    //       comment: null,
-    //       subComment: null);
-    //   if (index > 0) {
-    //     purchaseList.insert(0, obj);
-    //   } else {
-    //     purchaseList.add(obj);
-    //   }
-    // });
-
-    // journal.asMap().forEach((index, element) async {
-    //   User user = await FMHomeRepository().getDetailUserInfo(element.uid);
-    //   FMHomeRecentUpdates obj = FMHomeRecentUpdates(
-    //       user: user,
-    //       date: element.date,
-    //       plan: null,
-    //       notice: null,
-    //       purchase: null,
-    //       journal: element,
-    //       issue: null,
-    //       comment: null,
-    //       subComment: null);
-    //   if (index > 0) {
-    //     journalList.insert(0, obj);
-    //   } else {
-    //     journalList.add(obj);
-    //   }
-    // });
-
-    // issue.asMap().forEach((index, element) async {
-    //   User user = await FMHomeRepository().getDetailUserInfo(element.uid);
-    //   FMHomeRecentUpdates obj = FMHomeRecentUpdates(
-    //       user: user,
-    //       date: element.date,
-    //       plan: null,
-    //       notice: null,
-    //       purchase: null,
-    //       journal: null,
-    //       issue: element,
-    //       comment: null,
-    //       subComment: null);
-    //   if (index > 0) {
-    //     issueList.insert(0, obj);
-    //   } else {
-    //     issueList.add(obj);
-    //   }
-    // });
-
     // print('noticeList ${noticeList.length}');
     // print('planList ${planList.length}');
     // print('purchaseList ${purchaseList.length}');
@@ -306,6 +230,11 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     yield state.update(
       recentUpdateList: updateList,
       isLoading: false,
+      notice: notice,
+      plan: plan,
+      purchase: purchase,
+      journal: journal,
+      issue: issue,
     );
   }
 }
