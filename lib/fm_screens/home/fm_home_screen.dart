@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/fm_contact/fm_contact_bloc.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
@@ -14,6 +13,7 @@ import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
 import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
 import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/contact/fm_contact_screen.dart';
+import 'package:BrandFarm/fm_screens/home/fm_logout_screen.dart';
 import 'package:BrandFarm/fm_screens/journal/fm_journal_screen.dart';
 import 'package:BrandFarm/fm_screens/notification/fm_notification_screen.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_screen.dart';
@@ -698,14 +698,15 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                 ),
                 ListTile(
                   contentPadding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
                       _fmHomeBloc.add(SetPageIndex(index: 6));
                     });
-                    BlocProvider.of<AuthenticationBloc>(context).add(
-                      AuthenticationLoggedOut(),
-                    );
-                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    await _showLogoutDialog();
+                    // BlocProvider.of<AuthenticationBloc>(context).add(
+                    //   AuthenticationLoggedOut(),
+                    // );
+                    // Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                   title: Row(
                     children: [
@@ -739,6 +740,16 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showLogoutDialog() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return FMLogoutScreen();
+        }
     );
   }
 
@@ -973,12 +984,13 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                   ),
                   IconButton(
                     padding: EdgeInsets.zero,
-                    onPressed: (){
+                    onPressed: () async {
                       _fmHomeBloc.add(SetPageIndex(index: 6));
-                      BlocProvider.of<AuthenticationBloc>(context).add(
-                        AuthenticationLoggedOut(),
-                      );
-                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      await _showLogoutDialog();
+                      // BlocProvider.of<AuthenticationBloc>(context).add(
+                      //   AuthenticationLoggedOut(),
+                      // );
+                      // Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                     icon: Row(
                       children: [
@@ -1159,11 +1171,11 @@ class _GetPageState extends State<GetPage> {
           }
         }
         break;
-      case 6:
-        {
-          return EmptyScreen(); // 설정 화면
-        }
-        break;
+      // case 6:
+      //   {
+      //     return EmptyScreen(); // 설정 화면
+      //   }
+      //   break;
       default:
         {
           return MultiBlocProvider(
