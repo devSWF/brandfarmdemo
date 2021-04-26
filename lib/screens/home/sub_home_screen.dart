@@ -44,6 +44,8 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
   void initState() {
     super.initState();
     _homeBloc = BlocProvider.of<HomeBloc>(context);
+    _homeBloc.add(GetHomePlanList());
+    _homeBloc.add(SortPlanList());
     _notificationBloc = BlocProvider.of<NotificationBloc>(context);
     _notificationBloc.add(GetNotificationList());
     _weatherBloc = BlocProvider.of<WeatherBloc>(context);
@@ -118,17 +120,11 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                       ),
                     ),
                     SizedBox(height: defaultPadding),
-                    SubHomeCalendar(
-                      homeBloc: _homeBloc,
-                      initialIndex: initialIndex,
-                      state: state,
-                      testPlans: [
-                        '일지작성',
-                        '알량성 얄리리 얄라 ㅈㄷㄹ',
-                        '알량성 얄리리 얄라 ㅈㄷㄹ',
-                        '알량성 얄리리 얄라 ㅈㄷㄹ 알라딘 알량성 얄리리 량랴당사 다시마',
-                        '알량성 얄리리 얄라 ㅈㄷㄹ',
-                      ],
+                    BlocProvider.value(
+                      value: _homeBloc,
+                      child: SubHomeCalendar(
+                        initialIndex: initialIndex,
+                      ),
                     ),
                     SizedBox(height: defaultPadding),
                     // WeatherToDoWidgetBar(

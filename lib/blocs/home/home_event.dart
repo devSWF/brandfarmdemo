@@ -32,3 +32,7 @@ class BottomNavBarClicked extends HomeEvent{
   @override
   String toString() => 'BottomNavBarClicked { index: $index';
 }
+
+class GetHomePlanList extends HomeEvent {}
+
+class SortPlanList extends HomeEvent {}
