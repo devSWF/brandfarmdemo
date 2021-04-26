@@ -1,3 +1,4 @@
+import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 
@@ -8,12 +9,17 @@ class HomeState {
   int selectedDate;
   int currentDate;
 
+  List<FMPlan> planListFromDB;
+  List<CalendarPlan> planList;
+
   HomeState({
     @required this.isLoading,
     @required this.selectedYear,
     @required this.selectedMonth,
     @required this.selectedDate,
     @required this.currentDate,
+    @required this.planListFromDB,
+    @required this.planList,
   });
 
   factory HomeState.empty() {
@@ -23,6 +29,8 @@ class HomeState {
       selectedYear: int.parse('$year'),
       selectedDate: int.parse('$day'),
       currentDate: int.parse('$day'),
+      planListFromDB: [],
+      planList: [],
     );
   }
 
@@ -32,6 +40,8 @@ class HomeState {
     int yearState,
     int dayState,
     int currentIndex,
+    List<FMPlan> planListFromDB,
+    List<CalendarPlan> planList,
   }) {
     return HomeState(
       isLoading: isLoading ?? this.isLoading,
@@ -39,6 +49,8 @@ class HomeState {
       selectedYear: yearState ?? this.selectedYear,
       selectedDate: dayState ?? this.selectedDate,
       currentDate: currentIndex ?? this.currentDate,
+      planListFromDB: planListFromDB ?? this.planListFromDB,
+      planList: planList ?? this.planList,
     );
   }
 
@@ -48,6 +60,8 @@ class HomeState {
     int yearState,
     int dayState,
     int currentIndex,
+    List<FMPlan> planListFromDB,
+    List<CalendarPlan> planList,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -55,6 +69,8 @@ class HomeState {
       yearState: yearState,
       dayState: dayState,
       currentIndex: currentIndex,
+      planListFromDB: planListFromDB,
+      planList: planList,
     );
   }
 
@@ -66,6 +82,8 @@ class HomeState {
     yearState: $selectedYear,
     dayState: $selectedDate,
     currentIndex: $currentDate,
+    planListFromDB: ${planListFromDB.length},
+    planList: ${planList.length},
     }
     ''';
   }

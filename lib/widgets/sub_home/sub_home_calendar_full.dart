@@ -1,5 +1,8 @@
+import 'package:BrandFarm/blocs/home/bloc.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class SubHomeCalendarFull extends StatefulWidget {
@@ -8,6 +11,7 @@ class SubHomeCalendarFull extends StatefulWidget {
 }
 
 class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
+  HomeBloc _homeBloc;
   DateTime now;
   DateTime fixedNow;
   int currentDay;
@@ -21,8 +25,8 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
   String fixedYear;
   String fixedmonth;
   String selectedDay;
-  List monthList = [];
-  List weekDay = [
+  List<PickDate> monthList = [];
+  List<String> weekDay = [
     'S',
     'M',
     'T',
@@ -31,33 +35,30 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
     'F',
     'S',
   ];
-  List testPlans = [
-    '일지작성',
-    '알량성 얄리리 얄라 ㅈㄷㄹ',
-    '알량성 얄리리 얄라 ㅈㄷㄹ',
-    '알량성 얄리리 얄라 ㅈㄷㄹ 알라딘 알량성 얄리리 량랴당사 다시마',
-    '알량성 얄리리 얄라 ㅈㄷㄹ',
-    '알량성 얄리리 얄라 ㅈㄷㄹ',
-    '알량성 얄리리 얄라 ㅈㄷㄹ',
-    '알량성 얄리리 얄라 ㅈㄷㄹ',
-    '알량성 얄리리 얄라 ㅈㄷㄹ',
-    '알량성 얄리리 얄라 ㅈㄷㄹ',
-  ];
+
   int occurrence = 0;
 
   @override
   void initState() {
     super.initState();
+    _homeBloc = BlocProvider.of<HomeBloc>(context);
     now = DateTime.now();
-    fixedNow = now;
+    fixedNow = DateTime(now.year, now.month, now.day);
     currentDay = int.parse(DateFormat('d').format(fixedNow));
     fixedYear = DateFormat('yyyy').format(fixedNow);
     fixedmonth = DateFormat('M').format(fixedNow);
     getMonth(now: now);
     monthList.forEach((month) {
-      if (month.date == int.parse(DateFormat('d').format(now)) && occurrence == 0) {
-        var index = monthList.indexOf(month);
-        PickDate pd = PickDate(date: month.date, isPicked: !month.isPicked);
+      print('sdfadsfasdfasdflasdkfjalskdjf');
+      if (month.date.isAtSameMomentAs(fixedNow)) {
+        int index = monthList.indexOf(month);
+        PickDate pd = PickDate(
+            date: month.date,
+            isPicked: !month.isPicked,
+          isPrev: month.isPrev,
+          isNext: month.isNext,
+          isNow: !month.isNow,
+        );
         setState(() {
           prevSelectedIndex = index;
           monthList.removeAt(index);
@@ -70,48 +71,51 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: FlatButton(
-          padding: EdgeInsets.only(left: 6),
-          minWidth: 0,
-          onPressed: (){
-            Navigator.pop(context);
-          },
-          child: Text('닫기',
-            style: Theme.of(context).textTheme.bodyText1.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 18,
-              color: Colors.black,
-            ),),
-        ),
-        centerTitle: true,
-        title: Text('캘린더', style: Theme.of(context).textTheme.bodyText1.copyWith(
-          color: Colors.black,
-        ),),
-      ),
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.fromLTRB(defaultPadding, 0, defaultPadding, 0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(
-            children: [
-              _year(context: context),
-              _month(context: context),
-              _weekDayName(context: context),
-              _days(context: context),
-              SizedBox(
-                height: defaultPadding,
+    return BlocConsumer<HomeBloc, HomeState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              leading: TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text('닫기',
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),),
               ),
-              plans(context: context),
-            ],
-          ),
-        ),
-      ),
+              centerTitle: true,
+              title: Text('캘린더', style: Theme.of(context).textTheme.bodyText1.copyWith(
+                color: Colors.black,
+              ),),
+            ),
+            body: Center(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(defaultPadding, 0, defaultPadding, 0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  children: [
+                    _year(context: context),
+                    _month(context: context),
+                    _weekDayName(context: context),
+                    _days(context: context),
+                    SizedBox(
+                      height: defaultPadding,
+                    ),
+                    plans(context: context, state: state),
+                  ],
+                ),
+              ),
+            ),
+          );
+      },
     );
   }
 
@@ -220,19 +224,16 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
                   decoration: BoxDecoration(
                     color: (monthList[index].isPicked)
                         ? Color(0xFF15B85B)
-                        : (monthList[index].date == currentDay &&
-                        fixedmonth == month &&
-                        fixedYear == year)
+                        : (monthList[index].isNow)
                         ? Colors.grey[200]
                         : Colors.white,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: Text(
-                      '${monthList[index].date}',
+                      '${monthList[index].date.day}',
                       style: TextStyle(
-                          color: (index < firstWeekDayOfMonth &&
-                              firstWeekDayOfMonth != 7)
+                          color: (monthList[index].isPrev)
                               ? Color(0xFFE9E9E9)
                               : (monthList[index].isPicked)
                               ? Colors.white
@@ -261,16 +262,14 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
                   decoration: BoxDecoration(
                     color: (monthList[index + 7].isPicked)
                         ? Color(0xFF15B85B)
-                        : (monthList[index + 7].date == currentDay &&
-                        fixedmonth == month &&
-                        fixedYear == year)
+                        : (monthList[index + 7].isNow)
                         ? Colors.grey[200]
                         : Colors.white,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                       child: Text(
-                        '${monthList[index + 7].date}',
+                        '${monthList[index + 7].date.day}',
                         style: TextStyle(
                             color: (monthList[index + 7].isPicked)
                                 ? Colors.white
@@ -298,16 +297,14 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
                     decoration: BoxDecoration(
                       color: (monthList[index + 14].isPicked)
                           ? Color(0xFF15B85B)
-                          : (monthList[index + 14].date == currentDay &&
-                          fixedmonth == month &&
-                          fixedYear == year)
+                          : (monthList[index + 14].isNow)
                           ? Colors.grey[200]
                           : Colors.white,
                       shape: BoxShape.circle,
                     ),
                     child: Center(
                         child: Text(
-                          '${monthList[index + 14].date}',
+                          '${monthList[index + 14].date.day}',
                           style: TextStyle(
                               color: (monthList[index + 14].isPicked)
                                   ? Colors.white
@@ -334,16 +331,14 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
                     decoration: BoxDecoration(
                       color: (monthList[index + 21].isPicked)
                           ? Color(0xFF15B85B)
-                          : (monthList[index + 21].date == currentDay &&
-                          fixedmonth == month &&
-                          fixedYear == year)
+                          : (monthList[index + 21].isNow)
                           ? Colors.grey[200]
                           : Colors.white,
                       shape: BoxShape.circle,
                     ),
                     child: Center(
                         child: Text(
-                          '${monthList[index + 21].date}',
+                          '${monthList[index + 21].date.day}',
                           style: TextStyle(
                               color: (monthList[index + 21].isPicked)
                                   ? Colors.white
@@ -370,20 +365,18 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
                   decoration: BoxDecoration(
                     color: (monthList[index + 28].isPicked)
                         ? Color(0xFF15B85B)
-                        : (monthList[index + 28].date < 8)
+                        : (monthList[index + 28].isNext)
                         ? Colors.white
-                        : (monthList[index + 28].date == currentDay &&
-                        fixedmonth == month &&
-                        fixedYear == year)
+                        : (monthList[index + 28].isNow)
                         ? Colors.grey[200]
                         : Colors.white,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: Text(
-                      '${monthList[index + 28].date}',
+                      '${monthList[index + 28].date.day}',
                       style: TextStyle(
-                          color: (monthList[index + 28].date < 8)
+                          color: (monthList[index + 28].isNext)
                               ? Color(0xFFE9E9E9)
                               : (monthList[index + 28].isPicked)
                               ? Colors.white
@@ -397,7 +390,17 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
     );
   }
 
-  Widget plans({BuildContext context}) {
+  Widget plans({BuildContext context, HomeState state}) {
+    DateTime selectedDate;
+    for(int i=0; i<monthList.length; i++ ){
+      if(monthList[i].isPicked){
+        selectedDate = monthList[i].date;
+        break;
+      }
+    };
+    List<CalendarPlan> plist = state.planList.where((element) {
+      return element.date.isAtSameMomentAs(selectedDate ?? DateTime.now());
+    }).toList();
     return ExpansionTile(
       tilePadding: EdgeInsets.zero,
       initiallyExpanded: true,
@@ -415,7 +418,7 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
           ),
           SizedBox(width: 3,),
           Text(
-            '${testPlans.length}',
+            '${plist.length}',
             style: Theme.of(context)
                 .textTheme
                 .bodyText1
@@ -431,7 +434,7 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
           height: MediaQuery.of(context).size.height / 2.5,
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: testPlans.length,
+            itemCount: plist.length,
             itemBuilder: (context, index) {
               return Column(
                 children: [
@@ -442,7 +445,7 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
                       color: Color(0xFFF2F2F2),
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    child: Text(testPlans[index],
+                    child: Text(plist[index].content,
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
                         color: Colors.black,
                       ),),
@@ -455,31 +458,6 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
             },
           ),
         ),
-        // Container(
-        //   color: Colors.white,
-        //   child: Column(
-        //     children: List.generate(testPlans.length, (index) =>
-        //         Column(
-        //           mainAxisSize: MainAxisSize.min,
-        //           children: [
-        //             Container(
-        //               width: MediaQuery.of(context).size.width,
-        //               padding: EdgeInsets.fromLTRB(11, 8, 6, 11),
-        //               decoration: BoxDecoration(
-        //                 color: Color(0xFFF2F2F2),
-        //                 borderRadius: BorderRadius.circular(5),
-        //               ),
-        //               child: Text(testPlans[index],
-        //                 style: Theme.of(context).textTheme.bodyText2.copyWith(
-        //                   color: Colors.black,
-        //                 ),),
-        //             ),
-        //             (index != testPlans.length - 1)
-        //                 ? SizedBox(height: 3,) : SizedBox(height: defaultPadding,),
-        //           ],
-        //         )),
-        //   ),
-        // ),
       ],
     );
   }
@@ -489,10 +467,19 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
     if (prevSelectedIndex != null) {
       prev = PickDate(
           date: monthList[prevSelectedIndex].date,
-          isPicked: !monthList[prevSelectedIndex].isPicked);
+          isPicked: !monthList[prevSelectedIndex].isPicked,
+        isPrev: monthList[prevSelectedIndex].isPrev,
+        isNext: monthList[prevSelectedIndex].isNext,
+        isNow: monthList[prevSelectedIndex].isNow,
+      );
     }
     PickDate update = PickDate(
-        date: monthList[index].date, isPicked: !monthList[index].isPicked);
+        date: monthList[index].date,
+        isPicked: !monthList[index].isPicked,
+      isPrev: monthList[index].isPrev,
+      isNext: monthList[index].isNext,
+      isNow: monthList[index].isNow,
+    );
     setState(() {
       // prev
       if (prevSelectedIndex != null) {
@@ -521,23 +508,53 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
         for (int i = firstWeekDayOfMonth - 1; i >= 0; i--) {
           if (monthList.isEmpty) {
             monthList.insert(
-                0, PickDate(date: daysInPrevMonth - i, isPicked: false));
+                0, PickDate(
+              date: DateTime(now.year, now.month - 1, daysInPrevMonth - i),
+              isPicked: false,
+              isPrev: true,
+              isNext: false,
+              isNow: false,));
           } else {
-            monthList.add(PickDate(date: daysInPrevMonth - i, isPicked: false));
+            monthList.add(PickDate(
+              date: DateTime(now.year, now.month - 1, daysInPrevMonth - i),
+              isPicked: false,
+              isPrev: true,
+              isNext: false,
+              isNow: false,));
           }
         }
       }
       for (int i = 1; i <= daysInMonth; i++) {
-        monthList.add(PickDate(date: i, isPicked: false));
+        monthList.add(PickDate(
+            date: DateTime(now.year, now.month, i),
+            isPicked: false,
+          isPrev: false,
+          isNext: false,
+          isNow: false,
+        ));
       }
       if (lastWeekDayOfMonth < 6) {
         for (int i = 1; i < 6; i++) {
-          monthList.add(PickDate(date: i, isPicked: false));
+          monthList.add(
+              PickDate(
+                date: DateTime(now.year, now.month, i),
+                isPicked: false,
+                isPrev: false,
+                isNext: true,
+                isNow: false,
+              )
+          );
         }
       }
       if (lastWeekDayOfMonth > 6) {
         for (int i = 1; i < 7; i++) {
-          monthList.add(PickDate(date: i, isPicked: false));
+          monthList.add(PickDate(
+            date: DateTime(now.year, now.month, i),
+            isPicked: false,
+            isPrev: false,
+            isNext: true,
+            isNow: false,
+          ));
         }
       }
     });
@@ -545,8 +562,17 @@ class _SubHomeCalendarFullState extends State<SubHomeCalendarFull> {
 }
 
 class PickDate {
-  final int date;
+  final DateTime date;
   final bool isPicked;
+  final bool isPrev;
+  final bool isNext;
+  final bool isNow;
 
-  PickDate({this.date, this.isPicked});
+  PickDate({
+    this.date,
+    this.isPicked,
+    this.isPrev,
+    this.isNext,
+    this.isNow,
+  });
 }
