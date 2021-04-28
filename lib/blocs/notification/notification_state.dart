@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class NotificationState {
   bool isLoading;
   Farm farm;
+  List<NotificationNotice> allList;
   List<NotificationNotice> importantList;
   List<NotificationNotice> generalList;
   int unRead;
@@ -13,6 +14,7 @@ class NotificationState {
   NotificationState({
     @required this.isLoading,
     @required this.farm,
+    @required this.allList,
     @required this.importantList,
     @required this.generalList,
     @required this.unRead,
@@ -26,6 +28,7 @@ class NotificationState {
           fieldCategory: '',
           managerID: ''
       ),
+      allList: [],
       importantList: [],
       generalList: [],
       unRead: 0,
@@ -35,6 +38,7 @@ class NotificationState {
   NotificationState copyWith({
     bool isLoading,
     Farm farm,
+    List<NotificationNotice> allList,
     List<NotificationNotice> importantList,
     List<NotificationNotice> generalList,
     int unRead,
@@ -42,6 +46,7 @@ class NotificationState {
     return NotificationState(
       isLoading: isLoading ?? this.isLoading,
       farm: farm ?? this.farm,
+      allList: allList ?? this.allList,
       importantList: importantList ?? this.importantList,
       generalList: generalList ?? this.generalList,
       unRead: unRead ?? this.unRead,
@@ -51,6 +56,7 @@ class NotificationState {
   NotificationState update({
     bool isLoading,
     Farm farm,
+    List<NotificationNotice> allList,
     List<NotificationNotice> importantList,
     List<NotificationNotice> generalList,
     int unRead,
@@ -58,6 +64,7 @@ class NotificationState {
     return copyWith(
       isLoading: isLoading,
       farm: farm,
+      allList: allList,
       importantList: importantList,
       generalList: generalList,
       unRead: unRead,
@@ -69,6 +76,7 @@ class NotificationState {
     return '''NotificationState{
       isLoading: $isLoading,
       farm: $farm,
+      allList: ${allList.length},
       importantList: ${importantList.length},
       generalList: ${generalList.length},
       unRead: ${unRead},

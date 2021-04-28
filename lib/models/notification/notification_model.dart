@@ -80,3 +80,27 @@ class NotificationNotice {
     };
   }
 }
+
+class NotificationTrigger {
+  final String docID;
+  final String state;
+
+  NotificationTrigger({
+    @required this.docID,
+    @required this.state,
+  });
+
+  factory NotificationTrigger.fromSnapshot(DocumentSnapshot ds) {
+    return NotificationTrigger(
+      docID: ds['docID'].toString(),
+      state: ds['state'].toString(),
+    );
+  }
+
+  Map<String, Object> toDocument() {
+    return {
+      'docID': docID,
+      'state': state,
+    };
+  }
+}

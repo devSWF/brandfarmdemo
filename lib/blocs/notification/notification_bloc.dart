@@ -50,6 +50,7 @@ class NotificationBloc
 
     yield state.update(
       farm: farm,
+      allList: farmList,
       importantList: importantList,
       generalList: generalList,
       unRead: unRead,

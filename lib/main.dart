@@ -13,6 +13,9 @@ import 'package:BrandFarm/screens/home/sub_home_screen.dart';
 import 'package:BrandFarm/screens/splash/splash_screen.dart';
 import 'package:BrandFarm/screens/login/login_screen.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:timezone/data/latest.dart' as tz;
+// import 'package:timezone/timezone.dart' as tz;
 
 //bloc
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,8 +42,29 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await Firebase.initializeApp();
+
+  _initNotiSetting();
+
   runApp(
     App(),
+  );
+}
+
+void _initNotiSetting() async {
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  // final initSettingsAndroid = AndroidInitializationSettings('app_icon');
+  final initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+  // final initSettingsIOS = IOSInitializationSettings(
+  //   requestSoundPermission: false,
+  //   requestBadgePermission: false,
+  //   requestAlertPermission: false,
+  // );
+  final initSettings = InitializationSettings(
+    android: initSettingsAndroid,
+    // iOS: initSettingsIOS,
+  );
+  await flutterLocalNotificationsPlugin.initialize(
+    initSettings,
   );
 }
 

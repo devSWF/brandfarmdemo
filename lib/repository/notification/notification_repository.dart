@@ -1,7 +1,5 @@
 import 'package:BrandFarm/models/farm/farm_model.dart';
-import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
-import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotificationRepository {
@@ -26,6 +24,7 @@ class NotificationRepository {
     QuerySnapshot _list = await _firestore
         .collection('Notification')
         .where('farmid', isEqualTo: farmid)
+        .orderBy('postedDate', descending: true)
         .get();
 
     _list.docs.forEach((ds) {
