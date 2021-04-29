@@ -18,14 +18,14 @@ import 'package:BrandFarm/widgets/sub_home/sub_home_greeting_bar.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_to_do_widget.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_weather_widget.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_announce_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 
 //flutters
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 class SubHomeScreen extends StatefulWidget {
   const SubHomeScreen({
@@ -47,6 +47,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
   @override
   void initState() {
     super.initState();
+    _initNotiSetting();
     // showNotification();
     _homeBloc = BlocProvider.of<HomeBloc>(context);
     _homeBloc.add(GetHomePlanList());
@@ -79,6 +80,24 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
         // showNotification();
       });
     });
+  }
+
+  void _initNotiSetting() async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    // final initSettingsAndroid = AndroidInitializationSettings('app_icon');
+    final initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    // final initSettingsIOS = IOSInitializationSettings(
+    //   requestSoundPermission: false,
+    //   requestBadgePermission: false,
+    //   requestAlertPermission: false,
+    // );
+    final initSettings = InitializationSettings(
+      android: initSettingsAndroid,
+      // iOS: initSettingsIOS,
+    );
+    await flutterLocalNotificationsPlugin.initialize(
+      initSettings,
+    );
   }
 
   Future<void> showNotification() async {

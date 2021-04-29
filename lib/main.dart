@@ -14,8 +14,6 @@ import 'package:BrandFarm/screens/splash/splash_screen.dart';
 import 'package:BrandFarm/screens/login/login_screen.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:timezone/data/latest.dart' as tz;
-// import 'package:timezone/timezone.dart' as tz;
 
 //bloc
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,34 +35,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 //util
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
+import 'package:flutter/foundation.dart';
+// import 'package:timezone/data/latest.dart' as tz;
+// import 'package:timezone/timezone.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await Firebase.initializeApp();
 
-  _initNotiSetting();
-
   runApp(
     App(),
-  );
-}
-
-void _initNotiSetting() async {
-  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  // final initSettingsAndroid = AndroidInitializationSettings('app_icon');
-  final initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-  // final initSettingsIOS = IOSInitializationSettings(
-  //   requestSoundPermission: false,
-  //   requestBadgePermission: false,
-  //   requestAlertPermission: false,
-  // );
-  final initSettings = InitializationSettings(
-    android: initSettingsAndroid,
-    // iOS: initSettingsIOS,
-  );
-  await flutterLocalNotificationsPlugin.initialize(
-    initSettings,
   );
 }
 
@@ -83,7 +64,7 @@ class _AppState extends State<App> {
     super.initState();
     _authenticationBloc = AuthenticationBloc(userRepository: userRepository);
     try {
-      if (Platform.isIOS || Platform.isAndroid) {
+      if ((defaultTargetPlatform == TargetPlatform.iOS) || (defaultTargetPlatform == TargetPlatform.android)) {
         isDesktop = false;
       } else {
         isDesktop = true;
