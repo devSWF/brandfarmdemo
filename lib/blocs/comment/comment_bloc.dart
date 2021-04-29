@@ -116,6 +116,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         fid: FieldUtil.getField().fid,
         imgUrl: UserUtil.getUser().imgUrl,
         isWriteSubCommentClicked: false,
+        isReadByFM: false,
+        isReadByOM: false,
+        isReadBySFM: true,
       );
 
       await CommentRepository().uploadComment(comment: cmt);
@@ -137,6 +140,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         fid: FieldUtil.getField().fid,
         imgUrl: UserUtil.getUser().imgUrl,
         isWriteSubCommentClicked: false,
+        isReadByFM: false,
+        isReadByOM: false,
+        isReadBySFM: true,
       );
 
       await CommentRepository().uploadComment(comment: cmt);
@@ -168,6 +174,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         scomment: comment,
         imgUrl: UserUtil.getUser().imgUrl,
         fid: FieldUtil.getField().fid,
+        isReadByFM: false,
+        isReadByOM: false,
+        isReadBySFM: true,
       );
 
       await CommentRepository().uploadSubComment(scomment: scmt);
@@ -189,6 +198,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
         scomment: comment,
         imgUrl: UserUtil.getUser().imgUrl,
         fid: FieldUtil.getField().fid,
+        isReadByFM: false,
+        isReadByOM: false,
+        isReadBySFM: true,
       );
 
       await CommentRepository().uploadSubComment(scomment: scmt);
@@ -221,6 +233,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       fid: cmts[index].fid,
       imgUrl: cmts[index].imgUrl,
       isWriteSubCommentClicked: cmts[index].isWriteSubCommentClicked,
+      isReadByFM: cmts[index].isReadByFM,
+      isReadByOM: cmts[index].isReadByOM,
+      isReadBySFM: cmts[index].isReadBySFM,
     ));
 
     cmts.removeAt(index);
@@ -248,6 +263,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       fid: cmts[index].fid,
       imgUrl: cmts[index].imgUrl,
       isWriteSubCommentClicked: cmts[index].isWriteSubCommentClicked,
+      isReadByFM: cmts[index].isReadByFM,
+      isReadByOM: cmts[index].isReadByOM,
+      isReadBySFM: cmts[index].isReadBySFM,
     ));
 
     cmts.removeAt(index);

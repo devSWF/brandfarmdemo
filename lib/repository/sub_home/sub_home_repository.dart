@@ -1,4 +1,5 @@
 
+import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -32,21 +33,43 @@ class SubHomeRepository {
   //   });
   //   return farm;
   // }
-  //
-  // Future<List<Field>> getFieldList(String fieldCategory) async {
-  //   List<Field> fieldList = [];
-  //   QuerySnapshot _fieldList = await _firestore
-  //       .collection('Field')
-  //       .where('fieldCategory', isEqualTo: fieldCategory)
-  //       .get();
-  //
-  //   _fieldList.docs.forEach((ds) {
-  //     fieldList.add(Field.fromSnapshot(ds));
-  //   });
-  //
-  //   return fieldList;
-  // }
-  //
+
+  Future<List<FMPlan>> getPlanUpdates(String fid) async {
+    List<FMPlan> plist = [];
+    QuerySnapshot _plist = await _firestore
+        .collection('Plan')
+        .where('fid', isEqualTo: fid)
+        .where('fid', isEqualTo: '')
+        .where('isReadBySFM', isEqualTo: false)
+        .orderBy('postedDate', descending: true)
+        .limit(10)
+        .get();
+
+    _plist.docs.forEach((ds) {
+      plist.add(FMPlan.fromSnapshot(ds));
+    });
+
+    return plist;
+  }
+
+  Future<List<NotificationNotice>> getNotificationUpdates(String fid) async {
+    List<NotificationNotice> noticeList = [];
+    QuerySnapshot _nlist = await _firestore
+        .collection('Notification')
+        .where('fid', isEqualTo: fid)
+        .where('fid', isEqualTo: '')
+        .where('isReadBySFM', isEqualTo: false)
+        .orderBy('postedDate', descending: true)
+        .limit(5)
+        .get();
+
+    _nlist.docs.forEach((ds) {
+      noticeList.add(NotificationNotice.fromSnapshot(ds));
+    });
+
+    return noticeList;
+  }
+
   Future<List<FMPlan>> getPlanList(String fid) async {
     List<FMPlan> plistByField = [];
     List<FMPlan> plistByFarm = [];

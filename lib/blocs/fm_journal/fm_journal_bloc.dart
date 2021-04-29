@@ -295,6 +295,9 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
       fid: obj.fid,
       imgUrl: obj.imgUrl,
       isWriteSubCommentClicked: !obj.isWriteSubCommentClicked,
+      isReadByFM: obj.isReadByFM,
+      isReadByOM: obj.isReadByOM,
+      isReadBySFM: obj.isReadBySFM,
     );
 
     cmt.removeAt(index);
@@ -319,6 +322,9 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
       fid: obj.fid,
       imgUrl: obj.imgUrl,
       isWriteSubCommentClicked: obj.isWriteSubCommentClicked,
+      isReadByFM: obj.isReadByFM,
+      isReadByOM: obj.isReadByOM,
+      isReadBySFM: obj.isReadBySFM,
     );
 
     cmt.removeAt(index);
@@ -343,6 +349,9 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
       fid: cmtObj.fid,
       imgUrl: cmtObj.imgUrl,
       isWriteSubCommentClicked: !cmtObj.isWriteSubCommentClicked,
+      isReadByFM: cmtObj.isReadByFM,
+      isReadByOM: cmtObj.isReadByOM,
+      isReadBySFM: cmtObj.isReadBySFM,
     );
 
     cmtList.removeAt(index);
@@ -363,6 +372,9 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
       scomment: cmt,
       imgUrl: UserUtil.getUser().imgUrl,
       fid: state.journal.fid,
+      isReadByFM: true,
+      isReadByOM: false,
+      isReadBySFM: false,
     );
 
     scmtList.add(_scmt);
@@ -392,6 +404,9 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
       fid: state.journal.fid,
       imgUrl: UserUtil.getUser().imgUrl,
       isWriteSubCommentClicked: false,
+      isReadByFM: true,
+      isReadByOM: false,
+      isReadBySFM: false,
     );
 
     cmtList.add(_cmt);

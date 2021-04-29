@@ -12,6 +12,9 @@ class HomeState {
   List<FMPlan> planListFromDB;
   List<CalendarPlan> planList;
 
+  bool isThereNewNotification;
+  bool isThereNewPlan;
+
   HomeState({
     @required this.isLoading,
     @required this.selectedYear,
@@ -20,6 +23,8 @@ class HomeState {
     @required this.currentDate,
     @required this.planListFromDB,
     @required this.planList,
+    @required this.isThereNewNotification,
+    @required this.isThereNewPlan,
   });
 
   factory HomeState.empty() {
@@ -31,6 +36,8 @@ class HomeState {
       currentDate: int.parse('$day'),
       planListFromDB: [],
       planList: [],
+      isThereNewNotification: false,
+      isThereNewPlan: false,
     );
   }
 
@@ -42,6 +49,8 @@ class HomeState {
     int currentIndex,
     List<FMPlan> planListFromDB,
     List<CalendarPlan> planList,
+    bool isThereNewNotification,
+    bool isThereNewPlan,
   }) {
     return HomeState(
       isLoading: isLoading ?? this.isLoading,
@@ -51,6 +60,8 @@ class HomeState {
       currentDate: currentIndex ?? this.currentDate,
       planListFromDB: planListFromDB ?? this.planListFromDB,
       planList: planList ?? this.planList,
+      isThereNewNotification: isThereNewNotification ?? this.isThereNewNotification,
+      isThereNewPlan: isThereNewPlan ?? this.isThereNewPlan,
     );
   }
 
@@ -62,6 +73,8 @@ class HomeState {
     int currentIndex,
     List<FMPlan> planListFromDB,
     List<CalendarPlan> planList,
+    bool isThereNewNotification,
+    bool isThereNewPlan,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -71,6 +84,8 @@ class HomeState {
       currentIndex: currentIndex,
       planListFromDB: planListFromDB,
       planList: planList,
+      isThereNewNotification: isThereNewNotification,
+      isThereNewPlan: isThereNewPlan,
     );
   }
 
@@ -84,6 +99,8 @@ class HomeState {
     currentIndex: $currentDate,
     planListFromDB: ${planListFromDB.length},
     planList: ${planList.length},
+    isThereNewNotification: ${isThereNewNotification},
+    isThereNewPlan: ${isThereNewPlan},
     }
     ''';
   }

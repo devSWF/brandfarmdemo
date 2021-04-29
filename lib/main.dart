@@ -13,6 +13,7 @@ import 'package:BrandFarm/screens/home/sub_home_screen.dart';
 import 'package:BrandFarm/screens/splash/splash_screen.dart';
 import 'package:BrandFarm/screens/login/login_screen.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 //bloc
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,11 +35,15 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 //util
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
+import 'package:flutter/foundation.dart';
+// import 'package:timezone/data/latest.dart' as tz;
+// import 'package:timezone/timezone.dart' as tz;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await Firebase.initializeApp();
+
   runApp(
     App(),
   );
@@ -59,7 +64,7 @@ class _AppState extends State<App> {
     super.initState();
     _authenticationBloc = AuthenticationBloc(userRepository: userRepository);
     try {
-      if (Platform.isIOS || Platform.isAndroid) {
+      if ((defaultTargetPlatform == TargetPlatform.iOS) || (defaultTargetPlatform == TargetPlatform.android)) {
         isDesktop = false;
       } else {
         isDesktop = true;

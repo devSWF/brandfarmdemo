@@ -17,6 +17,9 @@ class Comment {
   final String fid;
   final String imgUrl;
   final bool isWriteSubCommentClicked;
+  final bool isReadByFM;
+  final bool isReadByOM;
+  final bool isReadBySFM;
 
   Comment({
     @required this.date,
@@ -31,6 +34,9 @@ class Comment {
     @required this.fid,
     @required this.imgUrl,
     @required this.isWriteSubCommentClicked,
+    @required this.isReadByFM,
+    @required this.isReadByOM,
+    @required this.isReadBySFM,
   });
 
   factory Comment.fromSnapshot(DocumentSnapshot ds) {
@@ -47,6 +53,9 @@ class Comment {
       fid: ds['fid'],
       imgUrl: ds['imgUrl'],
       isWriteSubCommentClicked: ds['isWriteSubCommentClicked'],
+      isReadByFM: ds['isReadByFM'],
+      isReadByOM: ds['isReadByOM'],
+      isReadBySFM: ds['isReadBySFM'],
     );
   }
 
@@ -64,6 +73,9 @@ class Comment {
       'fid': fid,
       'imgUrl': imgUrl,
       'isWriteSubCommentClicked': isWriteSubCommentClicked,
+      'isReadByFM': isReadByFM,
+      'isReadByOM': isReadByOM,
+      'isReadBySFM': isReadBySFM,
     };
   }
 }
@@ -81,6 +93,9 @@ class SubComment {
   final String scomment;
   final String imgUrl;
   final String fid;
+  final bool isReadByFM;
+  final bool isReadByOM;
+  final bool isReadBySFM;
 
   SubComment({
     @required this.date,
@@ -93,6 +108,9 @@ class SubComment {
     @required this.scomment,
     @required this.imgUrl,
     @required this.fid,
+    @required this.isReadByFM,
+    @required this.isReadByOM,
+    @required this.isReadBySFM,
   });
 
   factory SubComment.fromSnapshot(DocumentSnapshot ds) {
@@ -107,6 +125,9 @@ class SubComment {
       scomment: ds['scomment'].toString(),
       imgUrl: ds['imgUrl'].toString(),
       fid: ds['fid'].toString(),
+      isReadByFM: ds['isReadByFM'],
+      isReadByOM: ds['isReadByOM'],
+      isReadBySFM: ds['isReadBySFM'],
     );
   }
 
@@ -122,6 +143,9 @@ class SubComment {
       'scomment': scomment,
       'imgUrl': imgUrl,
       'fid': fid,
+      'isReadByFM': isReadByFM,
+      'isReadByOM': isReadByOM,
+      'isReadBySFM': isReadBySFM,
     };
   }
 }

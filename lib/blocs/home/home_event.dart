@@ -36,3 +36,9 @@ class BottomNavBarClicked extends HomeEvent{
 class GetHomePlanList extends HomeEvent {}
 
 class SortPlanList extends HomeEvent {}
+
+class CheckNotificationUpdates extends HomeEvent {}
+class UpdateNotificationState extends HomeEvent {}
+
+class CheckPlanUpdates extends HomeEvent {}
+class UpdatePlanState extends HomeEvent {}

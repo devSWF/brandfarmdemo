@@ -1,4 +1,5 @@
 import 'package:BrandFarm/blocs/home/bloc.dart';
+import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
 import 'package:BrandFarm/utils/field_util.dart';
@@ -21,6 +22,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
       yield* _mapGetHomePlanListToState();
     } else if(event is SortPlanList){
       yield* _mapSortPlanListToState();
+    } else if(event is CheckNotificationUpdates){
+      yield* _mapCheckNotificationUpdatesToState();
+    } else if(event is UpdateNotificationState){
+      yield* _mapUpdateNotificationStateToState();
+    } else if(event is CheckPlanUpdates){
+      yield* _mapCheckPlanUpdatesToState();
+    } else if(event is UpdatePlanState){
+      yield* _mapUpdatePlanStateToState();
     }
   }
 
@@ -96,6 +105,46 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
 
     yield state.update(
       planList: sortedlist,
+    );
+  }
+
+  Stream<HomeState> _mapCheckNotificationUpdatesToState() async*{
+    List<NotificationNotice> nlist = [];
+    nlist = await SubHomeRepository().getNotificationUpdates(FieldUtil.getField().fid);
+    if(nlist.isNotEmpty) {
+      yield state.update(
+        isThereNewNotification: true,
+      );
+    } else {
+      yield state.update(
+        isThereNewNotification: false,
+      );
+    }
+  }
+
+  Stream<HomeState> _mapUpdateNotificationStateToState() async*{
+    yield state.update(
+      isThereNewNotification: false,
+    );
+  }
+
+  Stream<HomeState> _mapCheckPlanUpdatesToState() async*{
+    List<FMPlan> plist = [];
+    plist = await SubHomeRepository().getPlanUpdates(FieldUtil.getField().fid);
+    if(plist.isNotEmpty) {
+      yield state.update(
+        isThereNewPlan: true,
+      );
+    } else {
+      yield state.update(
+        isThereNewPlan: false,
+      );
+    }
+  }
+
+  Stream<HomeState> _mapUpdatePlanStateToState() async*{
+    yield state.update(
+      isThereNewPlan: false,
     );
   }
 }
