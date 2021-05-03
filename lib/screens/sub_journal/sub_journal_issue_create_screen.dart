@@ -4,6 +4,7 @@ import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/sub_journal/get_image.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
+import 'package:BrandFarm/widgets/brandfarm_date_picker.dart';
 import 'package:BrandFarm/widgets/customized_badge.dart';
 import 'package:BrandFarm/widgets/loading/loading.dart';
 import 'package:badges/badges.dart';
@@ -114,7 +115,7 @@ class _SubJournalIssueCreateScreenState
                     SizedBox(
                       height: 24.0,
                     ),
-                    _dateBar(),
+                    _dateBar(state),
                     SizedBox(
                       height: 37.0,
                     ),
@@ -154,19 +155,39 @@ class _SubJournalIssueCreateScreenState
     );
   }
 
-  Widget _dateBar() {
+  Widget _dateBar(JournalIssueCreateState state) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: defaultPadding),
       child: Row(
         children: [
-          Text('$year년 $month월 $day일 $weekday',
+          Text('${state.selectedDate.toDate().year}년 ${state.selectedDate.toDate().month}월 ${state.selectedDate.toDate().day}일 ${daysOfWeek(index: state.selectedDate.toDate().weekday)}',
               style: Theme.of(context).textTheme.subtitle2.copyWith(
                   fontSize: 16.0, color: Theme.of(context).primaryColor)),
           Spacer(),
-          SvgPicture.asset(
-            'assets/svg_icon/calendar_icon.svg',
-            color: Color(0xb3000000),
-          ),
+          IconButton(
+              icon: SvgPicture.asset(
+                'assets/svg_icon/calendar_icon.svg',
+                color: Color(0xb3000000),
+              ),
+              onPressed: () async {
+                final picked = await BrandFarmDatePicker(
+                  context: context,
+                  initialDate: state.selectedDate.toDate(),
+                  firstDate: DateTime(2015, 1),
+                  lastDate: DateTime(2100),
+                  helpText: '날짜 선택',
+                  locale: Locale('ko', 'KO'),
+                );
+
+                if (picked != null && picked != state.selectedDate.toDate()) {
+                  _journalIssueCreateBloc.add(
+                      DateSelected(selectedDate: Timestamp.fromDate(picked)));
+                }
+              }),
+          // SvgPicture.asset(
+          //   'assets/svg_icon/calendar_icon.svg',
+          //   color: Color(0xb3000000),
+          // ),
         ],
       ),
     );

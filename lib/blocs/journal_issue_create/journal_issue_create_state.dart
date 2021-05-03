@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
@@ -9,6 +10,7 @@ class JournalIssueCreateState {
   final List<Asset> assetList;
   final bool isComplete;
   final bool isUploaded;
+  final Timestamp selectedDate;
 
   JournalIssueCreateState({
     @required this.title,
@@ -16,6 +18,7 @@ class JournalIssueCreateState {
     @required this.assetList,
     @required this.isComplete,
     @required this.isUploaded,
+    @required this.selectedDate,
   });
 
   factory JournalIssueCreateState.empty() {
@@ -25,6 +28,7 @@ class JournalIssueCreateState {
       assetList: [],
       isComplete: false,
       isUploaded: false,
+      selectedDate: Timestamp.now(),
     );
   }
 
@@ -34,6 +38,7 @@ class JournalIssueCreateState {
     List<Asset> assetList,
     bool isComplete,
     bool isUploaded,
+    Timestamp selectedDate,
   }) {
     return JournalIssueCreateState(
         title: title ?? this.title,
@@ -41,6 +46,7 @@ class JournalIssueCreateState {
       assetList: assetList ?? this.assetList,
       isComplete: isComplete ?? this.isComplete,
       isUploaded: isUploaded ?? this.isUploaded,
+      selectedDate: selectedDate ?? this.selectedDate,
     );
   }
 
@@ -50,6 +56,7 @@ class JournalIssueCreateState {
     List<Asset> assetList,
     bool isComplete,
     bool isUploaded,
+    Timestamp selectedDate,
   }) {
     return copyWith(
         title: title,
@@ -57,6 +64,7 @@ class JournalIssueCreateState {
       assetList: assetList,
       isComplete: isComplete,
       isUploaded: isUploaded,
+      selectedDate: selectedDate,
     );
   }
 
@@ -68,6 +76,7 @@ class JournalIssueCreateState {
     assetList: ${assetList?.length ?? 0},
     isComplete: ${isComplete},
     isUploaded: ${isUploaded},
+    selectedDate: ${selectedDate},
    }''';
   }
 }
