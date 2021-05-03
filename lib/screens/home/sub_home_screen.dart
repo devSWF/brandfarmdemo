@@ -3,8 +3,6 @@ import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_event.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
-import 'package:BrandFarm/screens/home/notification_dialog.dart';
-import 'package:BrandFarm/screens/home/plan_dialog.dart';
 
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
 import 'package:BrandFarm/screens/setting/setting_screen.dart';
@@ -23,8 +21,6 @@ import 'package:BrandFarm/widgets/sub_home/sub_home_announce_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class SubHomeScreen extends StatefulWidget {
@@ -47,8 +43,6 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
   @override
   void initState() {
     super.initState();
-    _initNotiSetting();
-    // showNotification();
     _homeBloc = BlocProvider.of<HomeBloc>(context);
     _homeBloc.add(GetHomePlanList());
     _homeBloc.add(SortPlanList());
@@ -56,114 +50,13 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
     _notificationBloc.add(GetNotificationList());
     _weatherBloc = BlocProvider.of<WeatherBloc>(context);
     _weatherBloc.add(GetWeatherInfo());
-
-    // notification trigger
-    FirebaseFirestore.instance
-        .collection('NotificationTrigger')
-        .snapshots()
-        .listen((querySnapshot) {
-          querySnapshot.docChanges.forEach((changes) {
-            _homeBloc.add(CheckNotificationUpdates());
-            // print('there is change');
-            // showNotification();
-          });
-    });
-
-    // plan trigger
-    FirebaseFirestore.instance
-        .collection('PlanTrigger')
-        .snapshots()
-        .listen((querySnapshot) {
-      querySnapshot.docChanges.forEach((changes) {
-        _homeBloc.add(CheckNotificationUpdates());
-        // print('there is change');
-        // showNotification();
-      });
-    });
-  }
-
-  void _initNotiSetting() async {
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    // final initSettingsAndroid = AndroidInitializationSettings('app_icon');
-    final initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    // final initSettingsIOS = IOSInitializationSettings(
-    //   requestSoundPermission: false,
-    //   requestBadgePermission: false,
-    //   requestAlertPermission: false,
-    // );
-    final initSettings = InitializationSettings(
-      android: initSettingsAndroid,
-      // iOS: initSettingsIOS,
-    );
-    await flutterLocalNotificationsPlugin.initialize(
-      initSettings,
-    );
-  }
-
-  Future<void> showNotification() async {
-    var android = AndroidNotificationDetails(
-        'channelId', 'channelName', 'channelDescription');
-    var iOS = IOSNotificationDetails();
-    var platform = NotificationDetails(android: android, iOS: iOS);
-
-    await FlutterLocalNotificationsPlugin().show(0, '새로운 알림이 왔어요', '앱에서 확인해 주세요', platform);
-    // await FlutterLocalNotificationsPlugin().zonedSchedule(0, 'title', 'body', tz.TZDateTime.now(), platform);
-  }
-
-  void _showNotificationDialog() async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return MultiBlocProvider(
-              providers: [
-                BlocProvider.value(
-                  value: _homeBloc,
-                ),
-                BlocProvider.value(
-                  value: _notificationBloc,
-                ),
-              ],
-            child: NotificationDialog(),
-          );
-        }
-    );
-  }
-
-  void _showPlanDialog() async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: _homeBloc,
-              ),
-            ],
-            child: PlanDialog(),
-          );
-        }
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener(
         cubit: _homeBloc,
-        listener: (BuildContext context, HomeState state) {
-          if(state.isThereNewNotification) {
-            // show dialog
-            _showNotificationDialog();
-            showNotification();
-          } else if(state.isThereNewPlan){
-            // show dialog
-            _showPlanDialog();
-            showNotification();
-          } else {
-            // do nothing
-          }
-        },
+        listener: (BuildContext context, HomeState state) {},
         child: BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
           if (state.selectedDate < 3) {
             initialIndex = 0;
