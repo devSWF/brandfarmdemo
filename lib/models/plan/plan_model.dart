@@ -17,6 +17,7 @@ class FMPlan {
   final int from; // 1 : office , 2 : FM
   final String fid;
   final String farmID;
+  final bool isUpdated;
 
   FMPlan({
     @required this.planID,
@@ -34,6 +35,7 @@ class FMPlan {
     @required this.from,
     @required this.fid,
     @required this.farmID,
+    @required this.isUpdated,
   });
 
   factory FMPlan.fromSnapshot(DocumentSnapshot ds) {
@@ -53,6 +55,7 @@ class FMPlan {
       from: ds['from'],
       fid: ds['fid'].toString(),
       farmID: ds['farmID'].toString(),
+      isUpdated: ds['isUpdated'],
     );
   }
 
@@ -73,6 +76,7 @@ class FMPlan {
       'from': from,
       'fid': fid,
       'farmID': farmID,
+      'isUpdated': isUpdated,
     };
   }
 }
@@ -83,6 +87,7 @@ class WaitingConfirmation {
   String title;
   String content;
   int selectedFieldIndex;
+  bool isUpdated;
 
   WaitingConfirmation({
     @required this.startDate,
@@ -90,6 +95,7 @@ class WaitingConfirmation {
     @required this.title,
     @required this.content,
     @required this.selectedFieldIndex,
+    @required this.isUpdated,
   });
 }
 
@@ -100,6 +106,7 @@ class CalendarPlan {
   String farmID;
   String fid;
   String planID;
+  bool isUpdated;
 
   CalendarPlan({
     this.date,
@@ -108,5 +115,6 @@ class CalendarPlan {
     this.farmID,
     this.fid,
     this.planID,
+    this.isUpdated,
   });
 }

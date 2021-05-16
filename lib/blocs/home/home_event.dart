@@ -42,3 +42,4 @@ class UpdateNotificationState extends HomeEvent {}
 
 class CheckPlanUpdates extends HomeEvent {}
 class UpdatePlanState extends HomeEvent {}
+class CheckFcmToken extends HomeEvent {}

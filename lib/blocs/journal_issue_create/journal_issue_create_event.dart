@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -91,5 +92,14 @@ class UploadJournal extends JournalIssueCreateEvent {
       isReadByOffice: $isReadByOffice,
     }''';
   }
+}
+
+class DateSelected extends JournalIssueCreateEvent {
+  final Timestamp selectedDate;
+
+  const DateSelected({@required this.selectedDate});
+
+  @override
+  String toString() => 'DateSelected{ SelectedDate: $selectedDate}';
 }
 

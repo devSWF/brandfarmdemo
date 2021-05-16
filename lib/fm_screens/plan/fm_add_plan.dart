@@ -1,10 +1,10 @@
+import 'package:BrandFarm/blocs/fm_notification/fm_notification_bloc.dart';
+import 'package:BrandFarm/blocs/fm_notification/fm_notification_event.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
-import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/widgets/fm_shared_widgets/fm_small_calendar.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +20,7 @@ class FMAddPlan extends StatefulWidget {
 
 class _FMAddPlanState extends State<FMAddPlan> {
   FMPlanBloc _fmPlanBloc;
+  FMNotificationBloc _fmNotificationBloc;
   GlobalKey _key = GlobalKey();
 
   // DateTime startDate;
@@ -46,6 +47,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
   void initState() {
     super.initState();
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
     // startDate = DateTime.now();
     // endDate = DateTime.now();
     isDateOrderCorrect = true;
@@ -432,6 +434,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
                 title: _title,
                 content: _content,
                 selectedFieldIndex: selectedFieldIndex,
+                isUpdated: true,
               )));
               // Navigator.pop(context);
               _fmPlanBloc.add(CheckConfirmState(confirmState: true));
@@ -477,8 +480,15 @@ class _FMAddPlanState extends State<FMAddPlan> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return BlocProvider.value(
-            value: _fmPlanBloc,
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _fmPlanBloc,
+              ),
+              BlocProvider.value(
+                value: _fmNotificationBloc,
+              ),
+            ],
             child: Confirm(),
           );
         });
@@ -492,17 +502,28 @@ class Confirm extends StatefulWidget {
 
 class _ConfirmState extends State<Confirm> {
   FMPlanBloc _fmPlanBloc;
+  FMNotificationBloc _fmNotificationBloc;
+  bool repeat;
 
   @override
   void initState() {
     super.initState();
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
+    repeat = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FMPlanBloc, FMPlanState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if(!state.isConfirmed && repeat){
+          _fmNotificationBloc.add(PushPlanNotification(plan: state.newPlan));
+          setState(() {
+            repeat = false;
+          });
+        }
+      },
       builder: (context, state) {
         return AlertDialog(
           contentPadding: EdgeInsets.zero,

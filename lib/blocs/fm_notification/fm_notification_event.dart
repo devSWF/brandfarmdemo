@@ -1,5 +1,7 @@
+import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -124,5 +126,85 @@ class SetNoticeAsRead extends FMNotificationEvent {
   @override
   String toString() => '''SetNoticeAsRead { 
     index : $index,
+  }''';
+}
+
+class PushPlanNotification extends FMNotificationEvent {
+  final FMPlan plan;
+
+  const PushPlanNotification({
+    @required this.plan,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''PushPlanNotification { 
+    plan : $plan,
+  }''';
+}
+
+class PushSCommentNotification extends FMNotificationEvent {
+  final SubComment scmt;
+
+  const PushSCommentNotification({
+    @required this.scmt,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''PushSCommentNotification { 
+    scmt : $scmt,
+  }''';
+}
+
+class PostCommentNotification extends FMNotificationEvent {
+  final Comment cmt;
+
+  const PostCommentNotification({
+    @required this.cmt,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''PostCommentNotification { 
+    cmt : $cmt,
+  }''';
+}
+
+class PostIssueCommentNotice extends FMNotificationEvent {
+  final Comment cmt;
+
+  const PostIssueCommentNotice({
+    @required this.cmt,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''PostIssueCommentNotice { 
+    cmt : $cmt,
+  }''';
+}
+
+class PostIssueSCommentNotice extends FMNotificationEvent {
+  final SubComment scmt;
+
+  const PostIssueSCommentNotice({
+    @required this.scmt,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => '''PostIssueSCommentNotice { 
+    scmt : $scmt,
   }''';
 }

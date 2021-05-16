@@ -259,6 +259,7 @@ class _FMCalendarState extends State<FMCalendar> {
                   farmID: listByField[col][row].farmID,
                   fid: listByField[col][row].fid,
                   planID: listByField[col][row].planID,
+                  isUpdated: listByField[col][row].isUpdated,
                 ));
       });
       return plist;

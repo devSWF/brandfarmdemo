@@ -42,6 +42,8 @@ class JournalIssueCreateBloc
         isReadByFM: event.isReadByFM,
         isReadByOffice: event.isReadByOffice,
       );
+    } else if (event is DateSelected) {
+      yield* _mapDateSelectedToState(event.selectedDate);
     }
   }
 
@@ -104,7 +106,7 @@ class JournalIssueCreateBloc
     String issid = '';
     issid = FirebaseFirestore.instance.collection('Issue').doc().id;
     SubJournalIssue subJournalIssue = SubJournalIssue(
-      date: Timestamp.now(),
+      date: state.selectedDate, // before: Timestamp.now()
       fid: fid ?? await FieldUtil.getField().fid,
       fieldCategory: await FieldUtil.getField().fieldCategory,
       sfmid: sfmid ?? '--',
@@ -146,6 +148,12 @@ class JournalIssueCreateBloc
 
     yield state.update(
       isUploaded: true,
+    );
+  }
+
+  Stream<JournalIssueCreateState> _mapDateSelectedToState(Timestamp selectedDate) async* {
+    yield state.update(
+      selectedDate: selectedDate,
     );
   }
 }

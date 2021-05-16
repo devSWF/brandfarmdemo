@@ -384,6 +384,7 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     yield state.update(
       commentList: cmtList,
       subCommentList: scmtList,
+      newSComment: _scmt,
     );
   }
 
@@ -460,6 +461,7 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
       commentList: cmtList,
       journalList: journalList,
       reverseList: reverseList,
+      newComment: _cmt,
     );
   }
 }

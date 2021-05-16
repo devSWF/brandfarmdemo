@@ -1,6 +1,7 @@
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
+import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
 import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_models.dart';
@@ -19,6 +20,7 @@ class FMJournalDetailScreen extends StatefulWidget {
 
 class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
   FMJournalBloc _fmJournalBloc;
+  FMNotificationBloc _fmNotificationBloc;
   TextEditingController _textEditingController;
   TextEditingController _subTextEditingController;
   FocusNode _focusNode;
@@ -27,10 +29,14 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
 
   // String weekday;
   String comment;
+  bool repeat;
+  bool isComment;
+  bool isSubComment;
 
   @override
   void initState() {
     super.initState();
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
     _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     _fmJournalBloc.add(GetJournalComments());
     _fmJournalBloc.add(GetJournalDetailUserInfo());
@@ -39,6 +45,9 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
     _focusNode = FocusNode();
     _subFocusNode = FocusNode();
     wroteComments = false;
+    repeat = true;
+    isComment = false;
+    isSubComment = false;
   }
 
   String getDate({Timestamp date}) {
@@ -53,7 +62,22 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FMJournalBloc, FMJournalState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if(repeat && isComment){
+          _fmNotificationBloc
+              .add(PostCommentNotification(cmt: state.newComment));
+          setState(() {
+            repeat = false;
+            isComment = false;
+          });
+        } else if(repeat && isSubComment){
+          _fmNotificationBloc.add(PushSCommentNotification(scmt: state.newSComment));
+          setState(() {
+            repeat = false;
+            isSubComment = false;
+          });
+        }
+      },
       builder: (context, state) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if(!state.journal.isReadByFM) {
@@ -1201,7 +1225,7 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
               SizedBox(
                 width: 56,
               ),
-              _writeReply(index: index),
+              _writeReply(index: index, state: state),
             ],
           )
               : Container(),
@@ -1330,7 +1354,7 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
     );
   }
 
-  Widget _writeReply({int index}) {
+  Widget _writeReply({int index, FMJournalState state}) {
     return Container(
       child: Row(
         children: [
@@ -1368,6 +1392,10 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
                   onSubmitted: (text) {
                     _fmJournalBloc.add(
                         WriteJournalReply(cmt: text, index: index));
+                    setState(() {
+                      repeat = true;
+                      isSubComment = true;
+                    });
                     _subFocusNode.unfocus();
                     _subTextEditingController.clear();
                   },
@@ -1426,6 +1454,10 @@ class _FMJournalDetailScreenState extends State<FMJournalDetailScreen> {
               },
               onSubmitted: (text) {
                 _fmJournalBloc.add(WriteJournalComment(cmt: text,));
+                setState(() {
+                  repeat = true;
+                  isComment = true;
+                });
                 _focusNode.unfocus();
                 _textEditingController.clear();
               },

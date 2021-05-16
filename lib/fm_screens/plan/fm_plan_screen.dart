@@ -1,3 +1,4 @@
+import 'package:BrandFarm/blocs/fm_notification/fm_notification_bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
 import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
@@ -14,6 +15,7 @@ class FMPlanScreen extends StatefulWidget {
 
 class _FMPlanScreenState extends State<FMPlanScreen> {
   FMPlanBloc _fmPlanBloc;
+  FMNotificationBloc _fmNotificationBloc;
 
   // for test
   // List<String> forTest = List.generate(4, (index) {
@@ -30,6 +32,7 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
   void initState() {
     super.initState();
     _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
   }
 
   @override
@@ -194,8 +197,15 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return BlocProvider.value(
-            value: _fmPlanBloc,
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _fmPlanBloc,
+              ),
+              BlocProvider.value(
+                value: _fmNotificationBloc,
+              ),
+            ],
             child: FMAddPlan(),
           );
         });

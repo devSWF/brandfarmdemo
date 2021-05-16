@@ -1,8 +1,14 @@
 
 import 'package:BrandFarm/blocs/notification/notification_event.dart';
 import 'package:BrandFarm/blocs/notification/notification_state.dart';
+import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/notification/notification_repository.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:bloc/bloc.dart';
@@ -20,6 +26,14 @@ class NotificationBloc
       yield* _mapGetNotificationListToState();
     } else if (event is CheckAsRead) {
       yield* _mapCheckAsReadToState(event.obj);
+    } else if (event is GetJournalNotificationInitials) {
+      yield* _mapGetJournalNotificationInitialsToState(event.obj);
+    } else if (event is SetExpansionState) {
+      yield* _mapSetExpansionStateToState(event.index);
+    } else if (event is GetIssueNotificationInitials) {
+      yield* _mapGetIssueNotificationInitialsToState(event.obj);
+    } else if (event is GetPlanNotificationInitials) {
+      yield* _mapGetPlanNotificationInitialsToState(event.obj);
     }
   }
 
@@ -74,7 +88,10 @@ class NotificationBloc
         isReadBySFM: true,
         notid: obj.notid,
         type: obj.type,
-        department: obj.department
+        department: obj.department,
+        jid: obj.jid,
+      issid: obj.issid,
+      planid: obj.planid,
     );
 
     List<NotificationNotice> impList = state.importantList;
@@ -101,30 +118,106 @@ class NotificationBloc
     );
   }
 
-  // Stream<NotificationState> _mapPostNotificationToState(
-  //     NotificationNotice obj) async* {
-  //   // post notification
-  //   String _notid = '';
-  //   _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
-  //   NotificationNotice _notice = NotificationNotice(
-  //     uid: obj.uid,
-  //     name: obj.name,
-  //     imgUrl: obj.imgUrl,
-  //     fid: obj.fid,
-  //     farmid: obj.farmid,
-  //     title: obj.title,
-  //     content: obj.content,
-  //     postedDate: obj.postedDate,
-  //     scheduledDate: obj.scheduledDate,
-  //     isReadByFM: obj.isReadByFM,
-  //     isReadByOffice: obj.isReadByOffice,
-  //     isReadBySFM: obj.isReadBySFM,
-  //     notid: _notid,
-  //     type: obj.type,
-  //   );
-  //
-  //   NotificationRepository().postNotification(_notice);
-  //
-  //   yield state.update(isLoading: false);
-  // }
+  Stream<NotificationState> _mapGetJournalNotificationInitialsToState(
+      NotificationNotice obj) async* {
+    Journal _jObj;
+    List<Comment> _cmt = [];
+    List<SubComment> _scmt = [];
+    List<ImagePicture> _pic = [];
+    List<User> _cmtUsers = [];
+    List<User> _scmtUsers = [];
+
+    _jObj = await NotificationRepository().getJournal(obj.jid);
+    _cmt = await NotificationRepository().getCommentForJournal(obj.jid);
+    _scmt = await NotificationRepository().getSubCommentForJournal(obj.jid);
+    _pic = await NotificationRepository().getImagePictureForJournal(obj.jid);
+
+    await Future.forEach(_cmt, (element) async {
+      _cmtUsers.add(await NotificationRepository().getUserInfo(element.uid));
+    });
+
+    await Future.forEach(_scmt, (element) async {
+      _scmtUsers.add(await NotificationRepository().getUserInfo(element.uid));
+    });
+
+    yield state.update(
+      jObj: _jObj,
+      clist: _cmt,
+      sclist: _scmt,
+      piclist: _pic,
+      commentUser: _cmtUsers,
+      scommentUser: _scmtUsers,
+    );
+  }
+
+  Stream<NotificationState> _mapSetExpansionStateToState(
+      int index) async* {
+    List<Comment> list = state.clist;
+    Comment cObj = list[index];
+    Comment newObj = Comment(
+      date: cObj.date,
+      name: cObj.name,
+      uid: cObj.uid,
+      issid: cObj.issid,
+      jid: cObj.jid,
+      cmtid: cObj.cmtid,
+      comment: cObj.comment,
+      isThereSubComment: cObj.isThereSubComment,
+      isExpanded: !cObj.isExpanded,
+      fid: cObj.fid,
+      imgUrl: cObj.imgUrl,
+      isWriteSubCommentClicked: cObj.isWriteSubCommentClicked,
+      isReadByFM: cObj.isReadByFM,
+      isReadByOM: cObj.isReadByOM,
+      isReadBySFM: cObj.isReadBySFM,
+    );
+    list.removeAt(index);
+    list.insert(index, newObj);
+    yield state.update(
+      clist: list,
+    );
+  }
+
+  Stream<NotificationState> _mapGetIssueNotificationInitialsToState(
+      NotificationNotice obj) async* {
+    SubJournalIssue _iObj;
+    List<Comment> _cmt = [];
+    List<SubComment> _scmt = [];
+    List<ImagePicture> _pic = [];
+    List<User> _cmtUsers = [];
+    List<User> _scmtUsers = [];
+
+    _iObj = await NotificationRepository().getIssue(obj.issid);
+    _cmt = await NotificationRepository().getCommentForIssue(obj.issid);
+    _scmt = await NotificationRepository().getSubCommentForIssue(obj.issid);
+    _pic = await NotificationRepository().getImagePictureForIssue(obj.issid);
+
+    await Future.forEach(_cmt, (element) async {
+      _cmtUsers.add(await NotificationRepository().getUserInfo(element.uid));
+    });
+
+    await Future.forEach(_scmt, (element) async {
+      _scmtUsers.add(await NotificationRepository().getUserInfo(element.uid));
+    });
+
+    yield state.update(
+      iObj: _iObj,
+      clist: _cmt,
+      sclist: _scmt,
+      piclist: _pic,
+      commentUser: _cmtUsers,
+      scommentUser: _scmtUsers,
+    );
+  }
+
+  Stream<NotificationState> _mapGetPlanNotificationInitialsToState(
+      NotificationNotice obj) async* {
+    FMPlan _plan;
+
+    _plan = await NotificationRepository().getPlan(obj.planid);
+
+    yield state.update(
+      plan: _plan,
+    );
+  }
 }

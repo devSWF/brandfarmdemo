@@ -2,6 +2,7 @@ import 'package:BrandFarm/blocs/fm_issue/bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
+import 'package:BrandFarm/blocs/fm_notification/fm_notification_bloc.dart';
 import 'package:BrandFarm/fm_screens/issue/fm_issue_detail_screen.dart';
 import 'package:BrandFarm/fm_screens/issue/fm_issue_screen.dart';
 import 'package:BrandFarm/fm_screens/journal/fm_journal_detail_screen.dart';
@@ -20,6 +21,7 @@ class FMJournalScreen extends StatefulWidget {
 class _FMJournalScreenState extends State<FMJournalScreen> {
   FMJournalBloc _fmJournalBloc;
   FMIssueBloc _fmIssueBloc;
+  FMNotificationBloc _fmNotificationBloc;
   ScrollController _scrollController;
 
   @override
@@ -27,6 +29,7 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
     super.initState();
     _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
     _scrollController = ScrollController();
   }
 
@@ -58,8 +61,15 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
                               child: (state.navTo == 1)
                                   ? _homeList(state)
                                   : (state.navTo == 2)
-                                      ? BlocProvider.value(
-                                          value: _fmJournalBloc,
+                                      ? MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider.value(
+                                              value: _fmJournalBloc,
+                                            ),
+                                            BlocProvider.value(
+                                              value: _fmNotificationBloc,
+                                            ),
+                                          ],
                                           child: FMJournalDetailScreen(),
                                         )
                                       : MultiBlocProvider(
@@ -69,6 +79,9 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
                                             ),
                                             BlocProvider.value(
                                               value: _fmJournalBloc,
+                                            ),
+                                            BlocProvider.value(
+                                              value: _fmNotificationBloc,
                                             ),
                                           ],
                                           child: (state.order == '최신 순')
@@ -211,7 +224,9 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
         {
           return BlocProvider.value(
             value: _fmJournalBloc,
-            child: FMJournalList(shouldReload: state.shouldReload,),
+            child: FMJournalList(
+              shouldReload: state.shouldReload,
+            ),
           );
         }
         break;

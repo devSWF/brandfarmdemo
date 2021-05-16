@@ -1,6 +1,12 @@
 
+import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:flutter/material.dart';
 
 class NotificationState {
@@ -11,6 +17,15 @@ class NotificationState {
   List<NotificationNotice> generalList;
   int unRead;
 
+  FMPlan plan;
+  Journal jObj;
+  SubJournalIssue iObj;
+  List<Comment> clist;
+  List<SubComment> sclist;
+  List<ImagePicture> piclist;
+  List<User> commentUser;
+  List<User> scommentUser;
+
   NotificationState({
     @required this.isLoading,
     @required this.farm,
@@ -18,6 +33,14 @@ class NotificationState {
     @required this.importantList,
     @required this.generalList,
     @required this.unRead,
+    @required this.plan,
+    @required this.jObj,
+    @required this.iObj,
+    @required this.clist,
+    @required this.sclist,
+    @required this.piclist,
+    @required this.commentUser,
+    @required this.scommentUser,
   });
 
   factory NotificationState.empty() {
@@ -32,6 +55,14 @@ class NotificationState {
       importantList: [],
       generalList: [],
       unRead: 0,
+      plan: null,
+      jObj: null,
+      iObj: null,
+      clist: [],
+      sclist: [],
+      piclist: [],
+      commentUser: [],
+      scommentUser: [],
     );
   }
 
@@ -42,6 +73,14 @@ class NotificationState {
     List<NotificationNotice> importantList,
     List<NotificationNotice> generalList,
     int unRead,
+    FMPlan plan,
+    Journal jObj,
+    SubJournalIssue iObj,
+    List<Comment> clist,
+    List<SubComment> sclist,
+    List<ImagePicture> piclist,
+    List<User> commentUser,
+    List<User> scommentUser,
   }) {
     return NotificationState(
       isLoading: isLoading ?? this.isLoading,
@@ -50,6 +89,14 @@ class NotificationState {
       importantList: importantList ?? this.importantList,
       generalList: generalList ?? this.generalList,
       unRead: unRead ?? this.unRead,
+      plan: plan ?? this.plan,
+      jObj: jObj ?? this.jObj,
+      iObj: iObj ?? this.iObj,
+      clist: clist ?? this.clist,
+      sclist: sclist ?? this.sclist,
+      piclist: piclist ?? this.piclist,
+      commentUser: commentUser ?? this.commentUser,
+      scommentUser: scommentUser ?? this.scommentUser,
     );
   }
 
@@ -60,6 +107,14 @@ class NotificationState {
     List<NotificationNotice> importantList,
     List<NotificationNotice> generalList,
     int unRead,
+    FMPlan plan,
+    Journal jObj,
+    SubJournalIssue iObj,
+    List<Comment> clist,
+    List<SubComment> sclist,
+    List<ImagePicture> piclist,
+    List<User> commentUser,
+    List<User> scommentUser,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -68,6 +123,14 @@ class NotificationState {
       importantList: importantList,
       generalList: generalList,
       unRead: unRead,
+      plan: plan,
+      jObj: jObj,
+      iObj: iObj,
+      clist: clist,
+      sclist: sclist,
+      piclist: piclist,
+      commentUser: commentUser,
+      scommentUser: scommentUser,
     );
   }
 
@@ -80,6 +143,14 @@ class NotificationState {
       importantList: ${importantList.length},
       generalList: ${generalList.length},
       unRead: ${unRead},
+      plan: ${plan},
+      jObj: ${jObj},
+      iObj: ${iObj},
+      clist: ${clist?.length},
+      sclist: ${sclist?.length},
+      piclist: ${piclist?.length},
+      commentUser: ${commentUser?.length},
+      scommentUser: ${scommentUser?.length},
     }
     ''';
   }
