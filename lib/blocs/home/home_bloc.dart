@@ -3,7 +3,9 @@ import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
 import 'package:BrandFarm/utils/field_util.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState>{
   HomeBloc() : super(HomeState.empty());
@@ -30,6 +32,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
       yield* _mapCheckPlanUpdatesToState();
     } else if(event is UpdatePlanState){
       yield* _mapUpdatePlanStateToState();
+    } else if(event is CheckFcmToken){
+      yield* _mapCheckFcmTokenToState();
     }
   }
 
@@ -87,6 +91,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
             farmID: plist[i].farmID,
             fid: plist[i].fid,
             planID: plist[i].planID,
+            isUpdated: plist[i].isUpdated,
           );
 
           if(tmplist.length > 0) {
@@ -146,5 +151,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
     yield state.update(
       isThereNewPlan: false,
     );
+  }
+
+  Stream<HomeState> _mapCheckFcmTokenToState() async*{
+    FirebaseMessaging _fcm = FirebaseMessaging.instance;
+    // if(await UserUtil.getUser().fcmToken.length > 0) {
+    //   print('FcmToken Exists');
+    // } else {
+    //   String fcmToken = await _fcm.getToken();
+    //   await SubHomeRepository().updateFcmToken(await UserUtil.getUser().uid, fcmToken);
+    // }
+    String fcmToken = await _fcm.getToken();
+    await SubHomeRepository().updateFcmToken(await UserUtil.getUser().uid, fcmToken);
+    yield state.update();
   }
 }

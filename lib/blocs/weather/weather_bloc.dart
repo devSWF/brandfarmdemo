@@ -155,8 +155,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
     http.Response shortWeatherInfo;
 
-    shortWeatherInfo = await http.get(
-        '$ultraSrtFcstHeader&base_date=$today_short&base_time=$short_base_time&nx=$gridX&ny=$gridY&');
+    var shortWeatherInfoUri = Uri.parse('$ultraSrtFcstHeader&base_date=$today_short&base_time=$short_base_time&nx=$gridX&ny=$gridY&');
+    shortWeatherInfo = await http.get(shortWeatherInfoUri);
 
     // print('$ultraSrtFcstHeader&base_date=$today_short&base_time=$short_base_time&nx=$gridX&ny=$gridY&');
 
@@ -195,8 +195,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
     http.Response longWeatherInfo;
 
-    longWeatherInfo = await http.get(
-        '$villageFcstHeader&base_date=$today_long&base_time=$long_base_time&nx=$gridX&ny=$gridY&');
+    var longWeatherInfoUri = Uri.parse('$villageFcstHeader&base_date=$today_long&base_time=$long_base_time&nx=$gridX&ny=$gridY&');
+    longWeatherInfo = await http.get(longWeatherInfoUri);
 
     // print('$villageFcstHeader&base_date=$today_long&base_time=$long_base_time&nx=$gridX&ny=$gridY&');
 
@@ -287,7 +287,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
     var url = Uri.parse(
         '$riseSetAreaInfoHeader&locdate=$base_date&location=$location');
-    sunRiseSetInfo = await http.get(url.toString());
+    sunRiseSetInfo = await http.get(url);
 
     // print(url);
 
@@ -311,7 +311,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
      ******************************************************************************************/
 
     http.Response midFcstInfo;
-    midFcstInfo = await http.get('$midFcstInfoHeader&regId=$regId&tmFc=$dt');
+    var midFcstInfoUri = Uri.parse('$midFcstInfoHeader&regId=$regId&tmFc=$dt');
+    midFcstInfo = await http.get(midFcstInfoUri);
     // print('$midFcstInfoHeader&regId=$regId&tmFc=$dt');
 
     if (midFcstInfo.statusCode == 200) {
@@ -347,8 +348,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
      ******************************************************************************************/
 
     http.Response midFcstLandInfo;
-    midFcstLandInfo =
-        await http.get('$midFcstLandInfoHeader&regId=$regLnCode&tmFc=$dt');
+    var midFcstLandInfoUri = Uri.parse('$midFcstLandInfoHeader&regId=$regLnCode&tmFc=$dt');
+    midFcstLandInfo = await http.get(midFcstLandInfoUri);
     // print('$midFcstLandInfoHeader&regId=$regLnCode&tmFc=$dt');
 
     if (midFcstLandInfo.statusCode == 200) {

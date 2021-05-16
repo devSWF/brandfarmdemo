@@ -18,6 +18,9 @@ class NotificationNotice {
   final String notid;
   final String type;
   final String department;
+  final String jid;
+  final String issid;
+  final String planid;
 
   NotificationNotice({
     @required this.no,
@@ -36,6 +39,9 @@ class NotificationNotice {
     @required this.notid,
     @required this.type,
     @required this.department,
+    @required this.jid,
+    @required this.issid,
+    @required this.planid,
   });
 
   factory NotificationNotice.fromSnapshot(DocumentSnapshot ds) {
@@ -56,6 +62,9 @@ class NotificationNotice {
       notid: ds['notid'],
       type: ds['type'],
       department: ds['department'],
+      jid: ds['jid'],
+      issid: ds['issid'],
+      planid: ds['planid'],
     );
   }
 
@@ -77,6 +86,9 @@ class NotificationNotice {
       'notid': notid,
       'type': type,
       'department': department,
+      'jid': jid,
+      'issid': issid,
+      'planid': planid,
     };
   }
 }

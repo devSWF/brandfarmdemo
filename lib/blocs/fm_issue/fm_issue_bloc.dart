@@ -224,6 +224,7 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
         commentList: cmtList,
       issueList: issueList,
       reverseList: reverseList,
+      newComment: _cmt,
     );
   }
 
@@ -307,6 +308,7 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     yield state.update(
         commentList: cmtList,
       subCommentList: scmtList,
+      newSComment: _scmt,
     );
   }
 }

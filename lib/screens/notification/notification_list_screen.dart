@@ -1,7 +1,9 @@
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
-import 'package:BrandFarm/blocs/notification/notification_event.dart';
 import 'package:BrandFarm/blocs/notification/notification_state.dart';
 import 'package:BrandFarm/screens/notification/notification_dialog_screen.dart';
+import 'package:BrandFarm/screens/notification/notification_issue_detail.dart';
+import 'package:BrandFarm/screens/notification/notification_journal_detail.dart';
+import 'package:BrandFarm/screens/notification/notification_plan_dialog.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
 import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -255,19 +257,63 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
       ),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(
-            PageRouteBuilder(
-                pageBuilder: (context, a1, a2) => BlocProvider.value(
-                      value: _notificationBloc,
-                      child: NotificationDialogScreen(
-                        obj: state.generalList[index],
-                      ),
+          if(state.generalList[index].planid.isNotEmpty){
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                  pageBuilder: (context, a1, a2) => BlocProvider.value(
+                    value: _notificationBloc,
+                    child: NotificationPlanDialog(
+                      obj: state.generalList[index],
                     ),
-                transitionsBuilder: (c, anim, a2, child) =>
-                    FadeTransition(opacity: anim, child: child),
-                transitionDuration: Duration(milliseconds: 300),
-                opaque: false),
-          );
+                  ),
+                  transitionsBuilder: (c, anim, a2, child) =>
+                      FadeTransition(opacity: anim, child: child),
+                  transitionDuration: Duration(milliseconds: 300),
+                  opaque: false),
+            );
+          } else if(state.generalList[index].jid.isNotEmpty && state.generalList[index].issid.contains('--')){
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                  pageBuilder: (context, a1, a2) => BlocProvider.value(
+                    value: _notificationBloc,
+                    child: NotificationJournalDetail(
+                      obj: state.generalList[index],
+                    ),
+                  ),
+                  transitionsBuilder: (c, anim, a2, child) =>
+                      FadeTransition(opacity: anim, child: child),
+                  transitionDuration: Duration(milliseconds: 300),
+                  opaque: false),
+            );
+          } else if (state.generalList[index].issid.isNotEmpty && state.generalList[index].jid.contains('--')) {
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                  pageBuilder: (context, a1, a2) => BlocProvider.value(
+                    value: _notificationBloc,
+                    child: NotificationIssueDetail(
+                      obj: state.generalList[index],
+                    ),
+                  ),
+                  transitionsBuilder: (c, anim, a2, child) =>
+                      FadeTransition(opacity: anim, child: child),
+                  transitionDuration: Duration(milliseconds: 300),
+                  opaque: false),
+            );
+          } else {
+            Navigator.of(context).push(
+              PageRouteBuilder(
+                  pageBuilder: (context, a1, a2) => BlocProvider.value(
+                    value: _notificationBloc,
+                    child: NotificationDialogScreen(
+                      obj: state.generalList[index],
+                    ),
+                  ),
+                  transitionsBuilder: (c, anim, a2, child) =>
+                      FadeTransition(opacity: anim, child: child),
+                  transitionDuration: Duration(milliseconds: 300),
+                  opaque: false),
+            );
+          }
         },
         child: Column(
           children: [
@@ -288,22 +334,54 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                                   width: 48,
                                   height: 48,
                                   child: Center(
-                                      child: Image.asset(
-                                    'assets/megaphone.png',
-                                    width: 38,
-                                    height: 38,
-                                  ))),
+                                      child: (state.generalList[index].planid
+                                              .isNotEmpty)
+                                          ? Icon(
+                                              Icons.calendar_today,
+                                              size: 38,
+                                              color: Colors.lightGreen,
+                                            )
+                                          : (state.generalList[index].issid
+                                                      .isNotEmpty ||
+                                                  state.generalList[index].jid
+                                                      .isNotEmpty)
+                                              ? Icon(
+                                                  Icons.comment,
+                                                  size: 38,
+                                                  color: Colors.blue,
+                                                )
+                                              : Image.asset(
+                                                  'assets/megaphone.png',
+                                                  width: 38,
+                                                  height: 38,
+                                                ))),
                               padding: EdgeInsets.all(4.5),
                             )
                           : Container(
                               width: 48,
                               height: 48,
                               child: Center(
-                                  child: Image.asset(
-                                'assets/megaphone.png',
-                                width: 38,
-                                height: 38,
-                              ))),
+                                  child: (state
+                                          .generalList[index].planid.isNotEmpty)
+                                      ? Icon(
+                                          Icons.calendar_today,
+                                          size: 38,
+                                          color: Colors.lightGreen,
+                                        )
+                                      : (state.generalList[index].issid
+                                                  .isNotEmpty ||
+                                              state.generalList[index].jid
+                                                  .isNotEmpty)
+                                          ? Icon(
+                                              Icons.comment,
+                                              size: 38,
+                                              color: Colors.blue,
+                                            )
+                                          : Image.asset(
+                                              'assets/megaphone.png',
+                                              width: 38,
+                                              height: 38,
+                                            ))),
                     ],
                   ),
                   SizedBox(

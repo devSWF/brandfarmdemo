@@ -104,6 +104,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
       // 1 : office, 2 : FM
       fid: (state.wPlan.selectedFieldIndex > 0) ? state.fieldList[state.wPlan.selectedFieldIndex].fid : '',
       farmID: state.farm.farmID,
+      isUpdated: true,
     );
 
     FMPlanRepository().postPlan(newPlan);
@@ -117,6 +118,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
 
     yield state.update(
       planList: plist,
+      newPlan: newPlan,
     );
   }
 
@@ -257,6 +259,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
           farmID: _selectedList[i].farmID,
           fid: _selectedList[i].fid,
           planID: _selectedList[i].planID,
+          isUpdated: _selectedList[i].isUpdated,
         );
         // if(cpList.isNotEmpty) {
         //   cpList.add(cp);

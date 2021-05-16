@@ -79,8 +79,12 @@ class _SubHomeCalendarState extends State<SubHomeCalendar> {
                       },
                       child: Align(
                           alignment: Alignment.centerRight,
-                          child: SvgPicture.asset(
-                            'assets/svg_icon/calendar_icon.svg',
+                          child: Stack(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/svg_icon/calendar_icon.svg',
+                              ),
+                            ],
                           )),
                     )
                   ],
@@ -139,43 +143,46 @@ class _SubHomeCalendarState extends State<SubHomeCalendar> {
                         dayOfWeekColor = Color(0x80000000);
                         backgroundColor = Colors.white;
                       }
-
                       return InkWell(
                         onTap: () {
                           _homeBloc.add(DateClicked(SelectedDay: date));
                         },
-                        child: Center(
-                          child: Container(
-                            width: 41.0,
-                            margin: EdgeInsets.only(left: 4.5, right:4.5, top: 13.0, bottom: 10.5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              color: backgroundColor,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Container(
+                                width: 41.0,
+                                margin: EdgeInsets.only(left: 4.5, right:4.5, top: 13.0, bottom: 10.5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  color: backgroundColor,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      DateFormat('E').format(DateTime(state.selectedYear,
+                                          state.selectedMonth, index + 1)),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2
+                                          .copyWith(color: dayOfWeekColor),
+                                    ),
+                                    SizedBox(
+                                      height: 15.0,
+                                    ),
+                                    Text(
+                                        '${date}',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1
+                                            .copyWith(color: numberColor)
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  DateFormat('E').format(DateTime(state.selectedYear,
-                                      state.selectedMonth, index + 1)),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      .copyWith(color: dayOfWeekColor),
-                                ),
-                                SizedBox(
-                                  height: 15.0,
-                                ),
-                                Text(
-                                    '${date}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle1
-                                        .copyWith(color: numberColor)
-                                ),
-                              ],
-                            ),
-                          ),
+                          ],
                         ),
                       );
                     }),

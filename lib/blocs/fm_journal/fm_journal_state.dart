@@ -35,6 +35,8 @@ class FMJournalState {
   User detailUser;
 
   Journal journal;
+  Comment newComment;
+  SubComment newSComment;
 
   FMJournalState({
     @required this.isLoading,
@@ -60,6 +62,8 @@ class FMJournalState {
     @required this.subCommentList,
     @required this.detailUser,
     @required this.journal,
+    @required this.newComment,
+    @required this.newSComment,
   });
 
   factory FMJournalState.empty() {
@@ -105,6 +109,8 @@ class FMJournalState {
         uid: '',
       ),
       journal: null,
+      newComment: null,
+      newSComment: null,
     );
   }
 
@@ -132,6 +138,8 @@ class FMJournalState {
     List<SubComment> subCommentList,
     User detailUser,
     Journal journal,
+    Comment newComment,
+    SubComment newSComment,
   }) {
     return FMJournalState(
       isLoading: isLoading ?? this.isLoading,
@@ -157,6 +165,8 @@ class FMJournalState {
       subCommentList: subCommentList ?? this.subCommentList,
       detailUser: detailUser ?? this.detailUser,
       journal: journal ?? this.journal,
+      newComment: newComment ?? this.newComment,
+      newSComment: newSComment ?? this.newSComment,
     );
   }
 
@@ -184,6 +194,8 @@ class FMJournalState {
     List<SubComment> subCommentList,
     User detailUser,
     Journal journal,
+    Comment newComment,
+    SubComment newSComment,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -209,6 +221,8 @@ class FMJournalState {
       subCommentList: subCommentList,
       detailUser: detailUser,
       journal: journal,
+      newComment: newComment,
+      newSComment: newSComment,
     );
   }
 
@@ -238,6 +252,8 @@ class FMJournalState {
     subCommentList: ${subCommentList.length},
     detailUser: ${detailUser},
     journal: ${journal},
+    newComment: ${newComment},
+    newSComment: ${newSComment},
     }
     ''';
   }

@@ -30,7 +30,7 @@
     <link rel="manifest" href="manifest.json">
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
+<!--    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>-->
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
          (firebase-auth.js, firebase-firestore.js, firebase-analytics.js...)
@@ -38,6 +38,7 @@
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-messaging.js"></script>
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
          https://firebase.google.com/docs/web/setup#available-libraries -->
@@ -75,7 +76,8 @@
 <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('flutter-first-frame', function () {
-        navigator.serviceWorker.register('flutter_service_worker.js');
+        navigator.serviceWorker.register('/flutter_service_worker.js');
+        navigator.serviceWorker.register('/firebase-messaging-sw.js');
       });
     }
 

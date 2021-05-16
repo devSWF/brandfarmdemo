@@ -1,9 +1,12 @@
 import 'package:BrandFarm/blocs/fm_notification/fm_notification_event.dart';
 import 'package:BrandFarm/blocs/fm_notification/fm_notification_state.dart';
+import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/repository/fm_notification/fm_notification_repository.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
@@ -39,6 +42,16 @@ class FMNotificationBloc
       yield* _mapShowTotalListToState();
     } else if (event is SetNoticeAsRead) {
       yield* _mapSetNoticeAsReadToState(event.index);
+    } else if (event is PushPlanNotification) {
+      yield* _mapPushPlanNotificationToState(event.plan);
+    } else if (event is PushSCommentNotification) {
+      yield* _mapPushSCommentNotificationToState(event.scmt);
+    } else if (event is PostCommentNotification) {
+      yield* _mapPostCommentNotificationToState(event.cmt);
+    } else if (event is PostIssueCommentNotice) {
+      yield* _mapPostIssueCommentNoticeToState(event.cmt);
+    } else if (event is PostIssueSCommentNotice) {
+      yield* _mapPostIssueSCommentNoticeToState(event.scmt);
     }
   }
 
@@ -119,6 +132,9 @@ class FMNotificationBloc
       notid: _notid,
       type: obj.type,
       department: obj.department,
+      jid: obj.jid,
+      issid: obj.issid,
+      planid: obj.planid,
     );
 
     FMNotificationRepository().postNotification(_notice);
@@ -230,6 +246,9 @@ class FMNotificationBloc
         notid: obj.notid,
         type: obj.type,
         department: obj.department,
+      jid: obj.jid,
+      issid: obj.issid,
+      planid: obj.planid,
     );
 
     int index1 = state.notificationList.indexWhere((element) => element.notid == obj.notid) ?? -1;
@@ -253,5 +272,260 @@ class FMNotificationBloc
       notificationList: nlist,
       notificationListFromDB: nlistFromDB,
     );
+  }
+
+  Stream<FMNotificationState> _mapPushPlanNotificationToState(
+      FMPlan plan) async* {
+    DateTime date = plan.postedDate.toDate();
+    String year = date.year.toString().substring(2);
+    String month = DateFormat('MM').format(date);
+    String day = DateFormat('dd').format(date);
+    String no;
+
+    for(int i=0; i< 10; i++){
+      String tmpNo = '${year}${month}${day}${i}';
+      bool exist = false;
+      for(int j=0; j<state.notificationListFromDB.length; j++) {
+        if(state.notificationListFromDB[j].no.contains(tmpNo)) {
+          exist = true;
+          break;
+        }
+      }
+      if(!exist) {
+        no = tmpNo;
+        break;
+      }
+    }
+
+    String _notid = '';
+    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
+    NotificationNotice _notice = NotificationNotice(
+      no: no,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      imgUrl: UserUtil.getUser().imgUrl,
+      fid: plan.fid,
+      farmid: plan.farmID,
+      title: plan.title,
+      content: plan.content,
+      postedDate: plan.postedDate,
+      scheduledDate: plan.postedDate,
+      isReadByFM: true,
+      isReadByOffice: false,
+      isReadBySFM: false,
+      notid: _notid,
+      type: '일반',
+      department: 'farm',
+      jid: '',
+      issid: '',
+      planid: plan.planID,
+    );
+
+    FMNotificationRepository().postNotification(_notice);
+    yield state.update();
+  }
+
+  Stream<FMNotificationState> _mapPushSCommentNotificationToState(
+      SubComment scmt) async* {
+    DateTime date = scmt.date.toDate();
+    String year = date.year.toString().substring(2);
+    String month = DateFormat('MM').format(date);
+    String day = DateFormat('dd').format(date);
+    String no;
+
+    for(int i=0; i< 10; i++){
+      String tmpNo = '${year}${month}${day}${i}';
+      bool exist = false;
+      for(int j=0; j<state.notificationListFromDB.length; j++) {
+        if(state.notificationListFromDB[j].no.contains(tmpNo)) {
+          exist = true;
+          break;
+        }
+      }
+      if(!exist) {
+        no = tmpNo;
+        break;
+      }
+    }
+
+    String _notid = '';
+    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
+    NotificationNotice _notice = NotificationNotice(
+      no: no,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      imgUrl: UserUtil.getUser().imgUrl,
+      fid: scmt.fid,
+      farmid: state.farm.farmID,
+      title: 'New Comment',
+      content: scmt.scomment,
+      postedDate: scmt.date,
+      scheduledDate: scmt.date,
+      isReadByFM: true,
+      isReadByOffice: false,
+      isReadBySFM: false,
+      notid: _notid,
+      type: '일반',
+      department: 'farm',
+      jid: scmt.jid,
+      issid: scmt.issid,
+      planid: '',
+    );
+
+    FMNotificationRepository().postNotification(_notice);
+    yield state.update();
+  }
+
+  Stream<FMNotificationState> _mapPostCommentNotificationToState(
+      Comment cmt) async* {
+    DateTime date = cmt.date.toDate();
+    String year = date.year.toString().substring(2);
+    String month = DateFormat('MM').format(date);
+    String day = DateFormat('dd').format(date);
+    String no;
+
+    for(int i=0; i< 10; i++){
+      String tmpNo = '${year}${month}${day}${i}';
+      bool exist = false;
+      for(int j=0; j<state.notificationListFromDB.length; j++) {
+        if(state.notificationListFromDB[j].no.contains(tmpNo)) {
+          exist = true;
+          break;
+        }
+      }
+      if(!exist) {
+        no = tmpNo;
+        break;
+      }
+    }
+
+    String _notid = '';
+    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
+    NotificationNotice _notice = NotificationNotice(
+      no: no,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      imgUrl: UserUtil.getUser().imgUrl,
+      fid: cmt.fid,
+      farmid: state.farm.farmID,
+      title: 'New Comment',
+      content: cmt.comment,
+      postedDate: cmt.date,
+      scheduledDate: cmt.date,
+      isReadByFM: true,
+      isReadByOffice: false,
+      isReadBySFM: false,
+      notid: _notid,
+      type: '일반',
+      department: 'farm',
+      jid: cmt.jid,
+      issid: cmt.issid,
+      planid: '',
+    );
+
+    FMNotificationRepository().postNotification(_notice);
+    yield state.update();
+  }
+
+  Stream<FMNotificationState> _mapPostIssueCommentNoticeToState(
+      Comment cmt) async* {
+    DateTime date = cmt.date.toDate();
+    String year = date.year.toString().substring(2);
+    String month = DateFormat('MM').format(date);
+    String day = DateFormat('dd').format(date);
+    String no;
+
+    for(int i=0; i< 10; i++){
+      String tmpNo = '${year}${month}${day}${i}';
+      bool exist = false;
+      for(int j=0; j<state.notificationListFromDB.length; j++) {
+        if(state.notificationListFromDB[j].no.contains(tmpNo)) {
+          exist = true;
+          break;
+        }
+      }
+      if(!exist) {
+        no = tmpNo;
+        break;
+      }
+    }
+
+    String _notid = '';
+    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
+    NotificationNotice _notice = NotificationNotice(
+      no: no,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      imgUrl: UserUtil.getUser().imgUrl,
+      fid: cmt.fid,
+      farmid: state.farm.farmID,
+      title: 'New Comment',
+      content: cmt.comment,
+      postedDate: cmt.date,
+      scheduledDate: cmt.date,
+      isReadByFM: true,
+      isReadByOffice: false,
+      isReadBySFM: false,
+      notid: _notid,
+      type: '일반',
+      department: 'farm',
+      jid: cmt.jid,
+      issid: cmt.issid,
+      planid: '',
+    );
+
+    FMNotificationRepository().postNotification(_notice);
+    yield state.update();
+  }
+
+  Stream<FMNotificationState> _mapPostIssueSCommentNoticeToState(
+      SubComment scmt) async* {
+    DateTime date = scmt.date.toDate();
+    String year = date.year.toString().substring(2);
+    String month = DateFormat('MM').format(date);
+    String day = DateFormat('dd').format(date);
+    String no;
+
+    for(int i=0; i< 10; i++){
+      String tmpNo = '${year}${month}${day}${i}';
+      bool exist = false;
+      for(int j=0; j<state.notificationListFromDB.length; j++) {
+        if(state.notificationListFromDB[j].no.contains(tmpNo)) {
+          exist = true;
+          break;
+        }
+      }
+      if(!exist) {
+        no = tmpNo;
+        break;
+      }
+    }
+
+    String _notid = '';
+    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
+    NotificationNotice _notice = NotificationNotice(
+      no: no,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      imgUrl: UserUtil.getUser().imgUrl,
+      fid: scmt.fid,
+      farmid: state.farm.farmID,
+      title: 'New Comment',
+      content: scmt.scomment,
+      postedDate: scmt.date,
+      scheduledDate: scmt.date,
+      isReadByFM: true,
+      isReadByOffice: false,
+      isReadBySFM: false,
+      notid: _notid,
+      type: '일반',
+      department: 'farm',
+      jid: scmt.jid,
+      issid: scmt.issid,
+      planid: '',
+    );
+
+    FMNotificationRepository().postNotification(_notice);
+    yield state.update();
   }
 }

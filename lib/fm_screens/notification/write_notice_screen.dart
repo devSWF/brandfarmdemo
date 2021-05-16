@@ -535,6 +535,9 @@ class _WriteNoticeScreenState extends State<WriteNoticeScreen> {
               notid: '',
               type: noticeTypeList[noticeTypeIndex],
               department: 'farm',
+                  jid: '',
+                  issid: '',
+                  planid: '',
             )));
             Navigator.pop(context);
           }

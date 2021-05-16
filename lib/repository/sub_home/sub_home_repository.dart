@@ -6,6 +6,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class SubHomeRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<void> updateFcmToken(String uid, String deviceToken) async {
+    DocumentReference reference = _firestore.collection('User').doc(uid);
+    await reference.update({"fcmToken": deviceToken});
+  }
+
   // Future<User> getDetailUserInfo(uid) async {
   //   User user;
   //   await _firestore
@@ -193,12 +198,7 @@ class SubHomeRepository {
   //   return subComment;
   // }
 
-// Future<void> updateIssue({
-//   SubJournalIssue obj,
-// }) async {
-//   DocumentReference reference = _firestore.collection('Issue').doc(obj.issid);
-//   await reference.update(obj.toMap());
-// }
+
 //
 // Future<void> addCommentIssue({
 //   String issid,

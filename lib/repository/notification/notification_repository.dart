@@ -1,5 +1,11 @@
+import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotificationRepository {
@@ -45,6 +51,152 @@ class NotificationRepository {
   }) async {
     DocumentReference reference = _firestore.collection('Notification').doc(obj.notid);
     await reference.update(obj.toDocument());
+  }
+
+  Future<User> getUserInfo(String uid) async {
+    User user;
+    await _firestore
+        .collection('User')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        user = User.fromSnapshot(ds);
+      });
+    });
+    return user;
+  }
+
+  Future<FMPlan> getPlan(String planID) async {
+    FMPlan plan;
+    await _firestore
+        .collection('Plan')
+        .where('planID', isEqualTo: planID)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        plan = FMPlan.fromSnapshot(ds);
+      });
+    });
+    return plan;
+  }
+
+  Future<Journal> getJournal(String jid) async {
+    Journal journal;
+    await _firestore
+        .collection('Journal')
+        .where('jid', isEqualTo: jid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        journal = Journal.fromDs(ds);
+      });
+    });
+    return journal;
+  }
+
+  Future<SubJournalIssue> getIssue(String issid) async {
+    SubJournalIssue issue;
+    await _firestore
+        .collection('Issue')
+        .where('issid', isEqualTo: issid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        issue = SubJournalIssue.fromSnapshot(ds);
+      });
+    });
+    return issue;
+  }
+
+  Future<List<Comment>> getCommentForJournal(String jid) async {
+    List<Comment> clist = [];
+    QuerySnapshot _list = await _firestore
+        .collection('Comment')
+        .where('jid', isEqualTo: jid)
+        .orderBy('date', descending: true)
+        .get();
+
+    _list.docs.forEach((ds) {
+      clist.add(Comment.fromSnapshot(ds));
+    });
+
+    return clist;
+  }
+
+  Future<List<Comment>> getCommentForIssue(String issid) async {
+    List<Comment> clist = [];
+    QuerySnapshot _list = await _firestore
+        .collection('Comment')
+        .where('issid', isEqualTo: issid)
+        .orderBy('date', descending: true)
+        .get();
+
+    _list.docs.forEach((ds) {
+      clist.add(Comment.fromSnapshot(ds));
+    });
+
+    return clist;
+  }
+
+  Future<List<SubComment>> getSubCommentForJournal(String jid) async {
+    List<SubComment> sclist = [];
+    QuerySnapshot _list = await _firestore
+        .collection('SubComment')
+        .where('jid', isEqualTo: jid)
+        .orderBy('date', descending: true)
+        .get();
+
+    _list.docs.forEach((ds) {
+      sclist.add(SubComment.fromSnapshot(ds));
+    });
+
+    return sclist;
+  }
+
+  Future<List<SubComment>> getSubCommentForIssue(String issid) async {
+    List<SubComment> sclist = [];
+    QuerySnapshot _list = await _firestore
+        .collection('SubComment')
+        .where('issid', isEqualTo: issid)
+        .orderBy('date', descending: true)
+        .get();
+
+    _list.docs.forEach((ds) {
+      sclist.add(SubComment.fromSnapshot(ds));
+    });
+
+    return sclist;
+  }
+
+  Future<List<ImagePicture>> getImagePictureForJournal(String jid) async {
+    List<ImagePicture> pic = [];
+    QuerySnapshot _list = await _firestore
+        .collection('Picture')
+        .where('jid', isEqualTo: jid)
+        .orderBy('dttm', descending: true)
+        .get();
+
+    _list.docs.forEach((ds) {
+      pic.add(ImagePicture.fromSnapshot(ds));
+    });
+
+    return pic;
+  }
+
+  Future<List<ImagePicture>> getImagePictureForIssue(String issid) async {
+    List<ImagePicture> pic = [];
+    QuerySnapshot _list = await _firestore
+        .collection('Picture')
+        .where('issid', isEqualTo: issid)
+        .orderBy('dttm', descending: true)
+        .get();
+
+    _list.docs.forEach((ds) {
+      pic.add(ImagePicture.fromSnapshot(ds));
+    });
+
+    return pic;
   }
 
 // Future<User> getDetailUserInfo(uid) async {

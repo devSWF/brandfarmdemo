@@ -16,35 +16,36 @@ dependencies:
   cupertino_icons: ^1.0.0
   flutter_bloc: ^6.1.2
   bloc: ^6.1.1
-  firebase_auth: ^0.20.0+1
+  firebase_auth: ^1.1.2
   equatable: ^1.2.6
-  cloud_firestore: ^0.16.0
+  cloud_firestore: ^1.0.7
   font_awesome_flutter: ^8.11.0
-  rxdart: ^0.25.0
+  rxdart: ^0.26.0
   animated_text_kit: ^3.1.0
   adaptive_breakpoints: ^0.0.3
-  google_fonts: ^1.1.2
-  http: ^0.12.2
-  flutter_launcher_icons: ^0.8.1
-  xml2json: ^4.4.0
+  google_fonts: ^2.0.0
+  http: ^0.13.2
+  flutter_launcher_icons: ^0.9.0
+  xml2json: ^5.1.0
   badges: ^1.1.6
   intl: ^0.16.1
   date_format: ^1.0.9
   animations: ^1.1.2
   scrollable_positioned_list: ^0.1.9
   flutter_speed_dial: ^2.1.1
-  flutter_svg: ^0.19.3
+  flutter_svg: ^0.22.0
   flutter_swiper: ^1.1.6
-  path_provider: ^1.6.27
+  path_provider: ^2.0.1
   multi_image_picker: 4.7.15
-  image_picker: 0.6.7+22
-  firebase_storage: ^7.0.0
-  firebase_core: ^0.7.0
-  cached_network_image: ^2.5.0
-  flutter_cache_manager: ^2.1.1
+  image_picker: 0.7.4
+  firebase_storage: ^8.0.5
+  firebase_core: ^1.1.0
+  cached_network_image: ^3.0.0
+  flutter_cache_manager: ^3.0.1
   dropdown_below: ^0.0.6
   shimmer: ^1.1.2
-  flutter_local_notifications: ^4.0.1+2
+  firebase_messaging: ^9.1.3
+  firebase_messaging_web: ^1.0.6
 
 
 dependency_overrides:

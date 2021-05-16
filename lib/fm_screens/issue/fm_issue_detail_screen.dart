@@ -2,18 +2,17 @@ import 'package:BrandFarm/blocs/fm_issue/bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_event.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_state.dart';
+import 'package:BrandFarm/blocs/fm_notification/fm_notification_bloc.dart';
+import 'package:BrandFarm/blocs/fm_notification/fm_notification_event.dart';
 import 'package:BrandFarm/models/comment/comment_model.dart';
-import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
-import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:BrandFarm/widgets/department_badge.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -37,6 +36,7 @@ class FMIssueDetailScreen extends StatefulWidget {
 class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
   FMJournalBloc _fmJournalBloc;
   FMIssueBloc _fmIssueBloc;
+  FMNotificationBloc _fmNotificationBloc;
   TextEditingController _textEditingController;
   TextEditingController _subTextEditingController;
   FocusNode _focusNode;
@@ -46,10 +46,14 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
   String date;
   String weekday;
   String comment;
+  bool repeat;
+  bool isComment;
+  bool isSubComment;
 
   @override
   void initState() {
     super.initState();
+    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
     _fmJournalBloc = BlocProvider.of<FMJournalBloc>(context);
     _fmIssueBloc = BlocProvider.of<FMIssueBloc>(context);
     _fmIssueBloc.add(GetDetailUserInfo(sfmid: widget.obj.sfmid));
@@ -67,6 +71,9 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
     _subFocusNode = FocusNode();
     date = getDate(date: widget.obj.date);
     wroteComments = false;
+    repeat = true;
+    isComment = false;
+    isSubComment = false;
   }
 
   String getDate({Timestamp date}) {
@@ -84,7 +91,19 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
       listener: (context, jstate) {},
       builder: (context, jstate) {
         return BlocConsumer<FMIssueBloc, FMIssueState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            if(repeat && isComment) {
+              _fmNotificationBloc.add(PostIssueCommentNotice(cmt: state.newComment));
+              setState(() {
+                repeat = false;
+              });
+            } else if(repeat && isSubComment) {
+              _fmNotificationBloc.add(PostIssueSCommentNotice(scmt: state.newSComment));
+              setState(() {
+                repeat = false;
+              });
+            }
+          },
           builder: (context, state) {
             return GestureDetector(
               onTap: () {
@@ -161,7 +180,7 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                             thickness: 1,
                             color: Color(0xFFDFDFDF),
                           ),
-                          _writeComment(),
+                          _writeComment(state),
                         ],
                       ),
                     ),
@@ -629,7 +648,7 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                     SizedBox(
                       width: 56,
                     ),
-                    _writeReply(index: index),
+                    _writeReply(index: index, state: state),
                   ],
                 )
               : Container(),
@@ -758,7 +777,7 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
     );
   }
 
-  Widget _writeComment() {
+  Widget _writeComment(FMIssueState state) {
     return Container(
       height: 78,
       padding: EdgeInsets.fromLTRB(12, 12, 12, 24),
@@ -795,6 +814,10 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
               },
               onSubmitted: (text) {
                 _fmIssueBloc.add(WriteComment(cmt: text, obj: widget.obj));
+                setState(() {
+                  repeat = true;
+                  isComment = true;
+                });
                 _focusNode.unfocus();
                 _textEditingController.clear();
               },
@@ -814,7 +837,7 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
     );
   }
 
-  Widget _writeReply({int index}) {
+  Widget _writeReply({int index, FMIssueState state}) {
     return Container(
       child: Row(
         children: [
@@ -852,6 +875,10 @@ class _FMIssueDetailScreenState extends State<FMIssueDetailScreen> {
                   onSubmitted: (text) {
                     _fmIssueBloc.add(
                         WriteReply(cmt: text, obj: widget.obj, index: index));
+                    setState(() {
+                      repeat = true;
+                      isSubComment = true;
+                    });
                     _subFocusNode.unfocus();
                     _subTextEditingController.clear();
                   },

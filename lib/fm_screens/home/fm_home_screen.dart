@@ -1119,8 +1119,15 @@ class _GetPageState extends State<GetPage> {
         break;
       case 2:
         {
-          return BlocProvider.value(
-            value: _fmPlanBloc,
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _fmPlanBloc,
+              ),
+              BlocProvider.value(
+                value: _fmNotificationBloc,
+              ),
+            ],
             child: FMPlanScreen(),
           );
         }
@@ -1160,6 +1167,9 @@ class _GetPageState extends State<GetPage> {
                 ),
                 BlocProvider<FMIssueBloc>(
                   create: (BuildContext context) => FMIssueBloc(),
+                ),
+                BlocProvider.value(
+                    value: _fmNotificationBloc,
                 ),
               ],
               child: FMJournalScreen(),

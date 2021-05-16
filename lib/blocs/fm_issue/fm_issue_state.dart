@@ -4,7 +4,6 @@ import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:BrandFarm/utils/todays_date.dart';
 
 class FMIssueState {
   bool isLoading;
@@ -18,6 +17,9 @@ class FMIssueState {
   String month;
   User detailUser;
 
+  Comment newComment;
+  SubComment newSComment;
+
   FMIssueState({
     @required this.isLoading,
     @required this.year,
@@ -28,6 +30,8 @@ class FMIssueState {
     @required this.detailUser,
     @required this.commentList,
     @required this.subCommentList,
+    @required this.newComment,
+    @required this.newSComment,
   });
 
   factory FMIssueState.empty() {
@@ -51,6 +55,8 @@ class FMIssueState {
       ),
       commentList: [],
       subCommentList: [],
+      newComment: null,
+      newSComment: null,
     );
   }
 
@@ -64,6 +70,8 @@ class FMIssueState {
     User detailUser,
     List<Comment> commentList,
     List<SubComment> subCommentList,
+    Comment newComment,
+    SubComment newSComment,
   }) {
     return FMIssueState(
       isLoading: isLoading ?? this.isLoading,
@@ -75,6 +83,8 @@ class FMIssueState {
       detailUser: detailUser ?? this.detailUser,
       commentList: commentList ?? this.commentList,
       subCommentList: subCommentList ?? this.subCommentList,
+      newComment: newComment ?? this.newComment,
+      newSComment: newSComment ?? this.newSComment,
     );
   }
 
@@ -88,6 +98,8 @@ class FMIssueState {
     User detailUser,
     List<Comment> commentList,
     List<SubComment> subCommentList,
+    Comment newComment,
+    SubComment newSComment,
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -99,6 +111,8 @@ class FMIssueState {
       detailUser: detailUser,
       commentList: commentList,
       subCommentList: subCommentList,
+      newComment: newComment,
+      newSComment: newSComment,
     );
   }
 
@@ -114,6 +128,8 @@ class FMIssueState {
     detailUser: ${detailUser},
     commentList: ${commentList},
     subCommentList: ${subCommentList},
+    newComment: ${newComment},
+    newSComment: ${newSComment},
     }
     ''';
   }

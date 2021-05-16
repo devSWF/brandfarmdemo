@@ -27,6 +27,62 @@ class CheckAsRead extends NotificationEvent {
   String toString() => 'CheckAsRead { obj : $obj}';
 }
 
+class GetJournalNotificationInitials extends NotificationEvent {
+  final NotificationNotice obj;
+
+  const GetJournalNotificationInitials({
+    @required this.obj,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => 'GetJournalNotificationInitials { obj : $obj}';
+}
+
+class GetIssueNotificationInitials extends NotificationEvent {
+  final NotificationNotice obj;
+
+  const GetIssueNotificationInitials({
+    @required this.obj,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => 'GetIssueNotificationInitials { obj : $obj}';
+}
+
+class GetPlanNotificationInitials extends NotificationEvent {
+  final NotificationNotice obj;
+
+  const GetPlanNotificationInitials({
+    @required this.obj,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => 'GetPlanNotificationInitials { obj : $obj}';
+}
+
+class SetExpansionState extends NotificationEvent {
+  final int index;
+
+  const SetExpansionState({
+    @required this.index,
+  });
+
+  // @override
+  // List<Object> get props => [navTo];
+
+  @override
+  String toString() => 'SetExpansionState { index: $index}';
+}
+
 // class PostNotification extends NotificationEvent{
 //   final NotificationNotice obj;
 //

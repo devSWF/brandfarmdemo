@@ -26,6 +26,8 @@ class FMPlanState {
   WaitingConfirmation wPlan;
   bool isConfirmed;
 
+  FMPlan newPlan;
+
   FMPlanState({
     @required this.isLoading,
     @required this.farm,
@@ -44,6 +46,7 @@ class FMPlanState {
     @required this.endDate,
     @required this.wPlan,
     @required this.isConfirmed,
+    @required this.newPlan,
   });
 
   factory FMPlanState.empty() {
@@ -77,8 +80,10 @@ class FMPlanState {
         title: '',
         content: '',
         selectedFieldIndex: 0,
+        isUpdated: false,
       ),
       isConfirmed: false,
+      newPlan: null,
     );
   }
 
@@ -100,6 +105,7 @@ class FMPlanState {
     DateTime endDate,
     WaitingConfirmation wPlan,
     bool isConfirmed,
+    FMPlan newPlan
   }) {
     return FMPlanState(
       isLoading: isLoading ?? this.isLoading,
@@ -119,6 +125,7 @@ class FMPlanState {
       endDate: endDate ?? this.endDate,
       wPlan: wPlan ?? this.wPlan,
       isConfirmed: isConfirmed ?? this.isConfirmed,
+      newPlan: newPlan ?? this.newPlan,
     );
   }
 
@@ -140,6 +147,7 @@ class FMPlanState {
     DateTime endDate,
     WaitingConfirmation wPlan,
     bool isConfirmed,
+    FMPlan newPlan
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -159,6 +167,7 @@ class FMPlanState {
       endDate: endDate,
       wPlan: wPlan,
       isConfirmed: isConfirmed,
+      newPlan: newPlan,
     );
   }
 
@@ -182,6 +191,7 @@ class FMPlanState {
     endDate: ${endDate},
     wPlan: ${wPlan},
     isConfirmed: ${isConfirmed},
+    newPlan: ${newPlan},
     }
     ''';
   }
