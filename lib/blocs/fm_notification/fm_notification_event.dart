@@ -130,7 +130,7 @@ class SetNoticeAsRead extends FMNotificationEvent {
 }
 
 class PushPlanNotification extends FMNotificationEvent {
-  final FMPlan plan;
+  final Plan plan;
 
   const PushPlanNotification({
     @required this.plan,

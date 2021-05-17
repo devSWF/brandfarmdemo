@@ -20,6 +20,7 @@ import 'package:BrandFarm/blocs/login/bloc.dart';
 import 'blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/authentication/bloc.dart';
 import 'package:BrandFarm/blocs/blocObserver.dart';
+import 'blocs/om_home/om_home_bloc.dart';
 
 //repository
 import 'package:BrandFarm/repository/user/user_repository.dart';
@@ -45,7 +46,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print('Handling a background message ${message.messageId}');
 }
-import 'blocs/om_home/om_home_bloc.dart';
 
 // import 'package:timezone/data/latest.dart' as tz;
 // import 'package:timezone/timezone.dart' as tz;
