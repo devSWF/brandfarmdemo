@@ -25,6 +25,7 @@ class PlanState {
   DateTime endDate;
   WaitingConfirmation wPlan;
   bool isConfirmed;
+  Plan newPlan;
 
   PlanState({
     @required this.isLoading,
@@ -103,7 +104,7 @@ class PlanState {
     DateTime endDate,
     WaitingConfirmation wPlan,
     bool isConfirmed,
-    FMPlan newPlan
+    Plan newPlan
   }) {
     return PlanState(
       isLoading: isLoading ?? this.isLoading,
@@ -145,7 +146,7 @@ class PlanState {
     DateTime endDate,
     WaitingConfirmation wPlan,
     bool isConfirmed,
-    FMPlan newPlan
+    Plan newPlan
   }) {
     return copyWith(
       isLoading: isLoading,
@@ -171,7 +172,7 @@ class PlanState {
 
   @override
   String toString() {
-    return '''FMPlanState{
+    return '''PlanState{
     isLoading: $isLoading,
     farm: ${farm},
     fieldList: ${fieldList.length},
