@@ -1,18 +1,18 @@
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
+import 'package:BrandFarm/blocs/plan/plan_event.dart';
+import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
-import 'package:BrandFarm/repository/fm_plan/fm_plan_repository.dart';
+import 'package:BrandFarm/repository/plan/plan_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
-  FMPlanBloc() : super(FMPlanState.empty());
+class PlanBloc extends Bloc<PlanEvent, PlanState> {
+  PlanBloc() : super(PlanState.empty());
 
   @override
-  Stream<FMPlanState> mapEventToState(FMPlanEvent event) async* {
+  Stream<PlanState> mapEventToState(PlanEvent event) async* {
     if (event is LoadFMPlan) {
       yield* _mapLoadFMPlanToState();
     } else if (event is GetFieldListForFMPlan) {
@@ -42,12 +42,12 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     }
   }
 
-  Stream<FMPlanState> _mapLoadFMPlanToState() async* {
+  Stream<PlanState> _mapLoadFMPlanToState() async* {
     yield state.update(isLoading: true);
   }
 
-  Stream<FMPlanState> _mapGetFieldListForFMPlanToState() async* {
-    Farm farm = await FMPlanRepository().getFarmInfo();
+  Stream<PlanState> _mapGetFieldListForFMPlanToState() async* {
+    Farm farm = await PlanRepository().getFarmInfo();
     List<Field> currFieldList = [
       Field(
           fieldCategory: farm.fieldCategory,
@@ -60,7 +60,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
           name: '전체일정')
     ];
     List<Field> newFieldList =
-        await FMPlanRepository().getFieldList(farm.fieldCategory);
+        await PlanRepository().getFieldList(farm.fieldCategory);
     List<Field> totalFieldList = [
       ...currFieldList,
       ...newFieldList,
@@ -73,21 +73,21 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     );
   }
 
-  Stream<FMPlanState> _mapGetPlanListToState() async* {
+  Stream<PlanState> _mapGetPlanListToState() async* {
     // get plan list
-    List<FMPlan> plist = [];
-    plist = await FMPlanRepository().getPlanList(state.farm.farmID);
+    List<Plan> plist = [];
+    plist = await PlanRepository().getPlanList(state.farm.farmID);
 
     yield state.update(
       planList: plist,
     );
   }
 
-  Stream<FMPlanState> _mapPostNewPlanToState() async* {
+  Stream<PlanState> _mapPostNewPlanToState() async* {
     // post new plan
     String planID = '';
     planID = FirebaseFirestore.instance.collection('Plan').doc().id;
-    FMPlan newPlan = FMPlan(
+    Plan newPlan = Plan(
       planID: planID,
       uid: UserUtil.getUser().uid,
       name: UserUtil.getUser().name,
@@ -106,9 +106,9 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
       farmID: state.farm.farmID,
     );
 
-    FMPlanRepository().postPlan(newPlan);
+    PlanRepository().postPlan(newPlan);
 
-    List<FMPlan> plist = state.planList;
+    List<Plan> plist = state.planList;
     if (plist.isEmpty) {
       plist.insert(0, newPlan);
     } else {
@@ -120,10 +120,10 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     );
   }
 
-  Stream<FMPlanState> _mapSetDateToState(DateTime date) async* {
+  Stream<PlanState> _mapSetDateToState(DateTime date) async* {
     // set date and show detail plan
     print('//////////////////${date}');
-    List<FMPlan> detailList = [];
+    List<Plan> detailList = [];
     detailList = (state.planList.length > 0)
         ? state.planList.where((element) {
             // print('${element.startDate.toDate()}');
@@ -157,42 +157,42 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     );
   }
 
-  Stream<FMPlanState> _mapSetSelectedFieldToState(int selectedField) async* {
+  Stream<PlanState> _mapSetSelectedFieldToState(int selectedField) async* {
     // set selected field
     yield state.update(
       selectedField: selectedField,
     );
   }
 
-  Stream<FMPlanState> _mapSetStartDateToState(DateTime start) async* {
+  Stream<PlanState> _mapSetStartDateToState(DateTime start) async* {
     // set start date
     yield state.update(
       startDate: start,
     );
   }
 
-  Stream<FMPlanState> _mapSetEndDateToState(DateTime end) async* {
+  Stream<PlanState> _mapSetEndDateToState(DateTime end) async* {
     // set end date
     yield state.update(
       endDate: end,
     );
   }
 
-  Stream<FMPlanState> _mapSetWaitingPlanToState(WaitingConfirmation wPlan) async* {
+  Stream<PlanState> _mapSetWaitingPlanToState(WaitingConfirmation wPlan) async* {
     // wait for post confirmation
     yield state.update(
       wPlan: wPlan,
     );
   }
 
-  Stream<FMPlanState> _mapCheckConfirmStateToState(bool cState) async* {
+  Stream<PlanState> _mapCheckConfirmStateToState(bool cState) async* {
     // check if confirm button is pressed
     yield state.update(
       isConfirmed: cState,
     );
   }
 
-  Stream<FMPlanState> _mapGetShortDetailListToState() async* {
+  Stream<PlanState> _mapGetShortDetailListToState() async* {
     // get short detail list
     DateTime now = DateTime.now();
     DateTime twoDaysLess = DateTime.utc(now.year, now.month, now.day - 2);
@@ -201,7 +201,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     DateTime oneDayMore = DateTime.utc(now.year, now.month, now.day + 1);
     DateTime twoDaysMore = DateTime.utc(now.year, now.month, now.day + 2);
     List<DateTime> dList = [twoDaysLess, oneDayLess, curr, oneDayMore, twoDaysMore,];
-    List<FMPlan> _selectedList = state.planList
+    List<Plan> _selectedList = state.planList
         .where((plan) => (
         // two days less
         ((plan.endDate.toDate().isAfter(twoDaysLess) || twoDaysLess.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
@@ -285,7 +285,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     );
   }
 
-  Stream<FMPlanState> _mapGetSortedDetailListToState() async* {
+  Stream<PlanState> _mapGetSortedDetailListToState() async* {
     // get sorted detail list
     // sort list by field id
     List<List<CalendarPlan>> listByField =
@@ -329,7 +329,7 @@ class FMPlanBloc extends Bloc<FMPlanEvent, FMPlanState> {
     );
   }
 
-  Stream<FMPlanState> _mapSetCalendarIndexToState(int index) async* {
+  Stream<PlanState> _mapSetCalendarIndexToState(int index) async* {
     // set selected index
     yield state.update(
       selectedIndex: index,

@@ -1,6 +1,6 @@
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
+import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_event.dart';
+import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/widgets/fm_shared_widgets/fm_small_calendar.dart';
@@ -19,7 +19,7 @@ class FMAddPlan extends StatefulWidget {
 }
 
 class _FMAddPlanState extends State<FMAddPlan> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
   GlobalKey _key = GlobalKey();
 
   // DateTime startDate;
@@ -45,7 +45,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
     // startDate = DateTime.now();
     // endDate = DateTime.now();
     isDateOrderCorrect = true;
@@ -88,7 +88,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -201,7 +201,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
     );
   }
 
-  Widget _pickDate(FMPlanState state) {
+  Widget _pickDate(PlanState state) {
     return InkResponse(
       onTap: () async {
         await _showDatePicker(1);
@@ -267,7 +267,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
     );
   }
 
-  Widget _showDropdownMenu(FMPlanState state) {
+  Widget _showDropdownMenu(PlanState state) {
     return Positioned(
       top: y + height,
       left: x,
@@ -309,7 +309,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
     );
   }
 
-  Widget _customDropdownButton(FMPlanState state) {
+  Widget _customDropdownButton(PlanState state) {
     return OutlinedButton(
       key: _key,
       onPressed: () {
@@ -420,7 +420,7 @@ class _FMAddPlanState extends State<FMAddPlan> {
     );
   }
 
-  Widget _requestButton(FMPlanState state) {
+  Widget _requestButton(PlanState state) {
     return InkResponse(
         onTap: () async {
           if (isEverythingFilledOut) {
@@ -491,17 +491,17 @@ class Confirm extends StatefulWidget {
 }
 
 class _ConfirmState extends State<Confirm> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
 
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         return AlertDialog(

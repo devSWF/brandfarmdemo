@@ -58,7 +58,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
   }
 
   Stream<HomeState> _mapGetHomePlanListToState() async*{
-    List<FMPlan> plist = [];
+    List<Plan> plist = [];
     plist = await SubHomeRepository().getPlanList(FieldUtil.getField().fid);
     yield state.update(
       planListFromDB: plist,
@@ -66,7 +66,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
   }
 
   Stream<HomeState> _mapSortPlanListToState() async*{
-    List<FMPlan> plist = state.planListFromDB;
+    List<Plan> plist = state.planListFromDB;
     List<CalendarPlan> sortedlist = [];
     List<CalendarPlan> tmplist = [];
 
@@ -129,7 +129,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState>{
   }
 
   Stream<HomeState> _mapCheckPlanUpdatesToState() async*{
-    List<FMPlan> plist = [];
+    List<Plan> plist = [];
     plist = await SubHomeRepository().getPlanUpdates(FieldUtil.getField().fid);
     if(plist.isNotEmpty) {
       yield state.update(

@@ -1,8 +1,8 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
+import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_event.dart';
+import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/utils/todays_date.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +14,7 @@ class Plan extends StatefulWidget {
 }
 
 class _PlanState extends State<Plan> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
   FMHomeBloc _fmHomeBloc;
   ScrollController _scrollController;
   DateTime now = DateTime.now();
@@ -33,14 +33,14 @@ class _PlanState extends State<Plan> {
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
     _scrollController = ScrollController();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Row(
@@ -100,7 +100,7 @@ class _PlanState extends State<Plan> {
     );
   }
 
-  Widget _todo(FMPlanState state) {
+  Widget _todo(PlanState state) {
     String date = (state.fmHomeCalendarDateList[state.selectedIndex]
             .isAtSameMomentAs(DateTime.utc(now.year, now.month, now.day)))
         ? '오늘'
@@ -262,13 +262,13 @@ class DateBar extends StatefulWidget {
 }
 
 class _DateBarState extends State<DateBar> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
   FMHomeBloc _fmHomeBloc;
 
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
   }
 
@@ -327,7 +327,7 @@ class CalendarBar extends StatefulWidget {
 }
 
 class _CalendarBarState extends State<CalendarBar> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
   DateTime now = DateTime.now();
 
   // int selectedIndex = 2;
@@ -335,12 +335,12 @@ class _CalendarBarState extends State<CalendarBar> {
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Row(
@@ -364,7 +364,7 @@ class _CalendarBarState extends State<CalendarBar> {
     );
   }
 
-  Widget _CalendarBody(FMPlanState state) {
+  Widget _CalendarBody(PlanState state) {
     return Stack(
       children: [
         _horizontalViewCalendar(state),
@@ -378,7 +378,7 @@ class _CalendarBarState extends State<CalendarBar> {
     );
   }
 
-  Widget _highlightPlan(FMPlanState state) {
+  Widget _highlightPlan(PlanState state) {
     return Row(
       children: List.generate(state.sortedList.length, (row) {
         return Container(
@@ -422,7 +422,7 @@ class _CalendarBarState extends State<CalendarBar> {
     );
   }
 
-  Widget _horizontalViewCalendarFront(FMPlanState state) {
+  Widget _horizontalViewCalendarFront(PlanState state) {
     return Row(
       children: List.generate(5, (index) {
         // String date = getDate(index: index, date: now);
@@ -449,7 +449,7 @@ class _CalendarBarState extends State<CalendarBar> {
     );
   }
 
-  Widget _horizontalViewCalendar(FMPlanState state) {
+  Widget _horizontalViewCalendar(PlanState state) {
     return Row(
       children: List.generate(5, (index) {
         String date = getDate(index: index, date: now);
@@ -532,7 +532,7 @@ class FieldList extends StatefulWidget {
 }
 
 class _FieldListState extends State<FieldList> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
 
   // List fieldName = [
   //   '필드A',
@@ -543,12 +543,12 @@ class _FieldListState extends State<FieldList> {
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Column(

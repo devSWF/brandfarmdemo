@@ -1,6 +1,6 @@
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
+import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_event.dart';
+import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +17,7 @@ class FMSmallCalendar extends StatefulWidget {
 }
 
 class _FMSmallCalendarState extends State<FMSmallCalendar> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
   DateTime now = DateTime.now();
   List<String> weekDays = [
     'S',
@@ -37,7 +37,7 @@ class _FMSmallCalendarState extends State<FMSmallCalendar> {
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
     if (widget.category == 1) {
       title = '시작';
     } else {
@@ -136,7 +136,7 @@ class _FMSmallCalendarState extends State<FMSmallCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         return AlertDialog(

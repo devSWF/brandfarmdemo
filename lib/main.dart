@@ -1,10 +1,8 @@
 //screens
-import 'dart:io';
-
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/fm_screens/home/fm_home_screen.dart';
@@ -13,7 +11,6 @@ import 'package:BrandFarm/screens/home/sub_home_screen.dart';
 import 'package:BrandFarm/screens/splash/splash_screen.dart';
 import 'package:BrandFarm/screens/login/login_screen.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 //bloc
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,6 +33,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 //util
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
 import 'package:flutter/foundation.dart';
+
+import 'blocs/om_home/om_home_bloc.dart';
+
 // import 'package:timezone/data/latest.dart' as tz;
 // import 'package:timezone/timezone.dart' as tz;
 
@@ -64,7 +64,8 @@ class _AppState extends State<App> {
     super.initState();
     _authenticationBloc = AuthenticationBloc(userRepository: userRepository);
     try {
-      if ((defaultTargetPlatform == TargetPlatform.iOS) || (defaultTargetPlatform == TargetPlatform.android)) {
+      if ((defaultTargetPlatform == TargetPlatform.iOS) ||
+          (defaultTargetPlatform == TargetPlatform.android)) {
         isDesktop = false;
       } else {
         isDesktop = true;
@@ -119,7 +120,7 @@ class _AppState extends State<App> {
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             if (state is AuthenticationSuccess) {
-              if(UserUtil.getUser().position == 3) {
+              if (UserUtil.getUser().position == 3) {
                 return MultiBlocProvider(providers: [
                   BlocProvider<HomeBloc>(
                     create: (BuildContext context) => HomeBloc(),
@@ -131,26 +132,30 @@ class _AppState extends State<App> {
                     create: (BuildContext context) => NotificationBloc(),
                   ),
                 ], child: SubHomeScreen());
-              } else if(UserUtil.getUser().position == 2) {
+              } else if (UserUtil.getUser().position == 2) {
                 return MultiBlocProvider(
-                    providers: [
-                      BlocProvider<FMPurchaseBloc>(
-                        create: (BuildContext context) => FMPurchaseBloc(),
-                      ),
-                      BlocProvider<FMPlanBloc>(
-                        create: (BuildContext context) => FMPlanBloc(),
-                      ),
-                      BlocProvider<FMHomeBloc>(
-                        create: (BuildContext context) => FMHomeBloc(),
-                      ),
-                      BlocProvider<FMNotificationBloc>(
-                        create: (BuildContext context) => FMNotificationBloc(),
-                      ),
-                    ],
-                    child: FMHomeScreen(),
+                  providers: [
+                    BlocProvider<PurchaseBloc>(
+                      create: (BuildContext context) => PurchaseBloc(),
+                    ),
+                    BlocProvider<PlanBloc>(
+                      create: (BuildContext context) => PlanBloc(),
+                    ),
+                    BlocProvider<FMHomeBloc>(
+                      create: (BuildContext context) => FMHomeBloc(),
+                    ),
+                    BlocProvider<FMNotificationBloc>(
+                      create: (BuildContext context) => FMNotificationBloc(),
+                    ),
+                  ],
+                  child: FMHomeScreen(),
                 );
               } else {
-                return OMHomeScreen();
+                return MultiBlocProvider(providers: [
+                  BlocProvider<OMHomeBloc>(
+                    create: (BuildContext context) => OMHomeBloc(),
+                  )
+                ], child: OMHomeScreen());
               }
               // return (UserUtil.getUser().position == 3)
               //     ? MultiBlocProvider(providers: [

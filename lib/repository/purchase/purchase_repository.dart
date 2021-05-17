@@ -2,12 +2,12 @@
 
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
+import 'package:BrandFarm/models/purchase/purchase_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FMPurchaseRepository {
+class PurchaseRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<User> getDetailUserInfo(uid) async {
@@ -52,28 +52,28 @@ class FMPurchaseRepository {
     return fieldList;
   }
 
-  Future<void> postPurchaseItem(FMPurchase pur,) async {
+  Future<void> postPurchaseItem(Purchase pur,) async {
     DocumentReference reference =
     _firestore.collection('Purchase').doc(pur.purchaseID);
     await reference.set(pur.toDocument());
   }
 
-  Future<List<FMPurchase>> getPurchaseList(String farmID) async {
-    List<FMPurchase> plist = [];
+  Future<List<Purchase>> getPurchaseList(String farmID) async {
+    List<Purchase> plist = [];
     QuerySnapshot item = await _firestore
         .collection('Purchase')
         .where('farmID', isEqualTo: farmID)
         .orderBy('requestDate', descending: true)
         .get();
     item.docs.forEach((ds) {
-      plist.add(FMPurchase.fromSnapshot(ds));
+      plist.add(Purchase.fromSnapshot(ds));
     });
 
     return plist;
   }
 
   Future<void> updatePurchaseInfo({
-    FMPurchase obj,
+    Purchase obj,
   }) async {
     DocumentReference reference = _firestore.collection('Purchase').doc(obj.purchaseID);
     await reference.update(obj.toDocument());

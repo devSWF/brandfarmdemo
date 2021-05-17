@@ -8,7 +8,8 @@ import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class FMHomeRecentUpdates {
+
+class OMHomeRecentUpdates {
   final User user;
   final Timestamp date;
   final Plan plan;
@@ -19,7 +20,7 @@ class FMHomeRecentUpdates {
   final Comment comment;
   final SubComment subComment;
 
-  FMHomeRecentUpdates({
+  OMHomeRecentUpdates({
     @required this.date,
     @required this.user,
     @required this.plan,
@@ -31,8 +32,8 @@ class FMHomeRecentUpdates {
     @required this.subComment,
   });
 
-  factory FMHomeRecentUpdates.fromSnapshot(DocumentSnapshot ds) {
-    return FMHomeRecentUpdates(
+  factory OMHomeRecentUpdates.fromSnapshot(DocumentSnapshot ds) {
+    return OMHomeRecentUpdates(
       user: ds['user'],
       date: ds['date'],
       plan: ds['plan'],
@@ -60,9 +61,9 @@ class FMHomeRecentUpdates {
   }
 }
 
-class FMHomeUpdateState {
+class OMHomeUpdateState {
   bool state;
   int num;
 
-  FMHomeUpdateState({this.state, this.num});
+  OMHomeUpdateState({this.state, this.num});
 }
