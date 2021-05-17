@@ -2,10 +2,10 @@
 import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/purchase/purchase_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
@@ -72,8 +72,8 @@ class FMHomeRepository {
     return notice;
   }
 
-  Future<List<FMPlan>> getRecentPlanList(String farmID) async {
-    List<FMPlan> plan = [];
+  Future<List<Plan>> getRecentPlanList(String farmID) async {
+    List<Plan> plan = [];
     QuerySnapshot _plan = await _firestore
         .collection('Plan')
         .where('farmID', isEqualTo: farmID)
@@ -82,14 +82,14 @@ class FMHomeRepository {
         .get();
 
     _plan.docs.forEach((ds) {
-      plan.add(FMPlan.fromSnapshot(ds));
+      plan.add(Plan.fromSnapshot(ds));
     });
 
     return plan;
   }
 
-  Future<List<FMPurchase>> getRecentPurchaseList(String farmID) async {
-    List<FMPurchase> purchase = [];
+  Future<List<Purchase>> getRecentPurchaseList(String farmID) async {
+    List<Purchase> purchase = [];
     QuerySnapshot _purchase = await _firestore
         .collection('Purchase')
         .where('farmID', isEqualTo: farmID)
@@ -98,7 +98,7 @@ class FMHomeRepository {
         .get();
 
     _purchase.docs.forEach((ds) {
-      purchase.add(FMPurchase.fromSnapshot(ds));
+      purchase.add(Purchase.fromSnapshot(ds));
     });
 
     return purchase;

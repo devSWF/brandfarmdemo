@@ -1,5 +1,5 @@
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
+import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:flutter/material.dart';
@@ -12,18 +12,18 @@ class FMPlanDetailScreen extends StatefulWidget {
 }
 
 class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
   DateTime now = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Column(
@@ -47,8 +47,8 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
     );
   }
 
-  Widget _detailList(FMPlanState state) {
-    List<List<FMPlan>> _list;
+  Widget _detailList(PlanState state) {
+    List<List<Plan>> _list;
     (state.selectedField == 0)
         ? _list = getSortedList(state)
         : _list = getSortedListBySelection(state);
@@ -74,7 +74,7 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
   }
 
   Widget _fromFieldSelection(
-      int main, int sub, List<List<FMPlan>> list, String fieldName, FMPlanState state) {
+      int main, int sub, List<List<Plan>> list, String fieldName, PlanState state) {
     return Column(
       children: [
         (sub == 0)
@@ -191,7 +191,7 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
     );
   }
 
-  Widget _all(int main, int sub, List<List<FMPlan>> list, String fieldName) {
+  Widget _all(int main, int sub, List<List<Plan>> list, String fieldName) {
     return Column(
       children: [
         (sub == 0)
@@ -308,7 +308,7 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
     );
   }
 
-  String getField(FMPlanState state, String fid) {
+  String getField(PlanState state, String fid) {
     List<Field> _list =
         state.fieldList.where((element) => element.fid == fid).toList();
     return '${_list[0].name}';
@@ -324,11 +324,11 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
     //                 : 'D';
   }
 
-  List<List<FMPlan>> getSortedListBySelection(FMPlanState state) {
-    List<List<FMPlan>> _list = [];
-    List<FMPlan> all =
+  List<List<Plan>> getSortedListBySelection(PlanState state) {
+    List<List<Plan>> _list = [];
+    List<Plan> all =
         state.detailList.where((element) => element.fid == '').toList();
-    List<FMPlan> selectedList = state.detailList.where((element) {
+    List<Plan> selectedList = state.detailList.where((element) {
       return element.fid == state.fieldList[state.selectedField].fid;
     }).toList();
 
@@ -345,27 +345,27 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
     return _list;
   }
 
-  List<List<FMPlan>> getSortedList(FMPlanState state) {
-    List<List<FMPlan>> _list = [];
-    List<FMPlan> all = (state.fieldList.length >= 1)
+  List<List<Plan>> getSortedList(PlanState state) {
+    List<List<Plan>> _list = [];
+    List<Plan> all = (state.fieldList.length >= 1)
         ? state.detailList.where((element) => element.fid == '').toList()
         : [];
-    List<FMPlan> f1 = (state.fieldList.length >= 2)
+    List<Plan> f1 = (state.fieldList.length >= 2)
         ? state.detailList
             .where((element) => element.fid == state.fieldList[1].fid)
             .toList()
         : [];
-    List<FMPlan> f2 = (state.fieldList.length >= 3)
+    List<Plan> f2 = (state.fieldList.length >= 3)
         ? state.detailList
             .where((element) => element.fid == state.fieldList[2].fid)
             .toList()
         : [];
-    List<FMPlan> f3 = (state.fieldList.length >= 4)
+    List<Plan> f3 = (state.fieldList.length >= 4)
         ? state.detailList
             .where((element) => element.fid == state.fieldList[3].fid)
             .toList()
         : [];
-    List<FMPlan> f4 = (state.fieldList.length >= 5)
+    List<Plan> f4 = (state.fieldList.length >= 5)
         ? state.detailList
             .where((element) => element.fid == state.fieldList[4].fid)
             .toList()

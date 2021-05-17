@@ -1,8 +1,6 @@
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
-import 'package:BrandFarm/utils/user/user_util.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_bloc.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_event.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +14,7 @@ class FMRequestPurchaseScreen extends StatefulWidget {
 }
 
 class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
-  FMPurchaseBloc _fmPurchaseBloc;
+  PurchaseBloc _fmPurchaseBloc;
   List<TextEditingController> productTextEditingController;
   List<TextEditingController> amountTextEditingController;
   List<TextEditingController> priceTextEditingController;
@@ -27,7 +25,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
   @override
   void initState() {
     super.initState();
-    _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+    _fmPurchaseBloc = BlocProvider.of<PurchaseBloc>(context);
     _fmPurchaseBloc.add(LoadFMPurchase());
     _fmPurchaseBloc.add(SetInitialProductList());
     productTextEditingController = List.generate(10, (index) => TextEditingController());
@@ -54,7 +52,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPurchaseBloc, FMPurchaseState>(
+    return BlocConsumer<PurchaseBloc, PurchaseState>(
       listener: (context, state) {},
       builder: (context, state) {
         return (!state.isLoading) ? Scaffold(
@@ -173,7 +171,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _date(FMPurchaseState state) {
+  Widget _date(PurchaseState state) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -202,7 +200,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _material(FMPurchaseState state, int index) {
+  Widget _material(PurchaseState state, int index) {
     return Container(
       // height: 100,
       width: 666,
@@ -233,7 +231,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialContent(FMPurchaseState state, int index) {
+  Widget _materialContent(PurchaseState state, int index) {
     return Container(
       // height: 100,
       child: Row(
@@ -274,7 +272,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialName(FMPurchaseState state, int index) {
+  Widget _materialName(PurchaseState state, int index) {
     if(state.isSubmitted){
       productTextEditingController[index].clear();
     }
@@ -310,7 +308,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialAmount(FMPurchaseState state, int index) {
+  Widget _materialAmount(PurchaseState state, int index) {
     if(state.isSubmitted){
       amountTextEditingController[index].clear();
     }
@@ -362,7 +360,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialPrice(FMPurchaseState state, int index) {
+  Widget _materialPrice(PurchaseState state, int index) {
     if(state.isSubmitted){
       priceTextEditingController[index].clear();
     }
@@ -414,7 +412,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialUrl(FMPurchaseState state, int index) {
+  Widget _materialUrl(PurchaseState state, int index) {
     if(state.isSubmitted){
       urlTextEditingController[index].clear();
     }
@@ -450,7 +448,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _materialField(FMPurchaseState state, int index) {
+  Widget _materialField(PurchaseState state, int index) {
     String field = (state.productList[index].fid != null)
         ? state.fieldList[state.fieldList.indexWhere((element) => element.fid == state.productList[index].fid)].name
         : '필드선택';
@@ -536,7 +534,7 @@ class _FMRequestPurchaseScreenState extends State<FMRequestPurchaseScreen> {
     );
   }
 
-  Widget _writeMemo(FMPurchaseState state, int index) {
+  Widget _writeMemo(PurchaseState state, int index) {
     if(state.isSubmitted){
       memoTextEditingController[index].clear();
     }
@@ -632,17 +630,17 @@ class PurchaseComplete extends StatefulWidget {
 }
 
 class _PurchaseCompleteState extends State<PurchaseComplete> {
-  FMPurchaseBloc _fmPurchaseBloc;
+  PurchaseBloc _fmPurchaseBloc;
 
   @override
   void initState() {
     super.initState();
-    _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+    _fmPurchaseBloc = BlocProvider.of<PurchaseBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPurchaseBloc, FMPurchaseState>(
+    return BlocConsumer<PurchaseBloc, PurchaseState>(
       listener: (context, state) {},
       builder: (context, state) {
           return AlertDialog(

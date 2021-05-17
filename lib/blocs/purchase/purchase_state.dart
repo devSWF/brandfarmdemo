@@ -2,19 +2,19 @@
 
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
+import 'package:BrandFarm/models/purchase/purchase_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class FMPurchaseState {
+class PurchaseState {
   bool isLoading;
   Timestamp curr;
   Farm farm;
   List<Field> fieldList;
   Field field;
-  List<FMPurchase> productList;
-  List<FMPurchase> productListFromDB;
-  List<FMPurchase> productListBySearch;
+  List<Purchase> productList;
+  List<Purchase> productListFromDB;
+  List<Purchase> productListBySearch;
   int currentSortColumn;
   bool isAscending;
   bool isSubmitted;
@@ -22,9 +22,9 @@ class FMPurchaseState {
   List<String> menu;
   int menuIndex;
   bool showDropdownMenu;
-  FMPurchase product;
+  Purchase product;
 
-  FMPurchaseState({
+  PurchaseState({
     @required this.isLoading,
     @required this.curr,
     @required this.farm,
@@ -42,8 +42,8 @@ class FMPurchaseState {
     @required this.product,
   });
 
-  factory FMPurchaseState.empty() {
-    return FMPurchaseState(
+  factory PurchaseState.empty() {
+    return PurchaseState(
       isLoading: false,
       curr: Timestamp.now(),
       farm: Farm(farmID: '', fieldCategory: '', managerID: ''),
@@ -70,24 +70,24 @@ class FMPurchaseState {
     );
   }
 
-  FMPurchaseState copyWith({
+  PurchaseState copyWith({
     bool isLoading,
     Timestamp curr,
     Farm farm,
     List<Field> fieldList,
     Field field,
-    List<FMPurchase> productList,
-    List<FMPurchase> productListFromDB,
-    List<FMPurchase> productListBySearch,
+    List<Purchase> productList,
+    List<Purchase> productListFromDB,
+    List<Purchase> productListBySearch,
     int currentSortColumn,
     bool isAscending,
     bool isSubmitted,
     List<String> menu,
     int menuIndex,
     bool showDropdownMenu,
-    FMPurchase product,
+    Purchase product,
   }) {
-    return FMPurchaseState(
+    return PurchaseState(
       isLoading: isLoading ?? this.isLoading,
       curr: curr ?? this.curr,
       farm: farm ?? this.farm,
@@ -106,22 +106,22 @@ class FMPurchaseState {
     );
   }
 
-  FMPurchaseState update({
+  PurchaseState update({
     bool isLoading,
     Timestamp curr,
     Farm farm,
     List<Field> fieldList,
     Field field,
-    List<FMPurchase> productList,
-    List<FMPurchase> productListFromDB,
-    List<FMPurchase> productListBySearch,
+    List<Purchase> productList,
+    List<Purchase> productListFromDB,
+    List<Purchase> productListBySearch,
     int currentSortColumn,
     bool isAscending,
     bool isSubmitted,
     List<String> menu,
     int menuIndex,
     bool showDropdownMenu,
-    FMPurchase product,
+    Purchase product,
   }) {
     return copyWith(
       isLoading: isLoading,

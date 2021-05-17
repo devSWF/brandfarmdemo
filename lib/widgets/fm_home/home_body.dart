@@ -1,7 +1,7 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
+import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/fm_home/comments.dart';
 import 'package:BrandFarm/widgets/fm_home/create_announcement.dart';
@@ -19,7 +19,7 @@ class HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<HomeBody> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
   FMHomeBloc _fmHomeBloc;
   FMNotificationBloc _fmNotificationBloc;
   ScrollController _scrollController;
@@ -27,7 +27,7 @@ class _HomeBodyState extends State<HomeBody> {
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
     _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
     _scrollController = ScrollController();
@@ -35,7 +35,7 @@ class _HomeBodyState extends State<HomeBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         return (state.fmHomeCalendarDateList.isNotEmpty)

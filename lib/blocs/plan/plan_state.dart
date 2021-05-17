@@ -5,16 +5,16 @@ import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:flutter/material.dart';
 
-class FMPlanState {
+class PlanState {
   bool isLoading;
   Farm farm;
   List<Field> fieldList;
   Field field;
 
-  List<FMPlan> planList;
+  List<Plan> planList;
   DateTime selectedDate;
-  List<FMPlan> detailList;
-  List<FMPlan> todoPlanListShort;
+  List<Plan> detailList;
+  List<Plan> todoPlanListShort;
   List<CalendarPlan> detailListShort;
   List<List<List<CalendarPlan>>> sortedList;
   List<DateTime> fmHomeCalendarDateList;
@@ -26,9 +26,7 @@ class FMPlanState {
   WaitingConfirmation wPlan;
   bool isConfirmed;
 
-  FMPlan newPlan;
-
-  FMPlanState({
+  PlanState({
     @required this.isLoading,
     @required this.farm,
     @required this.fieldList,
@@ -49,8 +47,8 @@ class FMPlanState {
     @required this.newPlan,
   });
 
-  factory FMPlanState.empty() {
-    return FMPlanState(
+  factory PlanState.empty() {
+    return PlanState(
       isLoading: false,
       farm: Farm(farmID: '', fieldCategory: '', managerID: ''),
       fieldList: [],
@@ -87,14 +85,14 @@ class FMPlanState {
     );
   }
 
-  FMPlanState copyWith({
+  PlanState copyWith({
     bool isLoading,
     Farm farm,
     List<Field> fieldList,
     Field field,
-    List<FMPlan> planList,
-    List<FMPlan> detailList,
-    List<FMPlan> todoPlanListShort,
+    List<Plan> planList,
+    List<Plan> detailList,
+    List<Plan> todoPlanListShort,
     List<CalendarPlan> detailListShort,
     List<List<List<CalendarPlan>>> sortedList,
     List<DateTime> fmHomeCalendarDateList,
@@ -107,7 +105,7 @@ class FMPlanState {
     bool isConfirmed,
     FMPlan newPlan
   }) {
-    return FMPlanState(
+    return PlanState(
       isLoading: isLoading ?? this.isLoading,
       farm: farm ?? this.farm,
       fieldList: fieldList ?? this.fieldList,
@@ -129,14 +127,14 @@ class FMPlanState {
     );
   }
 
-  FMPlanState update({
+  PlanState update({
     bool isLoading,
     Farm farm,
     List<Field> fieldList,
     Field field,
-    List<FMPlan> planList,
-    List<FMPlan> detailList,
-    List<FMPlan> todoPlanListShort,
+    List<Plan> planList,
+    List<Plan> detailList,
+    List<Plan> todoPlanListShort,
     List<CalendarPlan> detailListShort,
     List<List<List<CalendarPlan>>> sortedList,
     List<DateTime> fmHomeCalendarDateList,

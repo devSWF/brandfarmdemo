@@ -1,6 +1,6 @@
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_bloc.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_event.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_state.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class FMPurchaseScreen extends StatefulWidget {
 }
 
 class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
-  FMPurchaseBloc _fmPurchaseBloc;
+  PurchaseBloc _fmPurchaseBloc;
   GlobalKey _searchMenu = GlobalKey();
   double x;
   double y;
@@ -24,7 +24,7 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
   @override
   void initState() {
     super.initState();
-    _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+    _fmPurchaseBloc = BlocProvider.of<PurchaseBloc>(context);
     _fmPurchaseBloc.add(LoadFMPurchase());
     _fmPurchaseBloc.add(GetPurchaseList());
     _searchController = TextEditingController();
@@ -33,7 +33,7 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPurchaseBloc, FMPurchaseState>(
+    return BlocConsumer<PurchaseBloc, PurchaseState>(
       listener: (context, state) {},
       builder: (context, state) {
         if(!state.isLoading){
@@ -231,7 +231,7 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
         });
   }
 
-  Widget _searchType(FMPurchaseState state) {
+  Widget _searchType(PurchaseState state) {
     return InkResponse(
       onTap: () {
         setState(() {
@@ -267,7 +267,7 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
     );
   }
 
-  Widget _searchMenuList(FMPurchaseState state) {
+  Widget _searchMenuList(PurchaseState state) {
     return Container(
       width: 93,
       padding: EdgeInsets.symmetric(horizontal: 6),

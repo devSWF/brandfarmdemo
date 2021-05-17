@@ -1,22 +1,21 @@
-
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_event.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
+import 'package:BrandFarm/models/purchase/purchase_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
-import 'package:BrandFarm/repository/fm_purchase/fm_purchase_repository.dart';
+import 'package:BrandFarm/repository/purchase/purchase_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FMPurchaseBloc
-    extends Bloc<FMPurchaseEvent, FMPurchaseState> {
-  FMPurchaseBloc() : super(FMPurchaseState.empty());
+class PurchaseBloc
+    extends Bloc<PurchaseEvent, PurchaseState> {
+  PurchaseBloc() : super(PurchaseState.empty());
 
   @override
-  Stream<FMPurchaseState> mapEventToState(
-      FMPurchaseEvent event) async* {
+  Stream<PurchaseState> mapEventToState(
+      PurchaseEvent event) async* {
     if (event is LoadFMPurchase) {
       yield* _mapLoadFMPurchaseToState();
     } else if (event is GetFieldListForFMPurchase) {
@@ -60,12 +59,12 @@ class FMPurchaseBloc
     }
   }
 
-  Stream<FMPurchaseState> _mapLoadFMPurchaseToState() async* {
+  Stream<PurchaseState> _mapLoadFMPurchaseToState() async* {
     yield state.update(isLoading: true);
   }
 
-  Stream<FMPurchaseState> _mapGetFieldListForFMPurchaseToState() async* {
-    Farm farm = await FMPurchaseRepository().getFarmInfo();
+  Stream<PurchaseState> _mapGetFieldListForFMPurchaseToState() async* {
+    Farm farm = await PurchaseRepository().getFarmInfo();
     List<Field> currFieldList = [
       Field(
           fieldCategory: farm.fieldCategory,
@@ -78,7 +77,7 @@ class FMPurchaseBloc
           name: '모든 필드')
     ];
     List<Field> newFieldList =
-    await FMPurchaseRepository().getFieldList(farm.fieldCategory);
+    await PurchaseRepository().getFieldList(farm.fieldCategory);
     List<Field> totalFieldList = [
       ...currFieldList,
       ...newFieldList,
@@ -91,11 +90,11 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapSetInitialProductListToState() async* {
+  Stream<PurchaseState> _mapSetInitialProductListToState() async* {
     // set initial product list
     Timestamp now = Timestamp.now();
-    List<FMPurchase> pList = [];
-    FMPurchase product = FMPurchase(
+    List<Purchase> pList = [];
+    Purchase product = Purchase(
       purchaseID: '',
       farmID: state.farm.farmID,
       requester: await UserUtil.getUser().name,
@@ -123,9 +122,9 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapUpdateFieldButtonStateToState(int index) async* {
-    FMPurchase obj = state.productList[index];
-    FMPurchase newObj = FMPurchase(
+  Stream<PurchaseState> _mapUpdateFieldButtonStateToState(int index) async* {
+    Purchase obj = state.productList[index];
+    Purchase newObj = Purchase(
         purchaseID: obj.purchaseID,
         farmID: obj.farmID,
         requester: obj.requester,
@@ -146,7 +145,7 @@ class FMPurchaseBloc
       recUser: obj.recUser,
     );
 
-    List<FMPurchase> plist = state.productList;
+    List<Purchase> plist = state.productList;
     plist.removeAt(index);
     plist.insert(index, newObj);
 
@@ -155,10 +154,10 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapUpdateFieldNameToState(int index, int field) async* {
-    User recUser = await FMPurchaseRepository().getDetailUserInfo(state.fieldList[field].sfmid);
-    FMPurchase obj = state.productList[index];
-    FMPurchase newObj = FMPurchase(
+  Stream<PurchaseState> _mapUpdateFieldNameToState(int index, int field) async* {
+    User recUser = await PurchaseRepository().getDetailUserInfo(state.fieldList[field].sfmid);
+    Purchase obj = state.productList[index];
+    Purchase newObj = Purchase(
         purchaseID: obj.purchaseID,
         farmID: obj.farmID,
         requester: obj.requester,
@@ -179,7 +178,7 @@ class FMPurchaseBloc
       recUser: recUser,
     );
 
-    List<FMPurchase> plist = state.productList;
+    List<Purchase> plist = state.productList;
     plist.removeAt(index);
     plist.insert(index, newObj);
 
@@ -188,9 +187,9 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapUpdateProductNameToState(int index, String name) async* {
-    FMPurchase obj = state.productList[index];
-    FMPurchase newObj = FMPurchase(
+  Stream<PurchaseState> _mapUpdateProductNameToState(int index, String name) async* {
+    Purchase obj = state.productList[index];
+    Purchase newObj = Purchase(
         purchaseID: obj.purchaseID,
         farmID: obj.farmID,
         requester: obj.requester,
@@ -211,7 +210,7 @@ class FMPurchaseBloc
       recUser: obj.recUser,
     );
 
-    List<FMPurchase> plist = state.productList;
+    List<Purchase> plist = state.productList;
     plist.removeAt(index);
     plist.insert(index, newObj);
 
@@ -220,9 +219,9 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapUpdateAmountToState(int index, String amount) async* {
-    FMPurchase obj = state.productList[index];
-    FMPurchase newObj = FMPurchase(
+  Stream<PurchaseState> _mapUpdateAmountToState(int index, String amount) async* {
+    Purchase obj = state.productList[index];
+    Purchase newObj = Purchase(
         purchaseID: obj.purchaseID,
         farmID: obj.farmID,
         requester: obj.requester,
@@ -243,7 +242,7 @@ class FMPurchaseBloc
       recUser: obj.recUser,
     );
 
-    List<FMPurchase> plist = state.productList;
+    List<Purchase> plist = state.productList;
     plist.removeAt(index);
     plist.insert(index, newObj);
 
@@ -252,9 +251,9 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapUpdatePriceToState(int index, String price) async* {
-    FMPurchase obj = state.productList[index];
-    FMPurchase newObj = FMPurchase(
+  Stream<PurchaseState> _mapUpdatePriceToState(int index, String price) async* {
+    Purchase obj = state.productList[index];
+    Purchase newObj = Purchase(
         purchaseID: obj.purchaseID,
         farmID: obj.farmID,
         requester: obj.requester,
@@ -275,7 +274,7 @@ class FMPurchaseBloc
       recUser: obj.recUser,
     );
 
-    List<FMPurchase> plist = state.productList;
+    List<Purchase> plist = state.productList;
     plist.removeAt(index);
     plist.insert(index, newObj);
 
@@ -284,9 +283,9 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapUpdateMarketUrlToState(int index, String url) async* {
-    FMPurchase obj = state.productList[index];
-    FMPurchase newObj = FMPurchase(
+  Stream<PurchaseState> _mapUpdateMarketUrlToState(int index, String url) async* {
+    Purchase obj = state.productList[index];
+    Purchase newObj = Purchase(
         purchaseID: obj.purchaseID,
         farmID: obj.farmID,
         requester: obj.requester,
@@ -307,7 +306,7 @@ class FMPurchaseBloc
       recUser: obj.recUser,
     );
 
-    List<FMPurchase> plist = state.productList;
+    List<Purchase> plist = state.productList;
     plist.removeAt(index);
     plist.insert(index, newObj);
 
@@ -316,9 +315,9 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapUpdateMemoToState(int index, String memo) async* {
-    FMPurchase obj = state.productList[index];
-    FMPurchase newObj = FMPurchase(
+  Stream<PurchaseState> _mapUpdateMemoToState(int index, String memo) async* {
+    Purchase obj = state.productList[index];
+    Purchase newObj = Purchase(
         purchaseID: obj.purchaseID,
         farmID: obj.farmID,
         requester: obj.requester,
@@ -339,7 +338,7 @@ class FMPurchaseBloc
       recUser: obj.recUser,
     );
 
-    List<FMPurchase> plist = state.productList;
+    List<Purchase> plist = state.productList;
     plist.removeAt(index);
     plist.insert(index, newObj);
 
@@ -348,8 +347,8 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapSetAdditionalProductToState() async* {
-    FMPurchase product = FMPurchase(
+  Stream<PurchaseState> _mapSetAdditionalProductToState() async* {
+    Purchase product = Purchase(
       purchaseID: '',
       farmID: state.farm.farmID,
       requester: await UserUtil.getUser().name,
@@ -370,7 +369,7 @@ class FMPurchaseBloc
       recUser: null,
     );
 
-    List<FMPurchase> plist = state.productList;
+    List<Purchase> plist = state.productList;
     plist.add(product);
 
     yield state.update(
@@ -378,13 +377,13 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapCompletePurchaseToState() async* {
+  Stream<PurchaseState> _mapCompletePurchaseToState() async* {
     // upload to firebase
-    List<FMPurchase> plist = state.productList;
+    List<Purchase> plist = state.productList;
     String purchaseID = '';
     await Future.forEach(plist, (item) {
       purchaseID = FirebaseFirestore.instance.collection('Purchase').doc().id;
-      FMPurchase newObj = FMPurchase(
+      Purchase newObj = Purchase(
           purchaseID: purchaseID,
           farmID: item.farmID,
           requester: item.requester,
@@ -404,10 +403,10 @@ class FMPurchaseBloc
         reqUser: item.reqUser,
         recUser: item.recUser,
       );
-      FMPurchaseRepository().postPurchaseItem(newObj);
+      PurchaseRepository().postPurchaseItem(newObj);
     });
 
-    List<FMPurchase> pList = [];
+    List<Purchase> pList = [];
     // FMPurchase product = FMPurchase(
     //   purchaseID: '',
     //   farmID: state.farm.farmID,
@@ -435,10 +434,10 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapGetPurchaseListToState() async* {
+  Stream<PurchaseState> _mapGetPurchaseListToState() async* {
     // get purchase list from firebase
-    List<FMPurchase> plist = [];
-    plist = await FMPurchaseRepository().getPurchaseList(state.farm.farmID);
+    List<Purchase> plist = [];
+    plist = await PurchaseRepository().getPurchaseList(state.farm.farmID);
 
     yield state.update(
       productListFromDB: plist,
@@ -447,9 +446,9 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapSetListOrderToState(int columnIndex) async* {
+  Stream<PurchaseState> _mapSetListOrderToState(int columnIndex) async* {
     // set list order
-    List<FMPurchase> plist = state.productListBySearch;
+    List<Purchase> plist = state.productListBySearch;
     bool isAscending;
     if (state.isAscending == true) {
       isAscending = false;
@@ -472,27 +471,27 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapSetSubmissionStateToState() async* {
+  Stream<PurchaseState> _mapSetSubmissionStateToState() async* {
     yield state.update(
       isSubmitted: false,
     );
   }
 
-  Stream<FMPurchaseState> _mapUpdateDropdownMenuStateToState() async* {
+  Stream<PurchaseState> _mapUpdateDropdownMenuStateToState() async* {
     yield state.update(
       showDropdownMenu: !state.showDropdownMenu,
     );
   }
 
-  Stream<FMPurchaseState> _mapUpdateMenuIndexToState(int index) async* {
+  Stream<PurchaseState> _mapUpdateMenuIndexToState(int index) async* {
     yield state.update(
       menuIndex: index,
     );
   }
 
-  Stream<FMPurchaseState> _mapGetPurchaseListBySearchToState(String word) async* {
+  Stream<PurchaseState> _mapGetPurchaseListBySearchToState(String word) async* {
     // product list by search
-    List<FMPurchase> plist = [];
+    List<Purchase> plist = [];
 
     if(state.menu[state.menuIndex].contains('자재명')) {
       plist = state.productListFromDB.where((element) => element.productName.contains(word)).toList();
@@ -507,15 +506,15 @@ class FMPurchaseBloc
     );
   }
 
-  Stream<FMPurchaseState> _mapSetProductToState(FMPurchase product) async* {
+  Stream<PurchaseState> _mapSetProductToState(Purchase product) async* {
     yield state.update(
       product: product,
     );
   }
 
-  Stream<FMPurchaseState> _mapMarkAsReadToState() async* {
-    FMPurchase obj = state.product;
-    FMPurchase newObj = FMPurchase(
+  Stream<PurchaseState> _mapMarkAsReadToState() async* {
+    Purchase obj = state.product;
+    Purchase newObj = Purchase(
         purchaseID: obj.purchaseID,
         farmID: obj.farmID,
         requester: obj.requester,
@@ -536,12 +535,12 @@ class FMPurchaseBloc
       recUser: obj.recUser,
     );
 
-    FMPurchaseRepository().updatePurchaseInfo(obj: newObj);
+    PurchaseRepository().updatePurchaseInfo(obj: newObj);
 
     int index1 = state.productListFromDB.indexWhere((element) => element.purchaseID == newObj.purchaseID) ?? -1;
     int index2 = state.productListBySearch.indexWhere((element) => element.purchaseID == newObj.purchaseID) ?? -1;
-    List<FMPurchase> fromDB = state.productListFromDB;
-    List<FMPurchase> bySearch = state.productListBySearch;
+    List<Purchase> fromDB = state.productListFromDB;
+    List<Purchase> bySearch = state.productListBySearch;
 
     if(index1 != -1 && index2 != -1) {
       fromDB.removeAt(index1);
