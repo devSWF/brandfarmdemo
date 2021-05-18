@@ -213,7 +213,7 @@ class NotificationBloc
 
   Stream<NotificationState> _mapGetPlanNotificationInitialsToState(
       NotificationNotice obj) async* {
-    FMPlan _plan;
+    Plan _plan;
 
     _plan = await NotificationRepository().getPlan(obj.planid);
 

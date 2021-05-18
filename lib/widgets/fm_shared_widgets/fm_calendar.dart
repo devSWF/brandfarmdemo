@@ -1,6 +1,6 @@
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
+import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_event.dart';
+import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +11,7 @@ class FMCalendar extends StatefulWidget {
 }
 
 class _FMCalendarState extends State<FMCalendar> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
   List<Color> colorList = [
     Color(0xFF15B85B),
     Colors.red,
@@ -40,7 +40,7 @@ class _FMCalendarState extends State<FMCalendar> {
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
     _fmPlanBloc.add(SetDate(date: now));
     monthList = getMonth(date: now);
     year = now.year;
@@ -112,7 +112,7 @@ class _FMCalendarState extends State<FMCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         return _calendarBody(state);
@@ -120,8 +120,8 @@ class _FMCalendarState extends State<FMCalendar> {
     );
   }
 
-  Widget _calendarBody(FMPlanState state) {
-    List<List<FMPlan>> pListByField = sortPlanListByField(state);
+  Widget _calendarBody(PlanState state) {
+    List<List<Plan>> pListByField = sortPlanListByField(state);
     List<List<List<CalendarPlan>>> pListByDate =
     sortPlanListByDate(pListByField);
     List<CalendarPlan> plist = getPlanList(pListByDate);
@@ -222,10 +222,10 @@ class _FMCalendarState extends State<FMCalendar> {
     );
   }
 
-  List<List<FMPlan>> sortPlanListByField(FMPlanState state) {
-    List<List<FMPlan>> pListOfLists =
+  List<List<Plan>> sortPlanListByField(PlanState state) {
+    List<List<Plan>> pListOfLists =
     List.generate(state.fieldList.length, (col) {
-      List<FMPlan> plist = state.planList.where((element) {
+      List<Plan> plist = state.planList.where((element) {
         if (col == 0) {
           return element.farmID == state.farm.farmID && element.fid.isEmpty;
         } else {
@@ -238,7 +238,7 @@ class _FMCalendarState extends State<FMCalendar> {
   }
 
   List<List<List<CalendarPlan>>> sortPlanListByDate(
-      List<List<FMPlan>> listByField) {
+      List<List<Plan>> listByField) {
     List<List<List<CalendarPlan>>> pListByDate =
     List.generate(listByField.length, (col) {
       int length = listByField[col].length;
@@ -289,7 +289,7 @@ class _FMCalendarState extends State<FMCalendar> {
     return plist;
   }
 
-  Widget _tableLayout(FMPlanState state) {
+  Widget _tableLayout(PlanState state) {
     return Table(
       // border: TableBorder.all(width: 1, color: Color(0xFFD8D8D8)),
       children: List.generate(5, (index1) {
@@ -346,7 +346,7 @@ class _FMCalendarState extends State<FMCalendar> {
     );
   }
 
-  Widget _tableBody(FMPlanState state) {
+  Widget _tableBody(PlanState state) {
     return Table(
       // border: TableBorder.all(width: 1, color: Color(0xFFD8D8D8)),
       children: List.generate(5, (index1) {
@@ -421,7 +421,7 @@ class _FMCalendarState extends State<FMCalendar> {
     );
   }
 
-  Widget _planBody(FMPlanState state, List<CalendarPlan> plist) {
+  Widget _planBody(PlanState state, List<CalendarPlan> plist) {
     return Table(
       // border: TableBorder.all(width: 1, color: Color(0xFFD8D8D8)),
       children: List.generate(5, (index1) {

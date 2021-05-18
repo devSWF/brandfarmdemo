@@ -6,7 +6,7 @@ import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FMPlanRepository {
+class PlanRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<Farm> getFarmInfo() async {
@@ -37,21 +37,21 @@ class FMPlanRepository {
     return fieldList;
   }
 
-  Future<void> postPlan(FMPlan plan,) async {
+  Future<void> postPlan(Plan plan,) async {
     DocumentReference reference =
     _firestore.collection('Plan').doc(plan.planID);
     await reference.set(plan.toDocument());
   }
 
-  Future<List<FMPlan>> getPlanList(String farmID) async {
-    List<FMPlan> plist = [];
+  Future<List<Plan>> getPlanList(String farmID) async {
+    List<Plan> plist = [];
     QuerySnapshot _plist = await _firestore
         .collection('Plan')
         .where('farmID', isEqualTo: farmID)
         .get();
 
     _plist.docs.forEach((ds) {
-      plist.add(FMPlan.fromSnapshot(ds));
+      plist.add(Plan.fromSnapshot(ds));
     });
 
     return plist;

@@ -45,8 +45,8 @@ class SubHomeRepository {
   //   return farm;
   // }
 
-  Future<List<FMPlan>> getPlanUpdates(String fid) async {
-    List<FMPlan> plist = [];
+  Future<List<Plan>> getPlanUpdates(String fid) async {
+    List<Plan> plist = [];
     QuerySnapshot _plist = await _firestore
         .collection('Plan')
         .where('fid', isEqualTo: fid)
@@ -57,7 +57,7 @@ class SubHomeRepository {
         .get();
 
     _plist.docs.forEach((ds) {
-      plist.add(FMPlan.fromSnapshot(ds));
+      plist.add(Plan.fromSnapshot(ds));
     });
 
     return plist;
@@ -81,10 +81,10 @@ class SubHomeRepository {
     return noticeList;
   }
 
-  Future<List<FMPlan>> getPlanList(String fid) async {
-    List<FMPlan> plistByField = [];
-    List<FMPlan> plistByFarm = [];
-    List<FMPlan> totalList = [];
+  Future<List<Plan>> getPlanList(String fid) async {
+    List<Plan> plistByField = [];
+    List<Plan> plistByFarm = [];
+    List<Plan> totalList = [];
 
     QuerySnapshot _plistByField = await _firestore
         .collection('Plan')
@@ -92,7 +92,7 @@ class SubHomeRepository {
         .get();
 
     _plistByField.docs.forEach((ds) {
-      plistByField.add(FMPlan.fromSnapshot(ds));
+      plistByField.add(Plan.fromSnapshot(ds));
     });
 
     QuerySnapshot _plistByFarm = await _firestore
@@ -101,7 +101,7 @@ class SubHomeRepository {
         .get();
 
     _plistByFarm.docs.forEach((ds) {
-      plistByFarm.add(FMPlan.fromSnapshot(ds));
+      plistByFarm.add(Plan.fromSnapshot(ds));
     });
 
     totalList = [...plistByField, ...plistByFarm,];

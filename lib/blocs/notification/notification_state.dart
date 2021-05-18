@@ -17,7 +17,7 @@ class NotificationState {
   List<NotificationNotice> generalList;
   int unRead;
 
-  FMPlan plan;
+  Plan plan;
   Journal jObj;
   SubJournalIssue iObj;
   List<Comment> clist;
@@ -73,7 +73,7 @@ class NotificationState {
     List<NotificationNotice> importantList,
     List<NotificationNotice> generalList,
     int unRead,
-    FMPlan plan,
+    Plan plan,
     Journal jObj,
     SubJournalIssue iObj,
     List<Comment> clist,
@@ -107,7 +107,7 @@ class NotificationState {
     List<NotificationNotice> importantList,
     List<NotificationNotice> generalList,
     int unRead,
-    FMPlan plan,
+    Plan plan,
     Journal jObj,
     SubJournalIssue iObj,
     List<Comment> clist,

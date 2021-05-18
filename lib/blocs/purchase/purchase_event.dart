@@ -1,22 +1,22 @@
 
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
+import 'package:BrandFarm/models/purchase/purchase_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-abstract class FMPurchaseEvent extends Equatable{
-  const FMPurchaseEvent();
+abstract class PurchaseEvent extends Equatable{
+  const PurchaseEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LoadFMPurchase extends FMPurchaseEvent{}
+class LoadFMPurchase extends PurchaseEvent{}
 
-class GetFieldListForFMPurchase extends FMPurchaseEvent {}
+class GetFieldListForFMPurchase extends PurchaseEvent {}
 
-class SetInitialProductList extends FMPurchaseEvent {}
+class SetInitialProductList extends PurchaseEvent {}
 
-class UpdateFieldButtonState extends FMPurchaseEvent {
+class UpdateFieldButtonState extends PurchaseEvent {
   final int index;
 
   const UpdateFieldButtonState({
@@ -30,7 +30,7 @@ class UpdateFieldButtonState extends FMPurchaseEvent {
   String toString() => 'UpdateFieldButtonState { index : $index}';
 }
 
-class UpdateFieldName extends FMPurchaseEvent {
+class UpdateFieldName extends PurchaseEvent {
   final int index;
   final int field;
 
@@ -49,7 +49,7 @@ class UpdateFieldName extends FMPurchaseEvent {
   }''';
 }
 
-class UpdateProductName extends FMPurchaseEvent {
+class UpdateProductName extends PurchaseEvent {
   final int index;
   final String name;
 
@@ -68,7 +68,7 @@ class UpdateProductName extends FMPurchaseEvent {
   }''';
 }
 
-class UpdateAmount extends FMPurchaseEvent {
+class UpdateAmount extends PurchaseEvent {
   final int index;
   final String amount;
 
@@ -87,7 +87,7 @@ class UpdateAmount extends FMPurchaseEvent {
   }''';
 }
 
-class UpdatePrice extends FMPurchaseEvent {
+class UpdatePrice extends PurchaseEvent {
   final int index;
   final String price;
 
@@ -106,7 +106,7 @@ class UpdatePrice extends FMPurchaseEvent {
   }''';
 }
 
-class UpdateMarketUrl extends FMPurchaseEvent {
+class UpdateMarketUrl extends PurchaseEvent {
   final int index;
   final String url;
 
@@ -125,7 +125,7 @@ class UpdateMarketUrl extends FMPurchaseEvent {
   }''';
 }
 
-class UpdateMemo extends FMPurchaseEvent {
+class UpdateMemo extends PurchaseEvent {
   final int index;
   final String memo;
 
@@ -144,13 +144,13 @@ class UpdateMemo extends FMPurchaseEvent {
   }''';
 }
 
-class SetAdditionalProduct extends FMPurchaseEvent {}
+class SetAdditionalProduct extends PurchaseEvent {}
 
-class CompletePurchase extends FMPurchaseEvent {}
+class CompletePurchase extends PurchaseEvent {}
 
-class GetPurchaseList extends FMPurchaseEvent {}
+class GetPurchaseList extends PurchaseEvent {}
 
-class SetListOrder extends FMPurchaseEvent {
+class SetListOrder extends PurchaseEvent {
   final int columnIndex;
 
   const SetListOrder({
@@ -166,11 +166,11 @@ class SetListOrder extends FMPurchaseEvent {
   }''';
 }
 
-class SetSubmissionState extends FMPurchaseEvent {}
+class SetSubmissionState extends PurchaseEvent {}
 
-class UpdateDropdownMenuState extends FMPurchaseEvent {}
+class UpdateDropdownMenuState extends PurchaseEvent {}
 
-class UpdateMenuIndex extends FMPurchaseEvent {
+class UpdateMenuIndex extends PurchaseEvent {
   final int menuIndex;
 
   const UpdateMenuIndex({
@@ -186,7 +186,7 @@ class UpdateMenuIndex extends FMPurchaseEvent {
   }''';
 }
 
-class GetPurchaseListBySearch extends FMPurchaseEvent {
+class GetPurchaseListBySearch extends PurchaseEvent {
   final String word;
 
   const GetPurchaseListBySearch({
@@ -202,8 +202,8 @@ class GetPurchaseListBySearch extends FMPurchaseEvent {
   }''';
 }
 
-class SetProduct extends FMPurchaseEvent {
-  final FMPurchase product;
+class SetProduct extends PurchaseEvent {
+  final Purchase product;
 
   const SetProduct({
     @required this.product,
@@ -218,4 +218,4 @@ class SetProduct extends FMPurchaseEvent {
   }''';
 }
 
-class MarkAsRead extends FMPurchaseEvent {}
+class MarkAsRead extends PurchaseEvent {}

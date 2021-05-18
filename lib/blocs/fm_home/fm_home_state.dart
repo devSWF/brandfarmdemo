@@ -2,10 +2,10 @@
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/purchase/purchase_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:flutter/material.dart';
 
@@ -19,8 +19,8 @@ class FMHomeState {
   List<Field> fieldList;
 
   List<NotificationNotice> notice;
-  List<FMPlan> plan;
-  List<FMPurchase> purchase;
+  List<Plan> plan;
+  List<Purchase> purchase;
   List<Journal> journal;
   List<SubJournalIssue> issue;
 
@@ -65,8 +65,8 @@ class FMHomeState {
     Farm farm,
     List<Field> fieldList,
     List<NotificationNotice> notice,
-    List<FMPlan> plan,
-    List<FMPurchase> purchase,
+    List<Plan> plan,
+    List<Purchase> purchase,
     List<Journal> journal,
     List<SubJournalIssue> issue,
   }) {
@@ -95,8 +95,8 @@ class FMHomeState {
     Farm farm,
     List<Field> fieldList,
     List<NotificationNotice> notice,
-    List<FMPlan> plan,
-    List<FMPurchase> purchase,
+    List<Plan> plan,
+    List<Purchase> purchase,
     List<Journal> journal,
     List<SubJournalIssue> issue,
   }) {

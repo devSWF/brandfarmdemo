@@ -67,15 +67,15 @@ class NotificationRepository {
     return user;
   }
 
-  Future<FMPlan> getPlan(String planID) async {
-    FMPlan plan;
+  Future<Plan> getPlan(String planID) async {
+    Plan plan;
     await _firestore
         .collection('Plan')
         .where('planID', isEqualTo: planID)
         .get()
         .then((qs) {
       qs.docs.forEach((ds) {
-        plan = FMPlan.fromSnapshot(ds);
+        plan = Plan.fromSnapshot(ds);
       });
     });
     return plan;

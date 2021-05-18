@@ -1,7 +1,7 @@
 import 'package:BrandFarm/blocs/fm_notification/fm_notification_bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_state.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
+import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_state.dart';
+import 'package:BrandFarm/blocs/plan/plan_event.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_add_plan.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_calendar_widget.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_detail_screen.dart';
@@ -14,7 +14,7 @@ class FMPlanScreen extends StatefulWidget {
 }
 
 class _FMPlanScreenState extends State<FMPlanScreen> {
-  FMPlanBloc _fmPlanBloc;
+  PlanBloc _fmPlanBloc;
   FMNotificationBloc _fmNotificationBloc;
 
   // for test
@@ -31,13 +31,13 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
   @override
   void initState() {
     super.initState();
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
     _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPlanBloc, FMPlanState>(
+    return BlocConsumer<PlanBloc, PlanState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
@@ -89,7 +89,7 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
     );
   }
 
-  Widget _fieldSelectionMenu({FMPlanState state}) {
+  Widget _fieldSelectionMenu({PlanState state}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

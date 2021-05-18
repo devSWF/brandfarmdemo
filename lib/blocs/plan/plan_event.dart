@@ -3,22 +3,22 @@ import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-abstract class FMPlanEvent extends Equatable{
-  const FMPlanEvent();
+abstract class PlanEvent extends Equatable{
+  const PlanEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LoadFMPlan extends FMPlanEvent{}
+class LoadFMPlan extends PlanEvent{}
 
-class GetFieldListForFMPlan extends FMPlanEvent {}
+class GetFieldListForFMPlan extends PlanEvent {}
 
-class GetPlanList extends FMPlanEvent {}
+class GetPlanList extends PlanEvent {}
 
-class PostNewPlan extends FMPlanEvent {}
+class PostNewPlan extends PlanEvent {}
 
-class SetWaitingPlan extends FMPlanEvent {
+class SetWaitingPlan extends PlanEvent {
   final WaitingConfirmation wPlan;
 
   const SetWaitingPlan({
@@ -34,7 +34,7 @@ class SetWaitingPlan extends FMPlanEvent {
   }''';
 }
 
-class SetDate extends FMPlanEvent{
+class SetDate extends PlanEvent{
   final DateTime date;
 
   const SetDate({
@@ -47,7 +47,7 @@ class SetDate extends FMPlanEvent{
   }''';
 }
 
-class SetSelectedField extends FMPlanEvent{
+class SetSelectedField extends PlanEvent{
   final int selectedField;
 
   const SetSelectedField({
@@ -60,7 +60,7 @@ class SetSelectedField extends FMPlanEvent{
   }''';
 }
 
-class SetStartDate extends FMPlanEvent{
+class SetStartDate extends PlanEvent{
   final DateTime startDate;
 
   const SetStartDate({
@@ -73,7 +73,7 @@ class SetStartDate extends FMPlanEvent{
   }''';
 }
 
-class SetEndDate extends FMPlanEvent{
+class SetEndDate extends PlanEvent{
   final DateTime endDate;
 
   const SetEndDate({
@@ -86,7 +86,7 @@ class SetEndDate extends FMPlanEvent{
   }''';
 }
 
-class CheckConfirmState extends FMPlanEvent{
+class CheckConfirmState extends PlanEvent{
   final bool confirmState;
 
   const CheckConfirmState({
@@ -99,11 +99,11 @@ class CheckConfirmState extends FMPlanEvent{
   }''';
 }
 
-class GetShortDetailList extends FMPlanEvent{}
+class GetShortDetailList extends PlanEvent{}
 
-class GetSortedDetailList extends FMPlanEvent{}
+class GetSortedDetailList extends PlanEvent{}
 
-class SetCalendarIndex extends FMPlanEvent{
+class SetCalendarIndex extends PlanEvent{
   final int index;
 
   const SetCalendarIndex({

@@ -275,7 +275,7 @@ class FMNotificationBloc
   }
 
   Stream<FMNotificationState> _mapPushPlanNotificationToState(
-      FMPlan plan) async* {
+      Plan plan) async* {
     DateTime date = plan.postedDate.toDate();
     String year = date.year.toString().substring(2);
     String month = DateFormat('MM').format(date);

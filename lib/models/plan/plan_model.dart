@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
-class FMPlan {
+class Plan {
   final String planID;
   final String uid;
   final String name;
@@ -19,7 +19,7 @@ class FMPlan {
   final String farmID;
   final bool isUpdated;
 
-  FMPlan({
+  Plan({
     @required this.planID,
     @required this.uid,
     @required this.name,
@@ -38,8 +38,8 @@ class FMPlan {
     @required this.isUpdated,
   });
 
-  factory FMPlan.fromSnapshot(DocumentSnapshot ds) {
-    return FMPlan(
+  factory Plan.fromSnapshot(DocumentSnapshot ds) {
+    return Plan(
       planID: ds['planID'].toString(),
       uid: ds['uid'].toString(),
       name: ds['name'].toString(),

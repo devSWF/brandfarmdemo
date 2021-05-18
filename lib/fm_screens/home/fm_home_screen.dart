@@ -7,10 +7,10 @@ import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
 import 'package:BrandFarm/blocs/fm_issue/fm_issue_bloc.dart';
 import 'package:BrandFarm/blocs/fm_journal/fm_journal_bloc.dart';
 import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_bloc.dart';
-import 'package:BrandFarm/blocs/fm_plan/fm_plan_event.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_event.dart';
+import 'package:BrandFarm/blocs/purchase/bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
+import 'package:BrandFarm/blocs/plan/plan_event.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_bloc.dart';
 import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/contact/fm_contact_screen.dart';
 import 'package:BrandFarm/fm_screens/home/fm_logout_screen.dart';
@@ -20,10 +20,10 @@ import 'package:BrandFarm/fm_screens/plan/fm_plan_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_purchase_screen.dart';
 import 'package:BrandFarm/fm_screens/purchase/fm_request_purchase_screen.dart';
 import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/purchase/purchase_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
@@ -40,8 +40,8 @@ class FMHomeScreen extends StatefulWidget {
 }
 
 class _FMHomeScreenState extends State<FMHomeScreen> {
-  FMPurchaseBloc _fmPurchaseBloc;
-  FMPlanBloc _fmPlanBloc;
+  PurchaseBloc _fmPurchaseBloc;
+  PlanBloc _fmPlanBloc;
   FMHomeBloc _fmHomeBloc;
   FMNotificationBloc _fmNotificationBloc;
   bool isVisible;
@@ -56,9 +56,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     _fmHomeBloc.add(SetFcmToken());
     _fmHomeBloc.add(GetFieldListForFMHome());
     _fmHomeBloc.add(GetRecentUpdates());
-    _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+    _fmPurchaseBloc = BlocProvider.of<PurchaseBloc>(context);
     _fmPurchaseBloc.add(GetFieldListForFMPurchase());
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
     _fmPlanBloc.add(GetFieldListForFMPlan());
     _fmPlanBloc.add(GetPlanList());
     _fmPlanBloc.add(GetShortDetailList());
@@ -1060,7 +1060,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
         }
       } break;
       case 2 : {
-        List<FMPlan> plan = state.plan.where((element) {
+        List<Plan> plan = state.plan.where((element) {
           return element.isReadByFM == false;
         }).toList();
         if(plan.length > 0) {
@@ -1070,7 +1070,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
         }
       } break;
       case 3 : {
-        List<FMPurchase> purchase = state.purchase.where((element) {
+        List<Purchase> purchase = state.purchase.where((element) {
           return element.isThereUpdates == true;
         }).toList();
         if(purchase.length > 0) {
@@ -1121,16 +1121,16 @@ class GetPage extends StatefulWidget {
 }
 
 class _GetPageState extends State<GetPage> {
-  FMPurchaseBloc _fmPurchaseBloc;
-  FMPlanBloc _fmPlanBloc;
+  PurchaseBloc _fmPurchaseBloc;
+  PlanBloc _fmPlanBloc;
   FMHomeBloc _fmHomeBloc;
   FMNotificationBloc _fmNotificationBloc;
 
   @override
   void initState() {
     super.initState();
-    _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
-    _fmPlanBloc = BlocProvider.of<FMPlanBloc>(context);
+    _fmPurchaseBloc = BlocProvider.of<PurchaseBloc>(context);
+    _fmPlanBloc = BlocProvider.of<PlanBloc>(context);
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
     _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
   }

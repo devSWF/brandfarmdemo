@@ -1,6 +1,6 @@
-import 'package:BrandFarm/blocs/fm_purchase/bloc.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_bloc.dart';
-import 'package:BrandFarm/blocs/fm_purchase/fm_purchase_state.dart';
+import 'package:BrandFarm/blocs/purchase/bloc.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_bloc.dart';
+import 'package:BrandFarm/blocs/purchase/purchase_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,18 +12,18 @@ class FMPurchaseDetailScreen extends StatefulWidget {
 }
 
 class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
-  FMPurchaseBloc _fmPurchaseBloc;
+  PurchaseBloc _fmPurchaseBloc;
 
   @override
   void initState() {
     super.initState();
-    _fmPurchaseBloc = BlocProvider.of<FMPurchaseBloc>(context);
+    _fmPurchaseBloc = BlocProvider.of<PurchaseBloc>(context);
     _fmPurchaseBloc.add(MarkAsRead());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FMPurchaseBloc, FMPurchaseState>(
+    return BlocConsumer<PurchaseBloc, PurchaseState>(
       listener: (context, state) {},
       builder: (context, state) {
         return (state.product != null)
@@ -85,7 +85,7 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
     );
   }
 
-  Widget _detailInfo(FMPurchaseState state) {
+  Widget _detailInfo(PurchaseState state) {
     String reqDate = (state.product.requestDate != null)
         ? DateFormat('yyyy-MM-dd').format(state.product.requestDate.toDate())
         : '--';
@@ -293,7 +293,7 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
     }
   }
 
-  Widget _requestInfo(FMPurchaseState state) {
+  Widget _requestInfo(PurchaseState state) {
     return Container(
       width: 380,
       child: Column(
@@ -332,7 +332,7 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
     );
   }
 
-  Widget _officeComment(FMPurchaseState state) {
+  Widget _officeComment(PurchaseState state) {
     return Container(
       width: 380,
       child: Column(

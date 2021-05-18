@@ -9,7 +9,7 @@ class HomeState {
   int selectedDate;
   int currentDate;
 
-  List<FMPlan> planListFromDB;
+  List<Plan> planListFromDB;
   List<CalendarPlan> planList;
 
   bool isThereNewNotification;
@@ -47,7 +47,7 @@ class HomeState {
     int yearState,
     int dayState,
     int currentIndex,
-    List<FMPlan> planListFromDB,
+    List<Plan> planListFromDB,
     List<CalendarPlan> planList,
     bool isThereNewNotification,
     bool isThereNewPlan,
@@ -71,7 +71,7 @@ class HomeState {
     int yearState,
     int dayState,
     int currentIndex,
-    List<FMPlan> planListFromDB,
+    List<Plan> planListFromDB,
     List<CalendarPlan> planList,
     bool isThereNewNotification,
     bool isThereNewPlan,

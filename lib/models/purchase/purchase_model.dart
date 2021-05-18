@@ -2,7 +2,7 @@ import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
-class FMPurchase {
+class Purchase {
   final String purchaseID;
   final String farmID;
   final String requester;
@@ -22,7 +22,7 @@ class FMPurchase {
   final User reqUser;
   final User recUser;
 
-  FMPurchase({
+  Purchase({
     @required this.purchaseID,
     @required this.farmID,
     @required this.requester,
@@ -43,8 +43,8 @@ class FMPurchase {
     @required this.recUser,
   });
 
-  factory FMPurchase.fromSnapshot(DocumentSnapshot ds) {
-    return FMPurchase(
+  factory Purchase.fromSnapshot(DocumentSnapshot ds) {
+    return Purchase(
       purchaseID: ds.data()['purchaseID'],
       farmID: ds.data()['farmID'],
       requester: ds.data()['requester'],

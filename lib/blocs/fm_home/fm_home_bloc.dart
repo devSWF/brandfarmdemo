@@ -3,10 +3,10 @@ import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
-import 'package:BrandFarm/models/fm_purchase/fm_purchase_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/purchase/purchase_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/fm_home/fm_home_repository.dart';
@@ -74,8 +74,8 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     // List<FMHomeRecentUpdates> subCommentList = [];
 
     List<NotificationNotice> notice = [];
-    List<FMPlan> plan = [];
-    List<FMPurchase> purchase = [];
+    List<Plan> plan = [];
+    List<Purchase> purchase = [];
     List<Journal> journal = [];
     List<SubJournalIssue> issue = [];
     // List<Comment> comment = [];
