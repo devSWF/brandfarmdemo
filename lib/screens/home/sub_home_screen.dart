@@ -1,13 +1,17 @@
 //blocs
+
 import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_event.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
+import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
 import 'package:BrandFarm/screens/home/notification_dialog.dart';
 
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
 import 'package:BrandFarm/screens/setting/setting_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 
 //widgets
 import 'package:BrandFarm/widgets/sub_home/sub_home_appbar.dart';
@@ -17,6 +21,7 @@ import 'package:BrandFarm/widgets/sub_home/sub_home_greeting_bar.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_to_do_widget.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_weather_widget.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_announce_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 //flutters
@@ -56,7 +61,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
     getMessage();
   }
 
-  void getMessage(){
+  void getMessage() {
     // app을 terminated 상태에서 열었을때 실행
     FirebaseMessaging.instance
         .getInitialMessage()
@@ -64,6 +69,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
       if (message != null) {
         print('Handling a background message ${message.messageId}');
       }
+      refresh();
     });
 
     // app이 <foreground>열려있일때 실행
@@ -81,10 +87,21 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published!');
       print('Handling onMessageOpenedApp.listener message ${message.messageId}');
+      refresh();
     });
 
     // // app이 background or terminated 상태에서 실행
-    // FirebaseMessaging.onBackgroundMessage((message) => null);
+    // FirebaseMessaging.onBackgroundMessage((message) {
+    //   print('A new onMessageOpenedApp event was published!');
+    //   refresh();
+    // });
+  }
+
+  void refresh() {
+    _notificationBloc.add(LoadNotification());
+    _homeBloc.add(GetHomePlanList());
+    _homeBloc.add(SortPlanList());
+    _notificationBloc.add(GetNotificationList());
   }
 
   Future<void> _showNotificationDialog() async {
@@ -189,6 +206,27 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                     //   weatherBloc: _weatherBloc,
                     //   state: state,
                     // ),
+                    ElevatedButton(
+                      onPressed: () {
+                        String docID = FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+                        SendToFarm _sendToFarm = SendToFarm(
+                            docID: docID,
+                            uid: UserUtil.getUser().uid,
+                            name: UserUtil.getUser().name,
+                            farmid: '9EjAVRYFHXwwAQlkOEbH',
+                            title: 'from field',
+                            content: 'testing web notification',
+                            postedDate: Timestamp.now(),
+                            jid: '',
+                            issid: '',
+                            cmtid: '',
+                            scmtid: ''
+                        );
+                        SubHomeRepository().sendNotification(_sendToFarm);
+                      },
+                      child: Text('send notification', style: TextStyle(color: Colors.black),),
+                    ),
+                    SizedBox(height: defaultPadding),
                   ],
                 ),
               ),

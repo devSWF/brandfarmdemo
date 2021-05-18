@@ -10,7 +10,9 @@ import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/fm_home/fm_home_repository.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
   FMHomeBloc() : super(FMHomeState.empty());
@@ -29,6 +31,8 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       yield* _mapGetFieldListForFMHomeToState();
     } else if (event is GetRecentUpdates) {
       yield* _mapGetRecentUpdatesToState();
+    } else if (event is SetFcmToken) {
+      yield* _mapSetFcmTokenToState();
     }
   }
 
@@ -236,5 +240,12 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       journal: journal,
       issue: issue,
     );
+  }
+
+  Stream<FMHomeState> _mapSetFcmTokenToState() async* {
+    FirebaseMessaging _fcm = FirebaseMessaging.instance;
+    String fcmToken = await _fcm.getToken();
+    await FMHomeRepository().updateFcmToken(await UserUtil.getUser().uid, fcmToken);
+    yield state.update();
   }
 }

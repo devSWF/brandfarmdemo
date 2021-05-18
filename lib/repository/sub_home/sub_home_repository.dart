@@ -1,6 +1,7 @@
 
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SubHomeRepository {
@@ -9,6 +10,11 @@ class SubHomeRepository {
   Future<void> updateFcmToken(String uid, String deviceToken) async {
     DocumentReference reference = _firestore.collection('User').doc(uid);
     await reference.update({"fcmToken": deviceToken});
+  }
+
+  Future<void> sendNotification(SendToFarm obj) async {
+    DocumentReference reference = _firestore.collection('SendToFarm').doc(obj.docID);
+    await reference.set(obj.toDocument());
   }
 
   // Future<User> getDetailUserInfo(uid) async {
