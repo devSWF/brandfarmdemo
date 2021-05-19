@@ -236,12 +236,15 @@ class _CommentsState extends State<Comments> {
     }
   }
 
-  Future<void> _showNotificationDialog() async {
+  Future<void> _showNotificationDialog(FMHomeState state, int index) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return Notice();
+          return BlocProvider.value(
+              value: _fmHomeBloc,
+            child: Notice(index: index, state: state),
+          );
         }
     );
   }
@@ -323,7 +326,7 @@ class _CommentsState extends State<Comments> {
                     ),
                     InkResponse(
                       onTap: () async {
-                        await _showNotificationDialog();
+                        await _showNotificationDialog(state, index);
                       },
                       child: Text(
                         '${date}의 기록',
@@ -831,6 +834,12 @@ class _CommentsState extends State<Comments> {
                     ),
                     InkResponse(
                       onTap: () async {
+                        // Navigator.push(context, MaterialPageRoute(
+                        //   builder: (context) => BlocProvider.value(
+                        //       value: _fmHomeBloc,
+                        //     child: Issue(state: state, index: index,),
+                        //   ),
+                        // ));
                         await _showIssueDialog(state, index);
                       },
                       child: Text(

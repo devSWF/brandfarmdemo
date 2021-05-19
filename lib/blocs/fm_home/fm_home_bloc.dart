@@ -280,7 +280,54 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
   Stream<FMHomeState> _mapCheckAsReadToState(int index) async* {
     FMHomeRecentUpdates obj = state.recentUpdateList[index];
     if (obj.notice != null) {
-      // TODO
+      NotificationNotice notice = NotificationNotice(
+          no: obj.notice.no,
+          uid: obj.notice.uid,
+          name: obj.notice.name,
+          imgUrl: obj.notice.imgUrl,
+          fid: obj.notice.fid,
+          farmid: obj.notice.farmid,
+          title: obj.notice.title,
+          content: obj.notice.content,
+          postedDate: obj.notice.postedDate,
+          scheduledDate: obj.notice.scheduledDate,
+          isReadByFM: !obj.notice.isReadByFM,
+          isReadByOffice: obj.notice.isReadByOffice,
+          isReadBySFM: obj.notice.isReadBySFM,
+          notid: obj.notice.notid,
+          type: obj.notice.type,
+          department: obj.notice.department,
+          jid: obj.notice.jid,
+          issid: obj.notice.issid,
+          planid: obj.notice.planid
+      );
+
+      FMHomeRepository().updateNotice(notice);
+
+      List<NotificationNotice> list = state.notice;
+      int tmp = list.indexWhere((element) => notice.notid == element.notid) ?? -1;
+      list.removeAt(tmp);
+      list.insert(tmp, notice);
+
+      FMHomeRecentUpdates newObj = FMHomeRecentUpdates(
+          date: obj.date,
+          user: obj.user,
+          plan: obj.plan,
+          notice: notice,
+          purchase: obj.purchase,
+          journal: obj.journal,
+          issue: obj.issue,
+          comment: obj.comment,
+          subComment: obj.subComment
+      );
+
+      List<FMHomeRecentUpdates> rplist = state.recentUpdateList;
+      rplist.removeAt(index);
+      rplist.insert(index, newObj);
+      yield state.update(
+        recentUpdateList: rplist,
+        notice: list,
+      );
     } else if (obj.plan != null) {
       // TODO
     } else if (obj.purchase != null) {
@@ -288,7 +335,6 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     } else if (obj.journal != null) {
       // TODO
     } else if (obj.issue != null) {
-      // TODO
       SubJournalIssue issue = SubJournalIssue(
           date: obj.issue.date,
           fid: obj.issue.fid,
@@ -337,8 +383,6 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     } else {
       // TODO
     }
-
-    yield state.update();
   }
 
   Stream<FMHomeState> _mapSetFieldToState(int index) async* {

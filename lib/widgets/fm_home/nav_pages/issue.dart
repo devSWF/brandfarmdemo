@@ -101,106 +101,108 @@ class _IssueState extends State<Issue> {
                     _textEditingController.clear();
                     _subTextEditingController.clear();
                   },
-                  child: Container(
-                    width: 814,
-                    padding: EdgeInsets.only(top: 39),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _title(state),
-                              SizedBox(
-                                height: 31,
-                              ),
-                              Divider(
-                                height: 26,
-                                thickness: 1,
-                                color: Color(0xFFDFDFDF),
-                              ),
-                              _subtitle(state.field.name),
-                              Divider(
-                                height: 26,
-                                thickness: 1,
-                                color: Color(0xFFDFDFDF),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              _infoCard(state),
-                              SizedBox(
-                                height: 7,
-                              ),
-                              Divider(
-                                height: 48,
-                                thickness: 1,
-                                color: Color(0xFFDFDFDF),
-                              ),
-                            ],
-                          ),
-                        ),
-                        _imageList(state),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Divider(
-                                height: 60,
-                                thickness: 1,
-                                color: Color(0xFFDFDFDF),
-                              ),
-                              _contents(state, state.user, state.field.name),
-                              SizedBox(
-                                height: 18,
-                              ),
-                              _showComments(state: state),
-                              Divider(
-                                height: 44,
-                                thickness: 1,
-                                color: Color(0xFFDFDFDF),
-                              ),
-                              _writeComment(state),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                  child: Center(
+                    child: Container(
+                      width: 814,
+                      padding: EdgeInsets.only(top: 39),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('이전'),
+                                _title(state),
+                                SizedBox(
+                                  height: 31,
+                                ),
+                                Divider(
+                                  height: 26,
+                                  thickness: 1,
+                                  color: Color(0xFFDFDFDF),
+                                ),
+                                _subtitle(state.field.name),
+                                Divider(
+                                  height: 26,
+                                  thickness: 1,
+                                  color: Color(0xFFDFDFDF),
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                _infoCard(state),
+                                SizedBox(
+                                  height: 7,
+                                ),
+                                Divider(
+                                  height: 48,
+                                  thickness: 1,
+                                  color: Color(0xFFDFDFDF),
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 30,
+                          ),
+                          _imageList(state),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Divider(
+                                  height: 60,
+                                  thickness: 1,
+                                  color: Color(0xFFDFDFDF),
+                                ),
+                                _contents(state, state.user, state.field.name),
+                                SizedBox(
+                                  height: 18,
+                                ),
+                                _showComments(state: state),
+                                Divider(
+                                  height: 44,
+                                  thickness: 1,
+                                  color: Color(0xFFDFDFDF),
+                                ),
+                                _writeComment(state),
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          Column(
+                            children: [
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('이전'),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               )
-            : Text('Loading');
+            : Scaffold(body: LinearProgressIndicator());
       },
     );
   }
