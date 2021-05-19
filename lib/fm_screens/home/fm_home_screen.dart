@@ -50,7 +50,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
   @override
   void initState() {
     super.initState();
-    getSettings().then((settings) => print('User granted permission: ${settings.authorizationStatus}'));
+    getMessage();
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
     _fmHomeBloc.add(LoadFMHome());
     _fmHomeBloc.add(SetFcmToken());
@@ -70,24 +70,11 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     showDrawer = true;
   }
 
-  Future<NotificationSettings> getSettings() async {
-    NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-    // print('User granted permission: ${settings.authorizationStatus}');
-    return settings;
-  }
-
   void getMessage() {
     // app이 <foreground>열려있일때 실행
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
+      print('Message: ${message}');
       print('Message data: ${message.data}');
 
       if (message.notification != null) {

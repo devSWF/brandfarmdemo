@@ -4,12 +4,15 @@ import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_event.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
+import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
 import 'package:BrandFarm/screens/home/notification_dialog.dart';
 
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
 import 'package:BrandFarm/screens/setting/setting_screen.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 
@@ -207,8 +210,10 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                     //   state: state,
                     // ),
                     ElevatedButton(
-                      onPressed: () {
-                        String docID = FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+                      onPressed: () async {
+                        Farm farm = await SubHomeRepository().getFarm(await FieldUtil.getField().fieldCategory);
+                        User user = await SubHomeRepository().getUser(farm.managerID);
+                        String docID = await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
                         SendToFarm _sendToFarm = SendToFarm(
                             docID: docID,
                             uid: UserUtil.getUser().uid,
@@ -220,7 +225,8 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                             jid: '',
                             issid: '',
                             cmtid: '',
-                            scmtid: ''
+                            scmtid: '',
+                            fcmToken: user.fcmToken,
                         );
                         SubHomeRepository().sendNotification(_sendToFarm);
                       },

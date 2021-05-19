@@ -14,6 +14,7 @@ class SendToFarm {
   final String issid;
   final String cmtid;
   final String scmtid;
+  final String fcmToken;
 
   SendToFarm({
     @required this.docID,
@@ -27,6 +28,7 @@ class SendToFarm {
     @required this.issid,
     @required this.cmtid,
     @required this.scmtid,
+    @required this.fcmToken,
   });
 
   factory SendToFarm.fromSnapshot(DocumentSnapshot ds) {
@@ -42,6 +44,7 @@ class SendToFarm {
       issid: ds['issid'],
       cmtid: ds['cmtid'],
       scmtid: ds['scmtid'],
+      fcmToken: ds['fcmToken'],
     );
   }
 
@@ -58,6 +61,7 @@ class SendToFarm {
       'issid': issid,
       'cmtid': cmtid,
       'scmtid': scmtid,
+      'fcmToken': fcmToken,
     };
   }
 }

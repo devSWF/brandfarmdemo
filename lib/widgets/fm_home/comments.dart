@@ -2,6 +2,8 @@ import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
 import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
+import 'package:BrandFarm/widgets/fm_home/nav_pages/issue.dart';
+import 'package:BrandFarm/widgets/fm_home/nav_pages/notice.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -234,6 +236,16 @@ class _CommentsState extends State<Comments> {
     }
   }
 
+  Future<void> _showNotificationDialog() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Notice();
+        }
+    );
+  }
+
   Widget _notice(FMHomeState state, int index) {
     FMHomeRecentUpdates obj = state.recentUpdateList[index];
     // setUserInfo(obj.user.uid, 1);
@@ -310,9 +322,8 @@ class _CommentsState extends State<Comments> {
                       width: 6,
                     ),
                     InkResponse(
-                      onTap: (){
-                        _fmHomeBloc.add(SetPageIndex(index: 1));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      onTap: () async {
+                        await _showNotificationDialog();
                       },
                       child: Text(
                         '${date}의 기록',
@@ -730,6 +741,19 @@ class _CommentsState extends State<Comments> {
         : CircularProgressIndicator();
   }
 
+  Future<void> _showIssueDialog(FMHomeState state, int index) async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return BlocProvider.value(
+            value: _fmHomeBloc,
+            child: Issue(state: state, index: index),
+          );
+        }
+    );
+  }
+
   Widget _issue(FMHomeState state, int index) {
     FMHomeRecentUpdates obj = state.recentUpdateList[index];
     // setUserInfo(obj.user.uid, 5);
@@ -806,9 +830,8 @@ class _CommentsState extends State<Comments> {
                       width: 6,
                     ),
                     InkResponse(
-                      onTap: (){
-                        _fmHomeBloc.add(SetPageIndex(index: 5));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      onTap: () async {
+                        await _showIssueDialog(state, index);
                       },
                       child: Text(
                         '${date}의 기록',
