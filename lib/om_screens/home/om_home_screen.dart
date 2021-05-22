@@ -45,7 +45,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                 backgroundColor: Color(0xFFEEEEEE),
                 appBar: _appBar(context: context, constraints: constraints),
                 // body: _small(context: context, theme: theme, state: state),
-                body: _big(context: context, theme: theme, state: state),
+                body: _small(context: context, theme: theme, state: state),
               );
             }
           });
@@ -194,35 +194,35 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
     );
   }
 
-  // Widget _small({BuildContext context, ThemeData theme, OMHomeState state}) {
-  //   return Row(
-  //     children: [
-  //       _smallDrawer(context: context, theme: theme, state: state),
-  //       Expanded(
-  //         child: MultiBlocProvider(
-  //           providers: [
-  //             BlocProvider.value(
-  //               value: _fmPurchaseBloc,
-  //             ),
-  //             BlocProvider.value(
-  //               value: _fmPlanBloc,
-  //             ),
-  //             BlocProvider.value(
-  //               value: _omHomeBloc,
-  //             ),
-  //             BlocProvider.value(
-  //               value: _fmNotificationBloc,
-  //             ),
-  //           ],
-  //           child: GetPage(
-  //             index: state.pageIndex,
-  //             subIndex: state.subPageIndex,
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _small({BuildContext context, ThemeData theme, OMHomeState state}) {
+    return Row(
+      children: [
+        _smallDrawer(context: context, theme: theme, state: state),
+        Expanded(
+          child: MultiBlocProvider(
+            providers: [
+              // BlocProvider.value(
+              //   value: _fmPurchaseBloc,
+              // ),
+              // BlocProvider.value(
+              //   value: _fmPlanBloc,
+              // ),
+              BlocProvider.value(
+                value: _omHomeBloc,
+              ),
+              // BlocProvider.value(
+              //   value: _fmNotificationBloc,
+              // ),
+            ],
+            child: GetPage(
+              index: state.pageIndex,
+              subIndex: state.subPageIndex,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget _big({BuildContext context, ThemeData theme, OMHomeState state}) {
     return Row(
@@ -389,7 +389,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                         width: 10,
                       ),
                       Icon(
-                        Icons.calendar_today_outlined,
+                        Icons.mail_outline_outlined,
                         color: (state.pageIndex == 1)
                             ? Color(0xFF15B85B)
                             : Colors.black,
@@ -399,7 +399,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                         width: 16,
                       ),
                       Text(
-                        '영농계획',
+                        '승인요청',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                           fontWeight: FontWeight.w500,
                           fontSize: 13,
@@ -763,6 +763,272 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
       ),
     );
   }
+
+  Widget _smallDrawer({BuildContext context, ThemeData theme, OMHomeState state}) {
+    FMHomeUpdateState isThereNewNotice = FMHomeUpdateState(state: true, num: 1);
+    FMHomeUpdateState isThereNewPlan = FMHomeUpdateState(state: true, num: 1);
+    FMHomeUpdateState isThereNewPurchase = FMHomeUpdateState(state: true, num: 1);
+    FMHomeUpdateState isThereNewJournal = FMHomeUpdateState(state: true, num: 1);
+    FMHomeUpdateState isThereNewIssue = FMHomeUpdateState(state: true, num: 1);
+    return Theme(
+      data: Theme.of(context).copyWith(
+        canvasColor: Color(0xFFEEEEEE),
+      ),
+      child: Container(
+        width: 90,
+        child: Drawer(
+          elevation: 3,
+          child: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(10, 0, 20, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 30,),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: (){
+                      _omHomeBloc.add(SetPageIndex(index: 0));
+                    },
+                    icon: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: Colors.transparent,
+                          size: 6,
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(
+                          Icons.widgets_outlined,
+                          color:
+                          (state.pageIndex == 0) ? Color(0xFF15B85B) : Colors.black,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30,),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: (){
+                      _omHomeBloc.add(SetPageIndex(index: 1));
+                    },
+                    icon: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: (isThereNewNotice.state) ? Colors.red : Colors.transparent,
+                          size: 6,
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(
+                          Icons.view_agenda_outlined,
+                          color:
+                          (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30,),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: (){
+                      _omHomeBloc.add(SetPageIndex(index: 2));
+                    },
+                    icon: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: (isThereNewPlan.state) ? Colors.red : Colors.transparent,
+                          size: 6,
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          color:
+                          (state.pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30,),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: (){
+                      _omHomeBloc.add(SetPageIndex(index: 3));
+                    },
+                    icon: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: Colors.transparent,
+                          size: 6,
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(
+                          Icons.person_outline,
+                          color:
+                          (state.pageIndex == 3) ? Color(0xFF15B85B) : Colors.black,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 30,),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: (){
+                      _omHomeBloc.add(SetPageIndex(index: 4));
+                      _omHomeBloc.add(SetSubPageIndex(index: 1));
+                    },
+                    icon: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: (isThereNewPurchase.state) ? Colors.red : Colors.transparent,
+                          size: 6,
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(
+                          Icons.chat_bubble_outline,
+                          color:
+                          (state.pageIndex == 4) ? Color(0xFF15B85B) : Colors.black,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                  (state.pageIndex == 4)
+                      ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: (){
+                          _omHomeBloc.add(SetPageIndex(index: 4));
+                          _omHomeBloc.add(SetSubPageIndex(index: 1));
+                        },
+                        icon: Icon(
+                          Icons.circle,
+                          color:
+                          (state.pageIndex == 4 && state.subPageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                          size: 6,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: (){
+                          _omHomeBloc.add(SetPageIndex(index: 4));
+                          _omHomeBloc.add(SetSubPageIndex(index: 2));
+                        },
+                        icon: Icon(
+                          Icons.circle,
+                          color:
+                          (state.pageIndex == 4 && state.subPageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
+                          size: 6,
+                        ),
+                      ),
+                    ],
+                  ) : Container(),
+                  SizedBox(height: 30,),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: (){
+                      _omHomeBloc.add(SetPageIndex(index: 5));
+                      _omHomeBloc.add(SetSubPageIndex(index: 1));
+                    },
+                    icon: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: (isThereNewJournal.state || isThereNewIssue.state) ? Colors.red : Colors.transparent,
+                          size: 6,
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(
+                          Icons.article_outlined,
+                          color:
+                          (state.pageIndex == 5) ? Color(0xFF15B85B) : Colors.black,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                  (state.pageIndex == 5)
+                      ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: (){
+                          _omHomeBloc.add(SetPageIndex(index: 5));
+                          _omHomeBloc.add(SetSubPageIndex(index: 1));
+                        },
+                        icon: Icon(
+                          Icons.circle,
+                          color:
+                          (state.pageIndex == 5 && state.subPageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                          size: 6,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: (){
+                          _omHomeBloc.add(SetPageIndex(index: 5));
+                          _omHomeBloc.add(SetSubPageIndex(index: 2));
+                        },
+                        icon: Icon(
+                          Icons.circle,
+                          color:
+                          (state.pageIndex == 5 && state.subPageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
+                          size: 6,
+                        ),
+                      ),
+                    ],
+                  ) : Container(),
+                  Divider(
+                    height: 50,
+                    thickness: 1,
+                    color: Color(0x1A000000),
+                    // endIndent: defaultPadding,
+                  ),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () async {
+                      _omHomeBloc.add(SetPageIndex(index: 6));
+                      await _showLogoutDialog();
+                      // BlocProvider.of<AuthenticationBloc>(context).add(
+                      //   AuthenticationLoggedOut(),
+                      // );
+                      // Navigator.of(context).popUntil((route) => route.isFirst);
+                    },
+                    icon: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: Colors.transparent,
+                          size: 6,
+                        ),
+                        SizedBox(width: 10,),
+                        Icon(
+                          Icons.logout,
+                          color:
+                          (state.pageIndex == 6) ? Color(0xFF15B85B) : Colors.black,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
   Future<void> _showLogoutDialog() async {
     return showDialog(
         context: context,
