@@ -430,7 +430,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                       Icon(
                         Icons.calendar_today_outlined,
                         color:
-                        (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                        (state.pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
                         size: 18,
                       ),
                       SizedBox(width: 16,),
@@ -473,7 +473,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                       Icon(
                         Icons.person_outline,
                         color:
-                        (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                        (state.pageIndex == 3) ? Color(0xFF15B85B) : Colors.black,
                         size: 18,
                       ),
                       SizedBox(width: 16,),
@@ -509,7 +509,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                       Icon(
                         Icons.chat_bubble_outline,
                         color:
-                        (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                        (state.pageIndex == 4) ? Color(0xFF15B85B) : Colors.black,
                         size: 18,
                       ),
                       SizedBox(width: 16,),
@@ -609,7 +609,7 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                       Icon(
                         Icons.article_outlined,
                         color:
-                        (state.pageIndex == 1) ? Color(0xFF15B85B) : Colors.black,
+                        (state.pageIndex == 5) ? Color(0xFF15B85B) : Colors.black,
                         size: 18,
                       ),
                       SizedBox(width: 16,),

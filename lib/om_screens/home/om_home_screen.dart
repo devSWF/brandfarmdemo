@@ -1,8 +1,15 @@
 import 'package:BrandFarm/blocs/om_home/bloc.dart';
 import 'package:BrandFarm/empty_screen.dart';
-import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
+import 'package:BrandFarm/fm_screens/home/fm_logout_screen.dart';
+import 'package:BrandFarm/models/journal/journal_model.dart';
+import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/om_home/om_home_model.dart';
+import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/purchase/purchase_model.dart';
+import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
+import 'package:BrandFarm/widgets/om_dashboard/om_dashboard.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -257,11 +264,11 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
   
 
   Widget _drawer({BuildContext context, ThemeData theme, OMHomeState state}) {
-    FMHomeUpdateState isThereNewNotice = FMHomeUpdateState(state: true, num: 1);
-    FMHomeUpdateState isThereNewPlan = FMHomeUpdateState(state: true, num: 1);
-    FMHomeUpdateState isThereNewPurchase = FMHomeUpdateState(state: true,num: 1);
-    FMHomeUpdateState isThereNewJournal = FMHomeUpdateState(state: true,num: 1);
-    FMHomeUpdateState isThereNewIssue = FMHomeUpdateState(state: true,num: 1);
+    OMHomeUpdateState isThereNewNotice = _getUpdateState(state, 1);
+    OMHomeUpdateState isThereNewPlan = _getUpdateState(state, 2);
+    OMHomeUpdateState isThereNewPurchase = _getUpdateState(state, 3);
+    OMHomeUpdateState isThereNewJournal = _getUpdateState(state, 4);
+    OMHomeUpdateState isThereNewIssue = _getUpdateState(state, 5);
     return Theme(
       data: Theme.of(context).copyWith(
         canvasColor: Color(0xFFEEEEEE),
@@ -390,7 +397,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                       ),
                       Icon(
                         Icons.mail_outline_outlined,
-                        color: (state.pageIndex == 1)
+                        color: (state.pageIndex == 2)
                             ? Color(0xFF15B85B)
                             : Colors.black,
                         size: 18,
@@ -443,7 +450,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                       ),
                       Icon(
                         Icons.person_outline,
-                        color: (state.pageIndex == 1)
+                        color: (state.pageIndex == 3)
                             ? Color(0xFF15B85B)
                             : Colors.black,
                         size: 18,
@@ -486,7 +493,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                       ),
                       Icon(
                         Icons.chat_bubble_outline,
-                        color: (state.pageIndex == 1)
+                        color: (state.pageIndex == 4)
                             ? Color(0xFF15B85B)
                             : Colors.black,
                         size: 18,
@@ -607,7 +614,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                       ),
                       Icon(
                         Icons.article_outlined,
-                        color: (state.pageIndex == 1)
+                        color: (state.pageIndex == 5)
                             ? Color(0xFF15B85B)
                             : Colors.black,
                         size: 18,
@@ -765,11 +772,11 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
   }
 
   Widget _smallDrawer({BuildContext context, ThemeData theme, OMHomeState state}) {
-    FMHomeUpdateState isThereNewNotice = FMHomeUpdateState(state: true, num: 1);
-    FMHomeUpdateState isThereNewPlan = FMHomeUpdateState(state: true, num: 1);
-    FMHomeUpdateState isThereNewPurchase = FMHomeUpdateState(state: true, num: 1);
-    FMHomeUpdateState isThereNewJournal = FMHomeUpdateState(state: true, num: 1);
-    FMHomeUpdateState isThereNewIssue = FMHomeUpdateState(state: true, num: 1);
+    OMHomeUpdateState isThereNewNotice = _getUpdateState(state, 1);
+    OMHomeUpdateState isThereNewPlan = _getUpdateState(state, 2);
+    OMHomeUpdateState isThereNewPurchase = _getUpdateState(state, 3);
+    OMHomeUpdateState isThereNewJournal = _getUpdateState(state, 4);
+    OMHomeUpdateState isThereNewIssue = _getUpdateState(state, 5);
     return Theme(
       data: Theme.of(context).copyWith(
         canvasColor: Color(0xFFEEEEEE),
@@ -1034,9 +1041,67 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return EmptyScreen();
+          return FMLogoutScreen();
         }
     );
+  }
+
+  OMHomeUpdateState _getUpdateState(OMHomeState state, int from) {
+    switch(from) {
+      case 1 : {
+        List<NotificationNotice> notice = state.notice.where((element) {
+          return element.isReadByFM == false;
+        }).toList();
+        if(notice.length > 0) {
+          return OMHomeUpdateState(state: true, num: notice.length);
+        } else {
+          return OMHomeUpdateState(state: false, num: notice.length);
+        }
+      } break;
+      case 2 : {
+        List<Plan> plan = state.plan.where((element) {
+          return element.isReadByFM == false;
+        }).toList();
+        if(plan.length > 0) {
+          return OMHomeUpdateState(state: true, num: plan.length);
+        } else {
+          return OMHomeUpdateState(state: false, num: plan.length);
+        }
+      } break;
+      case 3 : {
+        List<Purchase> purchase = state.purchase.where((element) {
+          return element.isThereUpdates == true;
+        }).toList();
+        if(purchase.length > 0) {
+          return OMHomeUpdateState(state: true, num: purchase.length);
+        } else {
+          return OMHomeUpdateState(state: false, num: purchase.length);
+        }
+      } break;
+      case 4 : {
+        List<Journal> journal = state.journal.where((element) {
+          return element.isReadByFM == false;
+        }).toList();
+        if(journal.length > 0) {
+          return OMHomeUpdateState(state: true, num: journal.length);
+        } else {
+          return OMHomeUpdateState(state: false, num: journal.length);
+        }
+      } break;
+      case 5 : {
+        List<SubJournalIssue> issue = state.issue.where((element) {
+          return element.isReadByFM == false;
+        }).toList();
+        if(issue.length > 0) {
+          return OMHomeUpdateState(state: true, num: issue.length);
+        } else {
+          return OMHomeUpdateState(state: false, num: issue.length);
+        }
+      } break;
+      default : {
+        return OMHomeUpdateState(state: false, num: 0);
+      }
+    }
   }
 }
 
@@ -1141,23 +1206,17 @@ class _GetPageState extends State<GetPage> {
     //   }
     //   break;
       default:
-        return EmptyScreen();
-        // {
-        //   return MultiBlocProvider(
-        //     providers: [
-        //       BlocProvider.value(
-        //         value: _fmPlanBloc,
-        //       ),
-        //       BlocProvider.value(
-        //         value: _omHomeBloc,
-        //       ),
-        //       BlocProvider.value(
-        //         value: _fmNotificationBloc,
-        //       ),
-        //     ],
-        //     child: HomeBody(),
-        //   );
-        // }
+        // return EmptyScreen();
+        {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: _omHomeBloc,
+              ),
+            ],
+            child: OMDashboard(),
+          );
+        }
         break;
     }
   }

@@ -2,6 +2,7 @@ import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
 import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
 import 'package:BrandFarm/blocs/plan/plan_state.dart';
+import 'package:BrandFarm/fm_screens/notification/write_notice_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/fm_home/comments.dart';
 import 'package:BrandFarm/widgets/fm_home/create_announcement.dart';
@@ -53,9 +54,10 @@ class _HomeBodyState extends State<HomeBody> {
                     child: ListView(
                       shrinkWrap: true,
                       children: [
-                        BlocProvider.value(
-                          value: _fmNotificationBloc,
-                          child: CreateAnnouncement(),
+                        CreateAnnouncement(
+                          onPressed:() async {
+                            await _showMyDialog();
+                          },
                         ),
                         SizedBox(
                           height: defaultPadding,
@@ -89,5 +91,16 @@ class _HomeBodyState extends State<HomeBody> {
             : Container();
       },
     );
+  }
+  Future<void> _showMyDialog() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return BlocProvider.value(
+            value: _fmNotificationBloc,
+            child: WriteNoticeScreen(),
+          );
+        });
   }
 }
