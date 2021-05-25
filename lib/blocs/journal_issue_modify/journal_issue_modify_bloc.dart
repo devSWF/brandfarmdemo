@@ -4,13 +4,13 @@ import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
+import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/resize_image.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 
 class JournalIssueModifyBloc
     extends Bloc<JournalIssueModifyEvent, JournalIssueModifyState> {
@@ -24,9 +24,9 @@ class JournalIssueModifyBloc
           imageFile: event.imageFile, index: event.index, from: event.from);
     } else if (event is ModifyLoading) {
       yield* _mapModifyLoadingToState();
-    }  else if (event is ModifyLoaded) {
+    } else if (event is ModifyLoaded) {
       yield* _mapModifyLoadedToState();
-    }  else if (event is SelectImageM) {
+    } else if (event is SelectImageM) {
       yield* _mapSelectImageMToState(assetList: event.assetList);
     } else if (event is PressComplete) {
       yield* _mapPressCompleteToState();
@@ -46,6 +46,7 @@ class JournalIssueModifyBloc
         isReadByOffice: event.isReadByOffice,
         isReadByFM: event.isReadByFM,
         selectedDate: event.selectedDate,
+        updatedDate: event.updatedDate,
       );
     } else if (event is GetImageList) {
       yield* _mapGetImageListToState(
@@ -74,8 +75,6 @@ class JournalIssueModifyBloc
       imageList: _img,
     );
   }
-
-
 
   Stream<JournalIssueModifyState> _mapModifyLoadingToState() async* {
     yield state.update(isModifyLoading: true);
@@ -110,24 +109,25 @@ class JournalIssueModifyBloc
     );
   }
 
-  Stream<JournalIssueModifyState> _mapUpdateJournalToState(
-      {String fid,
-        String sfmid,
-        String uid,
-        String title,
-        int category,
-        int issueState,
-        String issid,
-        String contents,
-        int comments,
-        bool isReadByFM,
-        bool isReadByOffice,
-        Timestamp selectedDate,
-      }) async* {
+  Stream<JournalIssueModifyState> _mapUpdateJournalToState({
+    String fid,
+    String sfmid,
+    String uid,
+    String title,
+    int category,
+    int issueState,
+    String issid,
+    String contents,
+    int comments,
+    bool isReadByFM,
+    bool isReadByOffice,
+    Timestamp selectedDate,
+    Timestamp updatedDate,
+  }) async* {
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    if(state.deletedFromExistingImageList.isNotEmpty){
+    if (state.deletedFromExistingImageList.isNotEmpty) {
       await Future.forEach(state.deletedFromExistingImageList, (pic) async {
         await ImageRepository().deleteFromStorage(pic: pic);
         await ImageRepository().deleteFromDatabase(pic: pic);
@@ -148,10 +148,10 @@ class JournalIssueModifyBloc
       comments: comments ?? 0,
       isReadByFM: isReadByFM ?? false,
       isReadByOffice: isReadByOffice ?? false,
+      updatedDate: updatedDate,
     );
 
-    await SubJournalRepository()
-        .updateIssue(subJournalIssue: subJournalIssue);
+    await SubJournalRepository().updateIssue(subJournalIssue: subJournalIssue);
 
     List<File> imageList = state.imageList;
     String pid = '';
@@ -180,7 +180,8 @@ class JournalIssueModifyBloc
     );
   }
 
-  Stream<JournalIssueModifyState> _mapGetImageListToState({String issid}) async* {
+  Stream<JournalIssueModifyState> _mapGetImageListToState(
+      {String issid}) async* {
     List<ImagePicture> img = [];
 
     QuerySnapshot pic = await FirebaseFirestore.instance
@@ -197,28 +198,30 @@ class JournalIssueModifyBloc
     );
   }
 
-  Stream<JournalIssueModifyState> _mapDeleteExistingImageToState({ImagePicture obj}) async* {
+  Stream<JournalIssueModifyState> _mapDeleteExistingImageToState(
+      {ImagePicture obj}) async* {
     List<ImagePicture> img = [];
     List<ImagePicture> existingImageList = state.existingImageList;
     img = state.deletedFromExistingImageList;
 
-
     // delete from bloc state list
-    int index = state.existingImageList.indexWhere((element) => element.pid == obj.pid);
-    if(img.isNotEmpty) {
+    int index =
+        state.existingImageList.indexWhere((element) => element.pid == obj.pid);
+    if (img.isNotEmpty) {
       img.add(state.existingImageList[index]);
     } else {
       img.add(state.existingImageList[index]);
       existingImageList.removeAt(index);
     }
-    
+
     yield state.update(
       deletedFromExistingImageList: img,
       existingImageList: existingImageList,
     );
   }
 
-  Stream<JournalIssueModifyState> _mapDateSelectedToState(Timestamp selectedDate) async*{
+  Stream<JournalIssueModifyState> _mapDateSelectedToState(
+      Timestamp selectedDate) async* {
     yield state.update(selectedDate: selectedDate);
   }
 }

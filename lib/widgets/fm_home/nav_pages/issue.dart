@@ -171,7 +171,7 @@ class _IssueState extends State<Issue> {
                                   thickness: 1,
                                   color: Color(0xFFDFDFDF),
                                 ),
-                                _writeComment(state),
+                                // _writeComment(state),
                               ],
                             ),
                           ),
@@ -581,93 +581,93 @@ class _IssueState extends State<Issue> {
                   SizedBox(
                     height: 3,
                   ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 11,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (state.clist[index].isWriteSubCommentClicked) {
-                            _subFocusNode.unfocus();
-                            _subTextEditingController.clear();
-                          }
-                          setState(() {
-                            _fmHomeBloc
-                                .add(ChangeWriteReplyState(index: index));
-                          });
-                        },
-                        child: (!state.clist[index].isWriteSubCommentClicked)
-                            ? Text(
-                                '답글 달기',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                              )
-                            : Text(
-                                '취소',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                              ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     SizedBox(
+                  //       width: 11,
+                  //     ),
+                  //     InkWell(
+                  //       onTap: () {
+                  //         if (state.clist[index].isWriteSubCommentClicked) {
+                  //           _subFocusNode.unfocus();
+                  //           _subTextEditingController.clear();
+                  //         }
+                  //         setState(() {
+                  //           _fmHomeBloc
+                  //               .add(ChangeWriteReplyState(index: index));
+                  //         });
+                  //       },
+                  //       child: (!state.clist[index].isWriteSubCommentClicked)
+                  //           ? Text(
+                  //               '답글 달기',
+                  //               style: Theme.of(context)
+                  //                   .textTheme
+                  //                   .bodyText2
+                  //                   .copyWith(
+                  //                     fontSize: 12,
+                  //                     color: Colors.grey,
+                  //                   ),
+                  //             )
+                  //           : Text(
+                  //               '취소',
+                  //               style: Theme.of(context)
+                  //                   .textTheme
+                  //                   .bodyText2
+                  //                   .copyWith(
+                  //                     fontSize: 12,
+                  //                     color: Colors.grey,
+                  //                   ),
+                  //             ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ],
           ),
-          (state.clist[index].isWriteSubCommentClicked)
-              ? SizedBox(
-                  height: 10,
-                )
-              : Container(),
-          (state.clist[index].isWriteSubCommentClicked)
-              ? Row(
-                  children: [
-                    SizedBox(
-                      width: 56,
-                    ),
-                    _writeReply(index: index, state: state),
-                  ],
-                )
-              : Container(),
+          // (state.clist[index].isWriteSubCommentClicked)
+          //     ? SizedBox(
+          //         height: 10,
+          //       )
+          //     : Container(),
+          // (state.clist[index].isWriteSubCommentClicked)
+          //     ? Row(
+          //         children: [
+          //           SizedBox(
+          //             width: 56,
+          //           ),
+          //           _writeReply(index: index, state: state),
+          //         ],
+          //       )
+          //     : Container(),
           (subComments.isNotEmpty)
               ? SizedBox(
                   height: 10,
                 )
               : Container(),
-          (subComments.isNotEmpty)
-              ? Row(
-                  children: [
-                    SizedBox(
-                      width: 56,
-                    ),
-                    Container(
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            _fmHomeBloc.add(ChangeExpandState(index: index));
-                          });
-                        },
-                        child: (!state.clist[index].isExpanded)
-                            ? Text('--- 답글 ${subComments.length}개 펼치기',
-                                style: Theme.of(context).textTheme.bodyText2)
-                            : Text('--- 답글 ${subComments.length}개 숨기기',
-                                style: Theme.of(context).textTheme.bodyText2),
-                      ),
-                    ),
-                  ],
-                )
-              : Container(),
+          // (subComments.isNotEmpty)
+          //     ? Row(
+          //         children: [
+          //           SizedBox(
+          //             width: 56,
+          //           ),
+          //           Container(
+          //             child: InkWell(
+          //               onTap: () {
+          //                 setState(() {
+          //                   _fmHomeBloc.add(ChangeExpandState(index: index));
+          //                 });
+          //               },
+          //               child: (!state.clist[index].isExpanded)
+          //                   ? Text('--- 답글 ${subComments.length}개 펼치기',
+          //                       style: Theme.of(context).textTheme.bodyText2)
+          //                   : Text('--- 답글 ${subComments.length}개 숨기기',
+          //                       style: Theme.of(context).textTheme.bodyText2),
+          //             ),
+          //           ),
+          //         ],
+          //       )
+          //     : Container(),
           (state.clist[index].isExpanded)
               ? Column(
                   children: [

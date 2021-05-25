@@ -23,7 +23,7 @@ class _NoticeState extends State<Notice> {
   void initState() {
     super.initState();
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
-    if (!widget.state.recentUpdateList[widget.index].issue.isReadByFM) {
+    if (!widget.state.recentUpdateList[widget.index].notice.isReadByFM) {
       _fmHomeBloc.add(CheckAsRead(index: widget.index));
     }
   }
@@ -49,33 +49,43 @@ class _NoticeState extends State<Notice> {
                   child: Container(
                       height: 56,
                       width: 56,
-                      child: (widget.state.recentUpdateList[widget.index].notice.type != '일반')
+                      child: (widget.state.recentUpdateList[widget.index].notice
+                                  .type !=
+                              '일반')
                           ? Icon(
-                        Icons.error_outline_rounded,
-                        size: 56,
-                        color: Color(0xFFFDD015),
-                      )
+                              Icons.error_outline_rounded,
+                              size: 56,
+                              color: Color(0xFFFDD015),
+                            )
                           : Image.asset('assets/megaphone.png'))),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Row(
                 children: [
                   SizedBox(
                       width: 30,
                       height: 19,
                       child: FittedBox(
-                          child:
-                          DepartmentBadge(department: widget.state.recentUpdateList[widget.index].notice.department))),
+                          child: DepartmentBadge(
+                              department: widget
+                                  .state
+                                  .recentUpdateList[widget.index]
+                                  .notice
+                                  .department))),
                   SizedBox(
                     width: 5,
                   ),
                   Center(
                       child: Text(
-                        '${widget.state.recentUpdateList[widget.index].notice.title}',
-                        style: Theme.of(context).textTheme.headline5,
-                      )),
+                    '${widget.state.recentUpdateList[widget.index].notice.title}',
+                    style: Theme.of(context).textTheme.headline5,
+                  )),
                 ],
               ),
-              SizedBox(height: 25,),
+              SizedBox(
+                height: 25,
+              ),
               Text(
                 '${widget.state.recentUpdateList[widget.index].notice.content}',
                 style: Theme.of(context)
@@ -83,7 +93,9 @@ class _NoticeState extends State<Notice> {
                     .bodyText1
                     .copyWith(fontWeight: FontWeight.w300),
               ),
-              SizedBox(height: 19,),
+              SizedBox(
+                height: 19,
+              ),
               Text(
                 '${getTime(date: widget.state.recentUpdateList[widget.index].notice.scheduledDate)} - ${from(widget.state.recentUpdateList[widget.index].notice.department)}',
                 style: Theme.of(context).textTheme.overline.copyWith(
@@ -91,7 +103,9 @@ class _NoticeState extends State<Notice> {
                     fontSize: 13,
                     color: Color(0xFF737373)),
               ),
-              SizedBox(height: 32,),
+              SizedBox(
+                height: 32,
+              ),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -114,11 +128,14 @@ class _NoticeState extends State<Notice> {
                             ),
                             child: Text(
                               '확인',
-                              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                             ),
                           ),
                         ),
@@ -137,7 +154,7 @@ class _NoticeState extends State<Notice> {
   String getTime({Timestamp date}) {
     DateTime now = DateTime.now();
     DateTime _date =
-    DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
+        DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
     int diffDays = now.difference(_date).inDays;
     if (diffDays < 1) {
       int diffHours = now.difference(_date).inHours;

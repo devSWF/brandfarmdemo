@@ -111,9 +111,12 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
 
     notice = await FMHomeRepository().getRecentNoticeList(state.farm.farmID);
     plan = await FMHomeRepository().getRecentPlanList(state.farm.farmID);
-    purchase = await FMHomeRepository().getRecentPurchaseList(state.farm.farmID);
-    journal = await FMHomeRepository().getRecentJournalList(state.farm.fieldCategory);
-    issue = await FMHomeRepository().getRecentIssueList(state.farm.fieldCategory);
+    purchase =
+        await FMHomeRepository().getRecentPurchaseList(state.farm.farmID);
+    journal =
+        await FMHomeRepository().getRecentJournalList(state.farm.fieldCategory);
+    issue =
+        await FMHomeRepository().getRecentIssueList(state.farm.fieldCategory);
     // comment = await FMHomeRepository().getRecentCommentList(state.farm.fieldCategory);
     // subComment = await FMHomeRepository().getRecentSubCommentList(state.farm.fieldCategory);
 
@@ -123,7 +126,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     // print('journal ${journal.length}');
     // print('issue ${issue.length}');
 
-    for(int i=0; i< notice.length; i++) {
+    for (int i = 0; i < notice.length; i++) {
       User user = await FMHomeRepository().getDetailUserInfo(notice[i].uid);
       FMHomeRecentUpdates obj = FMHomeRecentUpdates(
           user: user,
@@ -142,7 +145,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       }
     }
 
-    for(int i=0; i< plan.length; i++) {
+    for (int i = 0; i < plan.length; i++) {
       User user = await FMHomeRepository().getDetailUserInfo(plan[i].uid);
       FMHomeRecentUpdates obj = FMHomeRecentUpdates(
           user: user,
@@ -161,8 +164,9 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       }
     }
 
-    for(int i=0; i< purchase.length; i++) {
-      User user = await FMHomeRepository().getDetailUserInfo(purchase[i].reqUser.uid);
+    for (int i = 0; i < purchase.length; i++) {
+      User user =
+          await FMHomeRepository().getDetailUserInfo(purchase[i].reqUser.uid);
       FMHomeRecentUpdates obj = FMHomeRecentUpdates(
           user: user,
           date: purchase[i].requestDate,
@@ -180,7 +184,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       }
     }
 
-    for(int i=0; i< journal.length; i++) {
+    for (int i = 0; i < journal.length; i++) {
       User user = await FMHomeRepository().getDetailUserInfo(journal[i].uid);
       FMHomeRecentUpdates obj = FMHomeRecentUpdates(
           user: user,
@@ -199,7 +203,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       }
     }
 
-    for(int i=0; i< issue.length; i++) {
+    for (int i = 0; i < issue.length; i++) {
       User user = await FMHomeRepository().getDetailUserInfo(issue[i].uid);
       FMHomeRecentUpdates obj = FMHomeRecentUpdates(
           user: user,
@@ -273,7 +277,8 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
   Stream<FMHomeState> _mapSetFcmTokenToState() async* {
     FirebaseMessaging _fcm = FirebaseMessaging.instance;
     String fcmToken = await _fcm.getToken();
-    await FMHomeRepository().updateFcmToken(await UserUtil.getUser().uid, fcmToken);
+    await FMHomeRepository()
+        .updateFcmToken(await UserUtil.getUser().uid, fcmToken);
     yield state.update();
   }
 
@@ -299,13 +304,13 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
           department: obj.notice.department,
           jid: obj.notice.jid,
           issid: obj.notice.issid,
-          planid: obj.notice.planid
-      );
+          planid: obj.notice.planid);
 
       FMHomeRepository().updateNotice(notice);
 
       List<NotificationNotice> list = state.notice;
-      int tmp = list.indexWhere((element) => notice.notid == element.notid) ?? -1;
+      int tmp =
+          list.indexWhere((element) => notice.notid == element.notid) ?? -1;
       list.removeAt(tmp);
       list.insert(tmp, notice);
 
@@ -318,8 +323,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
           journal: obj.journal,
           issue: obj.issue,
           comment: obj.comment,
-          subComment: obj.subComment
-      );
+          subComment: obj.subComment);
 
       List<FMHomeRecentUpdates> rplist = state.recentUpdateList;
       rplist.removeAt(index);
@@ -329,32 +333,177 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
         notice: list,
       );
     } else if (obj.plan != null) {
-      // TODO
+      Plan plan = Plan(
+          planID: obj.plan.planID,
+          uid: obj.plan.uid,
+          name: obj.plan.name,
+          imgUrl: obj.plan.imgUrl,
+          startDate: obj.plan.startDate,
+          endDate: obj.plan.endDate,
+          postedDate: obj.plan.postedDate,
+          title: obj.plan.title,
+          content: obj.plan.content,
+          isReadByFM: !obj.plan.isReadByFM,
+          isReadByOffice: obj.plan.isReadByOffice,
+          isReadBySFM: obj.plan.isReadBySFM,
+          from: obj.plan.from,
+          fid: obj.plan.fid,
+          farmID: obj.plan.farmID,
+          isUpdated: obj.plan.isUpdated);
+
+      FMHomeRepository().updatePlan(plan);
+
+      List<Plan> list = state.plan;
+      int tmp =
+          list.indexWhere((element) => plan.planID == element.planID) ?? -1;
+      list.removeAt(tmp);
+      list.insert(tmp, plan);
+
+      FMHomeRecentUpdates newObj = FMHomeRecentUpdates(
+          date: obj.date,
+          user: obj.user,
+          plan: plan,
+          notice: obj.notice,
+          purchase: obj.purchase,
+          journal: obj.journal,
+          issue: obj.issue,
+          comment: obj.comment,
+          subComment: obj.subComment);
+
+      List<FMHomeRecentUpdates> rplist = state.recentUpdateList;
+      rplist.removeAt(index);
+      rplist.insert(index, newObj);
+
+      yield state.update(
+        recentUpdateList: rplist,
+        plan: list,
+      );
     } else if (obj.purchase != null) {
-      // TODO
+      Purchase purchase = Purchase(
+          purchaseID: obj.purchase.purchaseID,
+          farmID: obj.purchase.farmID,
+          requester: obj.purchase.requester,
+          receiver: obj.purchase.receiver,
+          requestDate: obj.purchase.requestDate,
+          receiveDate: obj.purchase.receiveDate,
+          productName: obj.purchase.productName,
+          amount: obj.purchase.amount,
+          price: obj.purchase.price,
+          marketUrl: obj.purchase.marketUrl,
+          fid: obj.purchase.fid,
+          memo: obj.purchase.memo,
+          officeReply: obj.purchase.officeReply,
+          waitingState: obj.purchase.waitingState,
+          isFieldSelectionButtonClicked:
+              obj.purchase.isFieldSelectionButtonClicked,
+          isThereUpdates: !obj.purchase.isThereUpdates,
+          reqUser: obj.purchase.reqUser,
+          recUser: obj.purchase.recUser);
+
+      FMHomeRepository().updatePurchase(purchase);
+
+      List<Purchase> list = state.purchase;
+      int tmp = list.indexWhere(
+              (element) => purchase.purchaseID == element.purchaseID) ??
+          -1;
+      list.removeAt(tmp);
+      list.insert(tmp, purchase);
+
+      FMHomeRecentUpdates newObj = FMHomeRecentUpdates(
+          date: obj.date,
+          user: obj.user,
+          plan: obj.plan,
+          notice: obj.notice,
+          purchase: purchase,
+          journal: obj.journal,
+          issue: obj.issue,
+          comment: obj.comment,
+          subComment: obj.subComment);
+
+      List<FMHomeRecentUpdates> rplist = state.recentUpdateList;
+      rplist.removeAt(index);
+      rplist.insert(index, newObj);
+
+      yield state.update(
+        recentUpdateList: rplist,
+        purchase: list,
+      );
     } else if (obj.journal != null) {
-      // TODO
+      Journal journal = Journal(
+        fid: obj.journal.fid,
+        fieldCategory: obj.journal.fieldCategory,
+        jid: obj.journal.jid,
+        uid: obj.journal.uid,
+        date: obj.journal.date,
+        title: obj.journal.title,
+        content: obj.journal.content,
+        widgets: obj.journal.widgets,
+        widgetList: obj.journal.widgetList,
+        comments: obj.journal.comments,
+        isReadByFM: !obj.journal.isReadByFM,
+        isReadByOffice: obj.journal.isReadByOffice,
+        shipment: obj.journal.shipment,
+        fertilize: obj.journal.fertilize,
+        pesticide: obj.journal.pesticide,
+        pest: obj.journal.pest,
+        planting: obj.journal.planting,
+        seeding: obj.journal.seeding,
+        weeding: obj.journal.weeding,
+        watering: obj.journal.watering,
+        workforce: obj.journal.workforce,
+        farming: obj.journal.farming,
+        updatedDate: obj.journal.updatedDate,
+      );
+
+      FMHomeRepository().updateJournal(journal);
+
+      List<Journal> list = state.journal;
+      int tmp = list.indexWhere((element) => journal.jid == element.jid) ?? -1;
+      list.removeAt(tmp);
+      list.insert(tmp, journal);
+
+      FMHomeRecentUpdates newObj = FMHomeRecentUpdates(
+          date: obj.date,
+          user: obj.user,
+          plan: obj.plan,
+          notice: obj.notice,
+          purchase: obj.purchase,
+          journal: journal,
+          issue: obj.issue,
+          comment: obj.comment,
+          subComment: obj.subComment);
+
+      List<FMHomeRecentUpdates> rplist = state.recentUpdateList;
+      rplist.removeAt(index);
+      rplist.insert(index, newObj);
+
+      yield state.update(
+        recentUpdateList: rplist,
+        journal: list,
+      );
     } else if (obj.issue != null) {
       SubJournalIssue issue = SubJournalIssue(
-          date: obj.issue.date,
-          fid: obj.issue.fid,
-          fieldCategory: obj.issue.fieldCategory,
-          sfmid:obj.issue. sfmid,
-          issid: obj.issue.issid,
-          uid: obj.issue.uid,
-          title: obj.issue.title,
-          category: obj.issue.category,
-          issueState: obj.issue.issueState,
-          contents: obj.issue.contents,
-          comments: obj.issue.comments,
-          isReadByFM: !obj.issue.isReadByFM,
-          isReadByOffice: obj.issue.isReadByOffice,
+        date: obj.issue.date,
+        fid: obj.issue.fid,
+        fieldCategory: obj.issue.fieldCategory,
+        sfmid: obj.issue.sfmid,
+        issid: obj.issue.issid,
+        uid: obj.issue.uid,
+        title: obj.issue.title,
+        category: obj.issue.category,
+        issueState: obj.issue.issueState,
+        contents: obj.issue.contents,
+        comments: obj.issue.comments,
+        isReadByFM: !obj.issue.isReadByFM,
+        isReadByOffice: obj.issue.isReadByOffice,
+        updatedDate: obj.issue.updatedDate,
       );
 
       FMHomeRepository().updateIssue(issue);
 
       List<SubJournalIssue> list = state.issue;
-      int tmp = list.indexWhere((element) => issue.issid == element.issid) ?? -1;
+      int tmp =
+          list.indexWhere((element) => issue.issid == element.issid) ?? -1;
       list.removeAt(tmp);
       list.insert(tmp, issue);
 
@@ -367,8 +516,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
           journal: obj.journal,
           issue: issue,
           comment: obj.comment,
-          subComment: obj.subComment
-      );
+          subComment: obj.subComment);
 
       List<FMHomeRecentUpdates> rplist = state.recentUpdateList;
       rplist.removeAt(index);
@@ -387,7 +535,17 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
 
   Stream<FMHomeState> _mapSetFieldToState(int index) async* {
     Field field;
-    int fIndex = state.fieldList.indexWhere((element) => element.fid == state.recentUpdateList[index].issue.fid) ?? -1;
+    int fIndex;
+    if (state.recentUpdateList[index].issue != null) {
+      fIndex = state.fieldList.indexWhere((element) =>
+              element.fid == state.recentUpdateList[index].issue.fid) ??
+          -1;
+    } else {
+      fIndex = state.fieldList.indexWhere((element) =>
+              element.fid == state.recentUpdateList[index].journal.fid) ??
+          -1;
+    }
+
     if (fIndex != -1) {
       field = state.fieldList[fIndex];
     }
@@ -417,14 +575,40 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     if (state.recentUpdateList[index].issue != null) {
       String issid = state.recentUpdateList[index].issue.issid;
       clist = await FMHomeRepository().getIssueComment(issid);
-      yield state.update(clist: clist);
     } else if (state.recentUpdateList[index].journal != null) {
       String jid = state.recentUpdateList[index].journal.jid;
       clist = await FMHomeRepository().getJournalComment(jid);
-      yield state.update(clist: clist);
     } else {
-      yield state.update();
+      ;
     }
+
+    clist.forEach((element) {
+      if (!element.isExpanded) {
+        Comment cmt = Comment(
+            date: element.date,
+            name: element.name,
+            uid: element.uid,
+            issid: element.issid,
+            jid: element.jid,
+            cmtid: element.cmtid,
+            comment: element.comment,
+            isThereSubComment: element.isThereSubComment,
+            isExpanded: !element.isExpanded,
+            fid: element.fid,
+            imgUrl: element.imgUrl,
+            isWriteSubCommentClicked: element.isWriteSubCommentClicked,
+            isReadByFM: element.isReadByFM,
+            isReadByOM: element.isReadByOM,
+            isReadBySFM: element.isReadBySFM);
+        int index =
+            clist.indexWhere((data) => data.cmtid.contains(element.cmtid)) ??
+                -1;
+        clist.removeAt(index);
+        clist.insert(index, cmt);
+      }
+    });
+
+    yield state.update(clist: clist);
   }
 
   Stream<FMHomeState> _mapGetSCommentToState(int index) async* {
@@ -475,8 +659,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
         isWriteSubCommentClicked: obj.isWriteSubCommentClicked,
         isReadByFM: obj.isReadByFM,
         isReadByOM: obj.isReadByOM,
-        isReadBySFM: obj.isReadBySFM
-    );
+        isReadBySFM: obj.isReadBySFM);
     clist.removeAt(index);
     clist.insert(index, newObj);
     yield state.update(
@@ -525,7 +708,6 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
 
     clist.add(_cmt);
 
-
     if (issue != null) {
       _issue = SubJournalIssue(
         date: issue.date,
@@ -541,6 +723,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
         comments: issue.comments + 1,
         isReadByFM: issue.isReadByFM,
         isReadByOffice: issue.isReadByOffice,
+        updatedDate: issue.updatedDate,
       );
 
       rpObj = FMHomeRecentUpdates(
@@ -552,33 +735,33 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
           journal: state.recentUpdateList[rpIndex].journal,
           issue: _issue,
           comment: state.recentUpdateList[rpIndex].comment,
-          subComment: state.recentUpdateList[rpIndex].subComment
-      );
+          subComment: state.recentUpdateList[rpIndex].subComment);
     } else {
       // TODO
       _journal = Journal(
-          fid: journal.fid,
-          fieldCategory: journal.fieldCategory,
-          jid: journal.jid,
-          uid: journal.uid,
-          date: journal.date,
-          title: journal.title,
-          content: journal.content,
-          widgets: journal.widgets,
-          widgetList: journal.widgetList,
-          comments: journal.comments + 1,
-          isReadByFM: journal.isReadByFM,
-          isReadByOffice: journal.isReadByOffice,
-          shipment: journal.shipment,
-          fertilize: journal.fertilize,
-          pesticide: journal.pesticide,
-          pest: journal.pest,
-          planting: journal.planting,
-          seeding: journal.seeding,
-          weeding: journal.weeding,
-          watering: journal.watering,
-          workforce: journal.workforce,
-          farming: journal.farming
+        fid: journal.fid,
+        fieldCategory: journal.fieldCategory,
+        jid: journal.jid,
+        uid: journal.uid,
+        date: journal.date,
+        title: journal.title,
+        content: journal.content,
+        widgets: journal.widgets,
+        widgetList: journal.widgetList,
+        comments: journal.comments + 1,
+        isReadByFM: journal.isReadByFM,
+        isReadByOffice: journal.isReadByOffice,
+        shipment: journal.shipment,
+        fertilize: journal.fertilize,
+        pesticide: journal.pesticide,
+        pest: journal.pest,
+        planting: journal.planting,
+        seeding: journal.seeding,
+        weeding: journal.weeding,
+        watering: journal.watering,
+        workforce: journal.workforce,
+        farming: journal.farming,
+        updatedDate: journal.updatedDate,
       );
 
       rpObj = FMHomeRecentUpdates(
@@ -590,8 +773,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
           journal: _journal,
           issue: state.recentUpdateList[rpIndex].issue,
           comment: state.recentUpdateList[rpIndex].comment,
-          subComment: state.recentUpdateList[rpIndex].subComment
-      );
+          subComment: state.recentUpdateList[rpIndex].subComment);
     }
 
     FMHomeRepository().addComment(cmt: _cmt);
@@ -602,7 +784,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       FMHomeRepository().updateJournal(_journal);
     }
 
-    if (rpObj != null){
+    if (rpObj != null) {
       rplist.removeAt(rpIndex);
       rplist.insert(rpIndex, rpObj);
     }
@@ -641,7 +823,8 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     yield state.update(clist: cmt);
   }
 
-  Stream<FMHomeState> _mapWriteReplyToState(String scmt, int rpIndex, int index) async* {
+  Stream<FMHomeState> _mapWriteReplyToState(
+      String scmt, int rpIndex, int index) async* {
     SubJournalIssue issue = state.recentUpdateList[rpIndex].issue;
     Journal journal = state.recentUpdateList[rpIndex].journal;
     SubComment _scmt;
@@ -707,8 +890,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       );
     }
 
-
-    if (_scmt != null){
+    if (_scmt != null) {
       scmtList.add(_scmt);
       FMHomeRepository().addSComment(scmt: _scmt);
     }
@@ -727,16 +909,16 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     String day = DateFormat('dd').format(date);
     String no;
 
-    for(int i=0; i< 10; i++){
+    for (int i = 0; i < 10; i++) {
       String tmpNo = '${year}${month}${day}${i}';
       bool exist = false;
-      for(int j=0; j<state.notice.length; j++) {
-        if(state.notice[j].no.contains(tmpNo)) {
+      for (int j = 0; j < state.notice.length; j++) {
+        if (state.notice[j].no.contains(tmpNo)) {
           exist = true;
           break;
         }
       }
-      if(!exist) {
+      if (!exist) {
         no = tmpNo;
         break;
       }
@@ -781,16 +963,16 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
     String day = DateFormat('dd').format(date);
     String no;
 
-    for(int i=0; i< 10; i++){
+    for (int i = 0; i < 10; i++) {
       String tmpNo = '${year}${month}${day}${i}';
       bool exist = false;
-      for(int j=0; j<state.notice.length; j++) {
-        if(state.notice[j].no.contains(tmpNo)) {
+      for (int j = 0; j < state.notice.length; j++) {
+        if (state.notice[j].no.contains(tmpNo)) {
           exist = true;
           break;
         }
       }
-      if(!exist) {
+      if (!exist) {
         no = tmpNo;
         break;
       }
