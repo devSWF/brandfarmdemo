@@ -29,6 +29,7 @@ import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:BrandFarm/widgets/fm_home/home_body.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,8 +50,10 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
   @override
   void initState() {
     super.initState();
+    getMessage();
     _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
     _fmHomeBloc.add(LoadFMHome());
+    _fmHomeBloc.add(SetFcmToken());
     _fmHomeBloc.add(GetFieldListForFMHome());
     _fmHomeBloc.add(GetRecentUpdates());
     _fmPurchaseBloc = BlocProvider.of<PurchaseBloc>(context);
@@ -65,6 +68,19 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
     _fmNotificationBloc.add(GetNotificationList());
     isVisible = true;
     showDrawer = true;
+  }
+
+  void getMessage() {
+    // app이 <foreground>열려있일때 실행
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message: ${message}');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
   }
 
   @override

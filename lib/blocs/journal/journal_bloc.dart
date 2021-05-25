@@ -26,7 +26,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapJournalDetailLoadedToState();
     } else if (event is GetInitialList) {
       yield* _mapGetInitialListToState();
-    }else if (event is GetListBySelectedDate) {
+    } else if (event is GetListBySelectedDate) {
       yield* _mapGetListBySelectedDateToState(
           month: event.month, year: event.year);
     } else if (event is LoadMore) {
@@ -47,9 +47,9 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapAddJournalCommentToState(
         jid: event.id,
       );
-    } else if (event is PassSelectedJournal){
+    } else if (event is PassSelectedJournal) {
       yield* _mapPassSelectedJournalToState(event.journal);
-    } else if (event is PassSelectedIssue){
+    } else if (event is PassSelectedIssue) {
       yield* _mapPassSelectedIssueToState(event.issue);
     }
   }
@@ -279,6 +279,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       issueState: issue[index1].issueState,
       isReadByFM: issue[index1].isReadByFM,
       isReadByOffice: issue[index1].isReadByOffice,
+      updatedDate: issue[index1].updatedDate,
     ));
 
     if (index1 != -1) {
@@ -301,8 +302,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     );
   }
 
-  Stream<JournalState> _mapAddJournalCommentToState(
-      {String jid}) async* {
+  Stream<JournalState> _mapAddJournalCommentToState({String jid}) async* {
     List<Journal> journal = state.orderByRecent;
     List<Journal> cat = state.listBySelection;
     List<Journal> rev = state.orderByOldest;
@@ -320,7 +320,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       weeding: journal[index1].weeding,
       pesticide: journal[index1].pesticide,
       uid: journal[index1].uid,
-      comments: journal[index1].comments +1,
+      comments: journal[index1].comments + 1,
       isReadByFM: journal[index1].isReadByFM,
       isReadByOffice: journal[index1].isReadByOffice,
       date: journal[index1].date,
@@ -337,6 +337,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       widgetList: journal[index1].widgetList,
       widgets: journal[index1].widgets,
       watering: journal[index1].watering,
+      updatedDate: journal[index1].updatedDate,
     ));
 
     if (index1 != -1) {
@@ -359,12 +360,12 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     );
   }
 
-  Stream<JournalState> _mapPassSelectedJournalToState(Journal journal) async*{
+  Stream<JournalState> _mapPassSelectedJournalToState(Journal journal) async* {
     yield state.update(selectedJournal: journal);
   }
 
-  Stream<JournalState> _mapPassSelectedIssueToState(SubJournalIssue issue) async*{
+  Stream<JournalState> _mapPassSelectedIssueToState(
+      SubJournalIssue issue) async* {
     yield state.update(selectedIssue: issue);
   }
-
 }

@@ -431,6 +431,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       watering: state.wateringList.isEmpty ? null : state.wateringList,
       workforce: state.workforceList.isEmpty ? null : state.workforceList,
       farming: state.farmingList.isEmpty ? null : state.farmingList,
+      updatedDate: state.existJournal.updatedDate,
     );
 
     await SubJournalRepository().updateJournal(
@@ -499,6 +500,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       watering: state.wateringList.isEmpty ? null : state.wateringList,
       workforce: state.workforceList.isEmpty ? null : state.workforceList,
       farming: state.farmingList.isEmpty ? null : state.farmingList,
+      updatedDate: Timestamp.now(),
     );
 
     await SubJournalRepository().uploadJournal(
