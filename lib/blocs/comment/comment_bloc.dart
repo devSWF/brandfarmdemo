@@ -1,7 +1,10 @@
 import 'package:BrandFarm/blocs/comment/bloc.dart';
 import 'package:BrandFarm/models/comment/comment_model.dart';
+import 'package:BrandFarm/models/farm/farm_model.dart';
+import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/comment/comment_repository.dart';
+import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
 import 'package:BrandFarm/utils/comment/comment_util.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
@@ -53,12 +56,11 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       comments.add(Comment.fromSnapshot(ds));
     });
 
-    await Future.forEach(comments, (comments)async{
+    await Future.forEach(comments, (comments) async {
       QuerySnapshot _cmtUserUrl = await FirebaseFirestore.instance
           .collection('User')
           .where('uid', isEqualTo: comments.uid)
           .get();
-
 
       commentUser.add(User.fromSnapshot(_cmtUserUrl.docs.first));
     });
@@ -73,17 +75,14 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       subComments.add(SubComment.fromSnapshot(ds));
     });
 
-
-    await Future.forEach(subComments, (subComments)async{
+    await Future.forEach(subComments, (subComments) async {
       QuerySnapshot _scmtUserUrl = await FirebaseFirestore.instance
           .collection('User')
           .where('uid', isEqualTo: subComments.uid)
           .get();
 
-
       subCommentUser.add(User.fromSnapshot(_scmtUserUrl.docs.first));
     });
-
 
     yield state.update(
       isLoading: false,
@@ -149,6 +148,27 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       comments.add(cmt);
     }
 
+    Farm farm = await SubHomeRepository()
+        .getFarm(await FieldUtil.getField().fieldCategory);
+    User user = await SubHomeRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '새로운 댓글을 확인하세요',
+      content: comment,
+      postedDate: Timestamp.now(),
+      jid: (from.contains('journal')) ? id : '',
+      issid: (from.contains('issue')) ? id : '',
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    SubHomeRepository().sendNotification(_sendToFarm);
+
     yield state.update(
       isLoading: false,
       comments: comments,
@@ -162,7 +182,8 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     subComments = state.subComments;
 
     if (from == 'journal') {
-      String scmtid = FirebaseFirestore.instance.collection('SubComment').doc().id;
+      String scmtid =
+          FirebaseFirestore.instance.collection('SubComment').doc().id;
       SubComment scmt = SubComment(
         date: Timestamp.now(),
         jid: id,
@@ -209,6 +230,27 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
 
       subComments.add(scmt);
     }
+
+    Farm farm = await SubHomeRepository()
+        .getFarm(await FieldUtil.getField().fieldCategory);
+    User user = await SubHomeRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '새로운 댓글을 확인하세요',
+      content: comment,
+      postedDate: Timestamp.now(),
+      jid: (from.contains('journal')) ? id : '',
+      issid: (from.contains('issue')) ? id : '',
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    SubHomeRepository().sendNotification(_sendToFarm);
 
     yield state.update(
       isLoading: false,
