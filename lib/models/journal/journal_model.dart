@@ -26,7 +26,7 @@ class Journal {
   final int comments;
   final bool isReadByFM;
   final bool isReadByOffice;
-  final Timestamp updatedDate;
+
 
   ///출하정보
   final List<Shipment> shipment;
@@ -71,7 +71,6 @@ class Journal {
     @required this.comments,
     @required this.isReadByFM,
     @required this.isReadByOffice,
-    @required this.updatedDate,
     @required this.shipment,
     @required this.fertilize,
     @required this.pesticide,
@@ -84,7 +83,7 @@ class Journal {
     @required this.farming,
   });
 
-  factory Journal.empty() {
+  factory Journal.empty(){
     return Journal(
       fid: '',
       fieldCategory: '',
@@ -98,7 +97,6 @@ class Journal {
       comments: 0,
       isReadByFM: false,
       isReadByOffice: false,
-      updatedDate: Timestamp.now(),
       shipment: [],
       farming: [],
       fertilize: [],
@@ -133,7 +131,6 @@ class Journal {
       comments: ds['comments'],
       isReadByFM: ds['isReadByFM'],
       isReadByOffice: ds['isReadByOffice'],
-      updatedDate: ds['updatedDate'],
       shipment: ds['shipment'] == null
           ? null
           : ds["shipment"]
@@ -232,6 +229,7 @@ class Journal {
       return widget.toMap();
     }).toList();
 
+
     ///출하정보
     if (this.shipment != null) {
       shipment = this.shipment.map((Shipment shipment) {
@@ -306,16 +304,15 @@ class Journal {
       'fid': this.fid,
       'fieldCategory': this.fieldCategory,
       'jid': this.jid,
-      'uid': this.uid,
+      'uid' : this.uid,
       'date': this.date,
       'title': this.title,
       'content': this.content,
       'widgets': this.widgets == null ? null : widgets,
       'widgetList': this.widgetList,
-      'comments': this.comments,
-      'isReadByFM': this.isReadByFM,
-      'isReadByOffice': this.isReadByOffice,
-      'updatedDate': this.updatedDate,
+      'comments' : this.comments,
+      'isReadByFM' : this.isReadByFM,
+      'isReadByOffice' : this.isReadByOffice,
       'shipment': this.shipment == null ? null : shipment,
       'fertilize': this.fertilize == null ? null : fertilize,
       'pesticide': this.pesticide == null ? null : pesticide,

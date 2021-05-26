@@ -77,7 +77,6 @@ class _SubJournalIssueModifyScreenState
               isReadByFM: state.selectedIssue.isReadByFM,
               isReadByOffice: state.selectedIssue.isReadByOffice,
               selectedDate: mstate.selectedDate ?? state.selectedIssue.date,
-              updatedDate: state.selectedIssue.updatedDate,
             ));
           } else if (mstate.isComplete == true && mstate.isUploaded == true) {
             // print('isUpload true');
@@ -98,7 +97,6 @@ class _SubJournalIssueModifyScreenState
                 comments: state.selectedIssue.comments ?? 0,
                 isReadByFM: state.selectedIssue.isReadByFM ?? false,
                 isReadByOffice: state.selectedIssue.isReadByOffice ?? false,
-                    updatedDate: state.selectedIssue.updatedDate,
               )));
               Navigator.pop(context);
             });

@@ -1,20 +1,14 @@
 //blocs
-
 import 'package:BrandFarm/blocs/home/bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_event.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
-import 'package:BrandFarm/models/farm/farm_model.dart';
-import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
-import 'package:BrandFarm/models/user/user_model.dart';
-import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
 import 'package:BrandFarm/screens/home/notification_dialog.dart';
+
 import 'package:BrandFarm/screens/notification/notification_list_screen.dart';
 import 'package:BrandFarm/screens/setting/setting_screen.dart';
-import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
-import 'package:BrandFarm/utils/user/user_util.dart';
-import 'package:BrandFarm/widgets/sub_home/sub_home_announce_bar.dart';
+
 //widgets
 import 'package:BrandFarm/widgets/sub_home/sub_home_appbar.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_calendar.dart';
@@ -22,18 +16,20 @@ import 'package:BrandFarm/widgets/sub_home/sub_home_fab.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_greeting_bar.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_to_do_widget.dart';
 import 'package:BrandFarm/widgets/sub_home/sub_home_weather_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:BrandFarm/widgets/sub_home/sub_home_announce_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
+
 //flutters
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/cupertino.dart';
 
 class SubHomeScreen extends StatefulWidget {
   const SubHomeScreen({
     Key key,
   }) : super(key: key);
+
 
   @override
   _SubHomeScreenState createState() => _SubHomeScreenState();
@@ -60,7 +56,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
     getMessage();
   }
 
-  void getMessage() {
+  void getMessage(){
     // app을 terminated 상태에서 열었을때 실행
     FirebaseMessaging.instance
         .getInitialMessage()
@@ -68,7 +64,6 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
       if (message != null) {
         print('Handling a background message ${message.messageId}');
       }
-      refresh();
     });
 
     // app이 <foreground>열려있일때 실행
@@ -85,23 +80,11 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
     // app이 running on background 상태에서 다시 열렸을때 실행
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published!');
-      print(
-          'Handling onMessageOpenedApp.listener message ${message.messageId}');
-      refresh();
+      print('Handling onMessageOpenedApp.listener message ${message.messageId}');
     });
 
     // // app이 background or terminated 상태에서 실행
-    // FirebaseMessaging.onBackgroundMessage((message) {
-    //   print('A new onMessageOpenedApp event was published!');
-    //   refresh();
-    // });
-  }
-
-  void refresh() {
-    _notificationBloc.add(LoadNotification());
-    _homeBloc.add(GetHomePlanList());
-    _homeBloc.add(SortPlanList());
-    _notificationBloc.add(GetNotificationList());
+    // FirebaseMessaging.onBackgroundMessage((message) => null);
   }
 
   Future<void> _showNotificationDialog() async {
@@ -115,12 +98,13 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                 value: _homeBloc,
               ),
               BlocProvider.value(
-                value: _notificationBloc,
+                  value: _notificationBloc,
               ),
             ],
             child: NotificationDialog(),
           );
-        });
+        }
+    );
   }
 
   @override
@@ -152,31 +136,29 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
               //         MaterialPageRoute(builder: (context) => SettingScreen()));
               //   },
               // ),
-              appBar: PreferredSize(
-                preferredSize: Size.fromHeight(80.0),
-                child: BlocProvider.value(
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(80.0),
+              child: BlocProvider.value(
                   value: _notificationBloc,
-                  child: SubHomeAppbarWithState(
-                    notificationPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BlocProvider.value(
-                            value: _notificationBloc,
-                            child: NotificationListScreen(),
-                          ),
+                child: SubHomeAppbarWithState(
+                  notificationPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider.value(
+                          value: _notificationBloc,
+                          child: NotificationListScreen(),
                         ),
-                      );
-                    },
-                    settingPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SettingScreen()));
-                    },
-                  ),
+                      ),
+                    );
+                  },
+                  settingPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SettingScreen()));
+                  },
                 ),
               ),
+            ),
               body: SingleChildScrollView(
                 physics: ClampingScrollPhysics(),
                 child: Column(
@@ -189,8 +171,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                     ),
                     SizedBox(height: 14.0),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: defaultPadding),
+                      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
                       child: BlocProvider.value(
                         value: _weatherBloc,
                         child: SubHomeWeatherWidget(),
@@ -208,38 +189,6 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
                     //   weatherBloc: _weatherBloc,
                     //   state: state,
                     // ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        Farm farm = await SubHomeRepository()
-                            .getFarm(await FieldUtil.getField().fieldCategory);
-                        User user =
-                            await SubHomeRepository().getUser(farm.managerID);
-                        String docID = await FirebaseFirestore.instance
-                            .collection('SendToFarm')
-                            .doc()
-                            .id;
-                        SendToFarm _sendToFarm = SendToFarm(
-                          docID: docID,
-                          uid: UserUtil.getUser().uid,
-                          name: UserUtil.getUser().name,
-                          farmid: '9EjAVRYFHXwwAQlkOEbH',
-                          title: 'from field',
-                          content: 'testing web notification',
-                          postedDate: Timestamp.now(),
-                          jid: '',
-                          issid: '',
-                          cmtid: '',
-                          scmtid: '',
-                          fcmToken: user.fcmToken,
-                        );
-                        SubHomeRepository().sendNotification(_sendToFarm);
-                      },
-                      child: Text(
-                        'send notification',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                    SizedBox(height: defaultPadding),
                   ],
                 ),
               ),
@@ -247,6 +196,7 @@ class _SubHomeScreenState extends State<SubHomeScreen> {
         }));
   }
 }
+
 
 class WeatherToDoWidgetBar extends StatelessWidget {
   const WeatherToDoWidgetBar({
