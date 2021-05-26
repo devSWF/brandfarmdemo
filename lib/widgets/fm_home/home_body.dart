@@ -1,5 +1,4 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
-import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
 import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
 import 'package:BrandFarm/blocs/plan/plan_state.dart';
@@ -54,7 +53,6 @@ class _HomeBodyState extends State<HomeBody> {
                     controller: _scrollController,
                     child: ListView(
                       shrinkWrap: true,
-
                       children: [
                         CreateAnnouncement(
                           onPressed:() async {
@@ -78,27 +76,9 @@ class _HomeBodyState extends State<HomeBody> {
                         SizedBox(
                           height: defaultPadding,
                         ),
-                        Comments(
-                          onPressed1: () {
-                            _fmHomeBloc.add(SetPageIndex(index: 1));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
-                          onPressed2: () {
-                            _fmHomeBloc.add(SetPageIndex(index: 2));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
-                          onPressed3:  () {
-                            _fmHomeBloc.add(SetPageIndex(index: 4));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
-                          onPressed4: () {
-                            _fmHomeBloc.add(SetPageIndex(index: 5));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
-                          onPressed5: () {
-                            _fmHomeBloc.add(SetPageIndex(index: 5));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
+                        BlocProvider.value(
+                          value: _fmHomeBloc,
+                          child: Comments(),
                         ),
                         SizedBox(
                           height: defaultPadding,
