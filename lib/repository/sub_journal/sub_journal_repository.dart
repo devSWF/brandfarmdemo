@@ -43,7 +43,17 @@ class SubJournalRepository {
 
   Future<void> updateIssueComment({String issid, int cmts}) async {
     DocumentReference reference = _firestore.collection('Issue').doc(issid);
-    await reference.update({"comments": cmts});
+    await reference.update({
+      "comments": cmts,
+      "updatedDate": Timestamp.now(),
+      "isReadByFM": false
+    });
+  }
+
+  Future<void> setUpdatedDateIssue({String issid}) async {
+    DocumentReference reference = _firestore.collection('Issue').doc(issid);
+    await reference
+        .update({"updatedDate": Timestamp.now(), "isReadByFM": false});
   }
 
   /// journal related
@@ -81,7 +91,17 @@ class SubJournalRepository {
 
   Future<void> updateJournalComment({String jid, int cmts}) async {
     DocumentReference reference = _firestore.collection('Journal').doc(jid);
-    await reference.update({"comments": cmts});
+    await reference.update({
+      "comments": cmts,
+      "updatedDate": Timestamp.now(),
+      "isReadByFM": false
+    });
+  }
+
+  Future<void> setUpdatedDate({String jid}) async {
+    DocumentReference reference = _firestore.collection('Journal').doc(jid);
+    await reference
+        .update({"updatedDate": Timestamp.now(), "isReadByFM": false});
   }
 
   /// image related

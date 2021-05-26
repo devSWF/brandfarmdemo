@@ -889,6 +889,9 @@ class _SubJournalIssueDetailScreenState
                                   comment: comment,
                                   cmtid: cmtid,
                                 ));
+                                _journalBloc.add(SetUpdatedDateIssue(
+                                  id: state.selectedIssue.issid,
+                                ));
                               } else {
                                 _commentBloc.add(AddComment(
                                   from: 'issue',
