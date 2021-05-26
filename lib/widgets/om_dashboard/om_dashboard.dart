@@ -1,7 +1,6 @@
 import 'package:BrandFarm/blocs/om_home/bloc.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/fm_home/create_announcement.dart';
-import 'package:BrandFarm/widgets/om_dashboard/om_comment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -41,12 +40,6 @@ class _OMDashboardState extends State<OMDashboard> {
               onPressed:() async {
                 await _showMyDialog();
               },
-            ),
-            SizedBox(
-              height: defaultPadding,
-            ),
-            OMComments(
-
             ),
           ],
         ),
