@@ -1,7 +1,7 @@
 import 'package:BrandFarm/blocs/fm_notification/fm_notification_bloc.dart';
 import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
-import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/blocs/plan/plan_event.dart';
+import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_add_plan.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_calendar_widget.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_detail_screen.dart';
@@ -42,47 +42,56 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Color(0xFFEEEEEE),
-          body: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 18, 24, 18),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 814,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.fromLTRB(32, 27, 21, 0),
-                  child: Column(
+          body: ListView(
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 18, 24, 18),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _fieldSelectionMenu(state: state),
-                      SizedBox(
-                        height: 43,
+                      Container(
+                        width: 814,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(32, 27, 21, 0),
+                        child: Column(
+                          children: [
+                            _fieldSelectionMenu(state: state),
+                            SizedBox(
+                              height: 43,
+                            ),
+                            BlocProvider.value(
+                              value: _fmPlanBloc,
+                              child: FMPlanCalendarWidget(),
+                            ),
+                          ],
+                        ),
                       ),
-                      BlocProvider.value(
-                        value: _fmPlanBloc,
-                        child: FMPlanCalendarWidget(),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Container(
+                        width: 253,
+                        height: 361,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(20, 17, 19, 0),
+                        child: BlocProvider.value(
+                          value: _fmPlanBloc,
+                          child: FMPlanDetailScreen(),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(width: 10,),
-                Container(
-                  width: 253,
-                  height: 361,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.fromLTRB(20, 17, 19, 0),
-                  child: BlocProvider.value(
-                    value: _fmPlanBloc,
-                    child: FMPlanDetailScreen(),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
@@ -121,12 +130,12 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
                   color: (state.selectedField == 0)
                       ? Color(0xFF15B85B)
                       : (state.selectedField == 1)
-                      ? Colors.orange
-                      : (state.selectedField == 2)
-                      ? Colors.yellow
-                      : (state.selectedField == 3)
-                      ? Colors.blue
-                      : Colors.purple,
+                          ? Colors.orange
+                          : (state.selectedField == 2)
+                              ? Colors.yellow
+                              : (state.selectedField == 3)
+                                  ? Colors.blue
+                                  : Colors.purple,
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -146,7 +155,8 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
                           // setState(() {
                           //   _selectedField = index;
                           // });
-                          _fmPlanBloc.add(SetSelectedField(selectedField: index));
+                          _fmPlanBloc
+                              .add(SetSelectedField(selectedField: index));
                         },
                         child: Container(
                           width: 84,

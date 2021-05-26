@@ -43,8 +43,16 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       yield* _mapAddIssueCommentToState(
         issid: event.id,
       );
+    } else if (event is SetUpdatedDateIssue) {
+      yield* _mapSetUpdatedDateIssueToState(
+        issid: event.id,
+      );
     } else if (event is AddJournalComment) {
       yield* _mapAddJournalCommentToState(
+        jid: event.id,
+      );
+    } else if (event is SetUpdatedDate) {
+      yield* _mapSetUpdatedDateToState(
         jid: event.id,
       );
     } else if (event is PassSelectedJournal) {
@@ -302,6 +310,12 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
     );
   }
 
+  Stream<JournalState> _mapSetUpdatedDateIssueToState({String issid}) async* {
+    await SubJournalRepository().setUpdatedDateIssue(issid: issid);
+
+    yield state.update();
+  }
+
   Stream<JournalState> _mapAddJournalCommentToState({String jid}) async* {
     List<Journal> journal = state.orderByRecent;
     List<Journal> cat = state.listBySelection;
@@ -337,7 +351,7 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       widgetList: journal[index1].widgetList,
       widgets: journal[index1].widgets,
       watering: journal[index1].watering,
-      updatedDate: journal[index1].updatedDate,
+      updatedDate: Timestamp.now(),
     ));
 
     if (index1 != -1) {
@@ -358,6 +372,12 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       listBySelection: cat,
       orderByOldest: rev,
     );
+  }
+
+  Stream<JournalState> _mapSetUpdatedDateToState({String jid}) async* {
+    await SubJournalRepository().setUpdatedDate(jid: jid);
+
+    yield state.update();
   }
 
   Stream<JournalState> _mapPassSelectedJournalToState(Journal journal) async* {
