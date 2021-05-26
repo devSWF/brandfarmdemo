@@ -1,6 +1,9 @@
 
+import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SubHomeRepository {
@@ -11,20 +14,39 @@ class SubHomeRepository {
     await reference.update({"fcmToken": deviceToken});
   }
 
-  // Future<User> getDetailUserInfo(uid) async {
-  //   User user;
-  //   await _firestore
-  //       .collection('User')
-  //       .where('uid', isEqualTo: uid)
-  //       .get()
-  //       .then((qs) {
-  //     qs.docs.forEach((ds) {
-  //       user = User.fromSnapshot(ds);
-  //     });
-  //   });
-  //   return user;
-  // }
-  //
+  Future<void> sendNotification(SendToFarm obj) async {
+    DocumentReference reference = _firestore.collection('SendToFarm').doc(obj.docID);
+    await reference.set(obj.toDocument());
+  }
+
+  Future<User> getUser(String uid) async {
+    User user;
+    await _firestore
+        .collection('User')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        user = User.fromSnapshot(ds);
+      });
+    });
+    return user;
+  }
+
+  Future<Farm> getFarm(String fc) async {
+    Farm farm;
+    await _firestore
+        .collection('Farm')
+        .where('fieldCategory', isEqualTo: fc)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        farm = Farm.fromSnapshot(ds);
+      });
+    });
+    return farm;
+  }
+
   // Future<Farm> getFarmInfo() async {
   //   Farm farm;
   //   await _firestore

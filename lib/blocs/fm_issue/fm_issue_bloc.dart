@@ -90,7 +90,9 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
       SubJournalIssue obj, int index, String order) async* {
     // check as read
     List<SubJournalIssue> ModifiedList = [];
-    (order == '최신 순') ? ModifiedList = state.issueList : ModifiedList = state.reverseList;
+    (order == '최신 순')
+        ? ModifiedList = state.issueList
+        : ModifiedList = state.reverseList;
 
     SubJournalIssue _obj = SubJournalIssue(
       date: obj.date,
@@ -106,6 +108,7 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
       comments: obj.comments,
       isReadByFM: true,
       isReadByOffice: obj.isReadByOffice,
+      updatedDate: obj.updatedDate,
     );
 
     ModifiedList.removeAt(index);
@@ -113,7 +116,7 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
 
     FMIssueRepository().updateIssue(obj: _obj);
 
-    if(order == '최신 순') {
+    if (order == '최신 순') {
       yield state.update(issueList: ModifiedList);
     } else {
       yield state.update(reverseList: ModifiedList);
@@ -159,7 +162,8 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     yield state.update(commentList: cmt);
   }
 
-  Stream<FMIssueState> _mapWriteCommentToState(String cmt, SubJournalIssue obj) async* {
+  Stream<FMIssueState> _mapWriteCommentToState(
+      String cmt, SubJournalIssue obj) async* {
     // write comment
     List<Comment> cmtList = state.commentList;
     String cmtid = '';
@@ -203,10 +207,12 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
       comments: obj.comments + 1,
       isReadByFM: obj.isReadByFM,
       isReadByOffice: obj.isReadByOffice,
+      updatedDate: obj.updatedDate,
     );
 
     int index1 = issueList.indexWhere((data) => data.issid == obj.issid) ?? -1;
-    int index2 = reverseList.indexWhere((data) => data.issid == obj.issid) ?? -1;
+    int index2 =
+        reverseList.indexWhere((data) => data.issid == obj.issid) ?? -1;
 
     if (index1 != -1) {
       issueList.removeAt(index1);
@@ -218,10 +224,11 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     }
 
     CommentRepository().uploadComment(comment: _cmt);
-    FMIssueRepository().updateIssueComment(issid: obj.issid, cmts: obj.comments + 1);
+    FMIssueRepository()
+        .updateIssueComment(issid: obj.issid, cmts: obj.comments + 1);
 
     yield state.update(
-        commentList: cmtList,
+      commentList: cmtList,
       issueList: issueList,
       reverseList: reverseList,
       newComment: _cmt,
@@ -256,7 +263,8 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     yield state.update(commentList: cmt);
   }
 
-  Stream<FMIssueState> _mapWriteReplyToState(String cmt, SubJournalIssue obj, int index) async* {
+  Stream<FMIssueState> _mapWriteReplyToState(
+      String cmt, SubJournalIssue obj, int index) async* {
     // change reply state
     Comment cmtObj = state.commentList[index];
     List<Comment> cmtList = state.commentList;
@@ -306,7 +314,7 @@ class FMIssueBloc extends Bloc<FMIssueEvent, FMIssueState> {
     CommentRepository().uploadSubComment(scomment: _scmt);
 
     yield state.update(
-        commentList: cmtList,
+      commentList: cmtList,
       subCommentList: scmtList,
       newSComment: _scmt,
     );

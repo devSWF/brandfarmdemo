@@ -40,33 +40,35 @@ class _NotificationDialogState extends State<NotificationDialog> {
               style: Theme.of(context).textTheme.bodyText1.copyWith(
                 color: Colors.black,
               ),),
-            Text('확인하시겠습니까?',
-              style: Theme.of(context).textTheme.bodyText1.copyWith(
-                color: Colors.black,
-              ),),
+            // Text('확인하시겠습니까?',
+            //   style: Theme.of(context).textTheme.bodyText1.copyWith(
+            //     color: Colors.black,
+            //   ),),
             SizedBox(height: 10,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: (){
-                    _homeBloc.add(UpdateNotificationState());
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey[300],
-                  ),
-                  child: Text('취소',
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),),
-                ),
-                SizedBox(width: 10,),
+                // ElevatedButton(
+                //   onPressed: (){
+                //     _homeBloc.add(UpdateNotificationState());
+                //     Navigator.pop(context);
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     primary: Colors.grey[300],
+                //   ),
+                //   child: Text('취소',
+                //     style: Theme.of(context).textTheme.bodyText1.copyWith(
+                //       fontWeight: FontWeight.bold,
+                //       color: Colors.white,
+                //     ),),
+                // ),
+                // SizedBox(width: 10,),
                 ElevatedButton(
                   onPressed: (){
                     _homeBloc.add(UpdateNotificationState());
                     _notificationBloc.add(GetNotificationList());
+                    _homeBloc.add(GetHomePlanList());
+                    _homeBloc.add(SortPlanList());
                     Navigator.pop(context);
                   },
                   child: Text('확인',

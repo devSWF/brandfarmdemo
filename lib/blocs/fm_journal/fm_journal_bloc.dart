@@ -58,7 +58,9 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     } else if (event is WriteJournalReply) {
       yield* _mapWriteJournalReplyToState(event.cmt, event.index);
     } else if (event is WriteJournalComment) {
-      yield* _mapWriteJournalCommentToState(event.cmt,);
+      yield* _mapWriteJournalCommentToState(
+        event.cmt,
+      );
     }
   }
 
@@ -68,9 +70,9 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
 
   Stream<FMJournalState> _mapChangeScreenToState(int navTo, int index) async* {
     yield state.update(
-        shouldReload: false,
-        navTo: navTo,
-        index: index,
+      shouldReload: false,
+      navTo: navTo,
+      index: index,
     );
   }
 
@@ -128,7 +130,8 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     );
   }
 
-  Stream<FMJournalState> _mapSetFieldButtonSizeToState(double height, double width) async* {
+  Stream<FMJournalState> _mapSetFieldButtonSizeToState(
+      double height, double width) async* {
     // set field menu size
     yield state.update(
       fieldMenuButtonHeight: height,
@@ -136,7 +139,8 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     );
   }
 
-  Stream<FMJournalState> _mapSetFieldButtonPositionToState(double x, double y) async* {
+  Stream<FMJournalState> _mapSetFieldButtonPositionToState(
+      double x, double y) async* {
     // set field menu position
     yield state.update(
       fieldMenuButtonX: x,
@@ -160,11 +164,12 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     Timestamp lDay = Timestamp.fromDate(lastDay);
 
     List<Journal> journalList =
-    await FMJournalRepository().getJournalList(state.field, fDay, lDay);
+        await FMJournalRepository().getJournalList(state.field, fDay, lDay);
 
     List<Journal> reverseList = List.from(journalList.reversed);
 
-    List<ImagePicture> pictureList = await FMJournalRepository().getImage(state.field);
+    List<ImagePicture> pictureList =
+        await FMJournalRepository().getImage(state.field);
     yield state.update(
       journalList: journalList,
       reverseList: reverseList,
@@ -174,7 +179,7 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
 
   Stream<FMJournalState> _mapSetJournalToState() async* {
     Journal obj;
-    if(state.order == '최신 순'){
+    if (state.order == '최신 순') {
       obj = state.journalList[state.index];
     } else {
       obj = state.reverseList[state.index];
@@ -190,46 +195,47 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     List<Journal> reverseList = [];
 
     Journal _obj = Journal(
-        fid: state.journal.fid,
-        fieldCategory: state.journal.fieldCategory,
-        jid: state.journal.jid,
-        uid: state.journal.uid,
-        date: state.journal.date,
-        title: state.journal.title,
-        content: state.journal.content,
-        widgets: state.journal.widgets,
-        widgetList: state.journal.widgetList,
-        comments: state.journal.comments,
-        isReadByFM: !state.journal.isReadByFM,
-        isReadByOffice: state.journal.isReadByOffice,
-        shipment: state.journal.shipment,
-        fertilize: state.journal.fertilize,
-        pesticide: state.journal.pesticide,
-        pest: state.journal.pest,
-        planting: state.journal.planting,
-        seeding: state.journal.seeding,
-        weeding: state.journal.weeding,
-        watering: state.journal.watering,
-        workforce: state.journal.workforce,
-        farming: state.journal.farming,
+      fid: state.journal.fid,
+      fieldCategory: state.journal.fieldCategory,
+      jid: state.journal.jid,
+      uid: state.journal.uid,
+      date: state.journal.date,
+      title: state.journal.title,
+      content: state.journal.content,
+      widgets: state.journal.widgets,
+      widgetList: state.journal.widgetList,
+      comments: state.journal.comments,
+      isReadByFM: !state.journal.isReadByFM,
+      isReadByOffice: state.journal.isReadByOffice,
+      shipment: state.journal.shipment,
+      fertilize: state.journal.fertilize,
+      pesticide: state.journal.pesticide,
+      pest: state.journal.pest,
+      planting: state.journal.planting,
+      seeding: state.journal.seeding,
+      weeding: state.journal.weeding,
+      watering: state.journal.watering,
+      workforce: state.journal.workforce,
+      farming: state.journal.farming,
+      updatedDate: state.journal.updatedDate,
     );
 
     int index;
 
-    if(state.order == '최신 순') {
+    if (state.order == '최신 순') {
       modifiedList = state.journalList;
       reverseList = state.reverseList;
       modifiedList.removeAt(state.index);
       modifiedList.insert(state.index, _obj);
-      index = reverseList.indexWhere((element) =>
-      element.jid == modifiedList[state.index].jid);
+      index = reverseList.indexWhere(
+          (element) => element.jid == modifiedList[state.index].jid);
     } else {
       modifiedList = state.reverseList;
       reverseList = state.journalList;
       modifiedList.removeAt(state.index);
       modifiedList.insert(state.index, _obj);
-      index = reverseList.indexWhere((element) =>
-      element.jid == modifiedList[state.index].jid);
+      index = reverseList.indexWhere(
+          (element) => element.jid == modifiedList[state.index].jid);
     }
 
     reverseList.removeAt(index);
@@ -237,7 +243,7 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
 
     FMJournalRepository().updateJournal(journal: _obj);
 
-    if(state.order == '최신 순') {
+    if (state.order == '최신 순') {
       yield state.update(
         journal: _obj,
         journalList: modifiedList,
@@ -256,12 +262,16 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     // get comments
     List<Comment> cmt = [];
     List<SubComment> scmt = [];
-    if(state.order == '최신 순'){
-      cmt = await FMJournalRepository().getComment(state.journalList[state.index].jid);
-      scmt = await FMJournalRepository().getSubComment(state.journalList[state.index].jid);
+    if (state.order == '최신 순') {
+      cmt = await FMJournalRepository()
+          .getComment(state.journalList[state.index].jid);
+      scmt = await FMJournalRepository()
+          .getSubComment(state.journalList[state.index].jid);
     } else {
-      cmt = await FMJournalRepository().getComment(state.reverseList[state.index].jid);
-      scmt = await FMJournalRepository().getSubComment(state.reverseList[state.index].jid);
+      cmt = await FMJournalRepository()
+          .getComment(state.reverseList[state.index].jid);
+      scmt = await FMJournalRepository()
+          .getSubComment(state.reverseList[state.index].jid);
     }
 
     yield state.update(
@@ -272,14 +282,16 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
 
   Stream<FMJournalState> _mapGetJournalDetailUserInfoToState() async* {
     // get user info
-    User detailUser = await FMJournalRepository().getDetailUserInfo(state.journal.fid);
+    User detailUser =
+        await FMJournalRepository().getDetailUserInfo(state.journal.fid);
 
     yield state.update(
       detailUser: detailUser,
     );
   }
 
-  Stream<FMJournalState> _mapChangeJournalWriteReplyStateToState(int index) async* {
+  Stream<FMJournalState> _mapChangeJournalWriteReplyStateToState(
+      int index) async* {
     Comment obj = state.commentList[index];
     List<Comment> cmt = state.commentList;
     Comment _cmt = Comment(
@@ -333,7 +345,8 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     yield state.update(commentList: cmt);
   }
 
-  Stream<FMJournalState> _mapWriteJournalReplyToState(String cmt, int index) async* {
+  Stream<FMJournalState> _mapWriteJournalReplyToState(
+      String cmt, int index) async* {
     Comment cmtObj = state.commentList[index];
     List<Comment> cmtList = state.commentList;
     Comment _cmt = Comment(
@@ -418,32 +431,35 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     List<Journal> journalList = state.journalList;
     List<Journal> reverseList = state.reverseList;
     Journal _jour = Journal(
-        fid: state.journal.fid,
-        fieldCategory: state.journal.fieldCategory,
-        jid: state.journal.jid,
-        uid: state.journal.uid,
-        date: state.journal.date,
-        title: state.journal.title,
-        content: state.journal.content,
-        widgets: state.journal.widgets,
-        widgetList: state.journal.widgetList,
-        comments: state.journal.comments + 1,
-        isReadByFM: state.journal.isReadByFM,
-        isReadByOffice: state.journal.isReadByOffice,
-        shipment: state.journal.shipment,
-        fertilize: state.journal.fertilize,
-        pesticide: state.journal.pesticide,
-        pest: state.journal.pest,
-        planting: state.journal.planting,
-        seeding: state.journal.seeding,
-        weeding: state.journal.weeding,
-        watering: state.journal.watering,
-        workforce: state.journal.workforce,
-        farming: state.journal.farming,
+      fid: state.journal.fid,
+      fieldCategory: state.journal.fieldCategory,
+      jid: state.journal.jid,
+      uid: state.journal.uid,
+      date: state.journal.date,
+      title: state.journal.title,
+      content: state.journal.content,
+      widgets: state.journal.widgets,
+      widgetList: state.journal.widgetList,
+      comments: state.journal.comments + 1,
+      isReadByFM: state.journal.isReadByFM,
+      isReadByOffice: state.journal.isReadByOffice,
+      shipment: state.journal.shipment,
+      fertilize: state.journal.fertilize,
+      pesticide: state.journal.pesticide,
+      pest: state.journal.pest,
+      planting: state.journal.planting,
+      seeding: state.journal.seeding,
+      weeding: state.journal.weeding,
+      watering: state.journal.watering,
+      workforce: state.journal.workforce,
+      farming: state.journal.farming,
+      updatedDate: state.journal.updatedDate,
     );
 
-    int index1 = journalList.indexWhere((data) => data.jid == state.journal.jid) ?? -1;
-    int index2 = reverseList.indexWhere((data) => data.jid == state.journal.jid) ?? -1;
+    int index1 =
+        journalList.indexWhere((data) => data.jid == state.journal.jid) ?? -1;
+    int index2 =
+        reverseList.indexWhere((data) => data.jid == state.journal.jid) ?? -1;
 
     if (index1 != -1) {
       journalList.removeAt(index1);
@@ -455,7 +471,8 @@ class FMJournalBloc extends Bloc<FMJournalEvent, FMJournalState> {
     }
 
     CommentRepository().uploadComment(comment: _cmt);
-    FMJournalRepository().updateJournalComment(jid: state.journal.jid, cmts: state.journal.comments + 1);
+    FMJournalRepository().updateJournalComment(
+        jid: state.journal.jid, cmts: state.journal.comments + 1);
 
     yield state.update(
       commentList: cmtList,

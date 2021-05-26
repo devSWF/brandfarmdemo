@@ -4,13 +4,13 @@ import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
+import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/resize_image.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 
 class JournalIssueCreateBloc
     extends Bloc<JournalIssueCreateEvent, JournalIssueCreateState> {
@@ -19,9 +19,9 @@ class JournalIssueCreateBloc
   @override
   Stream<JournalIssueCreateState> mapEventToState(
       JournalIssueCreateEvent event) async* {
-    if(event is TitleChanged){
+    if (event is TitleChanged) {
       yield* _mapTitleChangedToState(event.title);
-    }else if (event is AddImageFile) {
+    } else if (event is AddImageFile) {
       yield* _mapAddImageFileToState(
           imageFile: event.imageFile, index: event.index, from: event.from);
     } else if (event is SelectImage) {
@@ -79,7 +79,7 @@ class JournalIssueCreateBloc
 
   Stream<JournalIssueCreateState> _mapPressCompleteToState() async* {
     yield state.update(
-        isComplete: true,
+      isComplete: true,
     );
   }
 
@@ -93,16 +93,17 @@ class JournalIssueCreateBloc
     );
   }
 
-  Stream<JournalIssueCreateState> _mapUploadJournalToState(
-      {String fid,
-      String sfmid,
-      String uid,
-      String title,
-      int category,
-      int issueState,
-      String contents,
-        bool isReadByFM,
-        bool isReadByOffice,}) async* {
+  Stream<JournalIssueCreateState> _mapUploadJournalToState({
+    String fid,
+    String sfmid,
+    String uid,
+    String title,
+    int category,
+    int issueState,
+    String contents,
+    bool isReadByFM,
+    bool isReadByOffice,
+  }) async* {
     String issid = '';
     issid = FirebaseFirestore.instance.collection('Issue').doc().id;
     SubJournalIssue subJournalIssue = SubJournalIssue(
@@ -119,10 +120,10 @@ class JournalIssueCreateBloc
       comments: 0,
       isReadByOffice: isReadByOffice ?? false,
       isReadByFM: isReadByFM ?? false,
+      updatedDate: Timestamp.now(),
     );
 
-    await SubJournalRepository()
-        .uploadIssue(subJournalIssue: subJournalIssue);
+    await SubJournalRepository().uploadIssue(subJournalIssue: subJournalIssue);
 
     List<File> imageList = state.imageList;
     String pid = '';
@@ -151,7 +152,8 @@ class JournalIssueCreateBloc
     );
   }
 
-  Stream<JournalIssueCreateState> _mapDateSelectedToState(Timestamp selectedDate) async* {
+  Stream<JournalIssueCreateState> _mapDateSelectedToState(
+      Timestamp selectedDate) async* {
     yield state.update(
       selectedDate: selectedDate,
     );

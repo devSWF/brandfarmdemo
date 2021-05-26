@@ -14,42 +14,60 @@ dependencies:
   flutter_localizations: # Add this line
     sdk: flutter         # Add this line
   cupertino_icons: ^1.0.0
+
+  # bloc pattern
   flutter_bloc: ^6.1.2
   bloc: ^6.1.1
-  firebase_auth: ^1.1.2
-  equatable: ^1.2.6
-  cloud_firestore: ^1.0.7
-  font_awesome_flutter: ^8.11.0
-  rxdart: ^0.26.0
+
+  # adaptive design
   animated_text_kit: ^3.1.0
   adaptive_breakpoints: ^0.0.3
-  google_fonts: ^2.0.0
+
+  # web/json
   http: ^0.13.2
-  flutter_launcher_icons: ^0.9.0
   xml2json: ^5.1.0
+
+  # material related
+  equatable: ^1.2.6
+  rxdart: ^0.26.0
+
+  # fonts
+  google_fonts: ^2.0.0
+  font_awesome_flutter: ^8.11.0
+
+  # widget
+  flutter_speed_dial: ^2.1.1
   badges: ^1.1.6
+  flutter_launcher_icons: ^0.9.0
+
+  # locale related
+  flutter_svg: ^0.22.0
   intl: ^0.16.1
   date_format: ^1.0.9
+
+  # widget motions
+  flutter_swiper: ^1.1.6
+  dropdown_below: ^0.0.6
+  shimmer: ^2.0.0
   animations: ^1.1.2
   scrollable_positioned_list: ^0.1.9
-  flutter_speed_dial: ^2.1.1
-  flutter_svg: ^0.22.0
-  flutter_swiper: ^1.1.6
+
+  # image/cache related
   path_provider: ^2.0.1
   multi_image_picker: 4.7.15
   image_picker: 0.7.4
-  firebase_storage: ^8.0.5
-  firebase_core: ^1.1.0
   cached_network_image: ^3.0.0
   flutter_cache_manager: ^3.0.1
-  dropdown_below: ^0.0.6
-  shimmer: ^1.1.2
+
+  # firebase related
+  firebase_storage: ^8.0.5
+  firebase_core: ^1.1.0
+  firebase_auth: ^1.1.2
+  cloud_firestore: ^1.0.7
+
+  # push notification
   firebase_messaging: ^9.1.3
-  firebase_messaging_web: ^1.0.6
-  window_size:
-    git:
-      url: git://github.com/google/flutter-desktop-embedding.git
-      path: plugins/window_size
+  firebase_messaging_web: ^1.0.7
 
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
