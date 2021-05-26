@@ -544,9 +544,10 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                       ),
                       Icon(
                         Icons.calendar_today_outlined,
-                        color: (state.pageIndex == 2)
-                            ? Color(0xFF15B85B)
-                            : Colors.black,
+
+                        color:
+                        (state.pageIndex == 2) ? Color(0xFF15B85B) : Colors.black,
+
                         size: 18,
                       ),
                       SizedBox(
@@ -597,9 +598,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                       ),
                       Icon(
                         Icons.person_outline,
-                        color: (state.pageIndex == 3)
-                            ? Color(0xFF15B85B)
-                            : Colors.black,
+                        color:
+                        (state.pageIndex == 3) ? Color(0xFF15B85B) : Colors.black,
+
                         size: 18,
                       ),
                       SizedBox(
@@ -640,9 +641,9 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                       ),
                       Icon(
                         Icons.chat_bubble_outline,
-                        color: (state.pageIndex == 4)
-                            ? Color(0xFF15B85B)
-                            : Colors.black,
+                        color:
+                        (state.pageIndex == 4) ? Color(0xFF15B85B) : Colors.black,
+
                         size: 18,
                       ),
                       SizedBox(
@@ -761,9 +762,8 @@ class _FMHomeScreenState extends State<FMHomeScreen> {
                       ),
                       Icon(
                         Icons.article_outlined,
-                        color: (state.pageIndex == 5)
-                            ? Color(0xFF15B85B)
-                            : Colors.black,
+                        color:
+                        (state.pageIndex == 5) ? Color(0xFF15B85B) : Colors.black,
                         size: 18,
                       ),
                       SizedBox(

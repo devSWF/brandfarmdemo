@@ -5,18 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateAnnouncement extends StatefulWidget {
+  const CreateAnnouncement({
+    Key key,
+    VoidCallback onPressed,
+  })  : _onPressed = onPressed,
+        super(key: key);
+  final VoidCallback _onPressed;
+
   @override
   _CreateAnnouncementState createState() => _CreateAnnouncementState();
 }
 
 class _CreateAnnouncementState extends State<CreateAnnouncement> {
-  FMNotificationBloc _fmNotificationBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    _fmNotificationBloc = BlocProvider.of<FMNotificationBloc>(context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +43,16 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                   ),
                   child: CircleAvatar(
                       radius: 19.0,
-                      backgroundImage: (UserUtil.getUser().imgUrl.isEmpty
-                          || UserUtil.getUser().imgUrl == '--')
+                      backgroundImage: (UserUtil.getUser().imgUrl.isEmpty ||
+                              UserUtil.getUser().imgUrl == '--')
                           ? AssetImage('assets/profile.png')
                           : NetworkImage(UserUtil.getUser().imgUrl)),
                 ),
-                SizedBox(width: 13,),
+                SizedBox(
+                  width: 13,
+                ),
                 InkResponse(
-                  onTap: () async {
-                    await _showMyDialog();
-                  },
+                  onTap: widget._onPressed,
                   child: Container(
                     height: 29,
                     width: 698,
@@ -64,11 +64,12 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
                     ),
                     child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('어떤 공지사항을 게시할까요?',
+                      child: Text(
+                        '어떤 공지사항을 게시할까요?',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 15,
-                          color: Color(0xFF848484),
-                        ),
+                              fontSize: 15,
+                              color: Color(0xFF848484),
+                            ),
                       ),
                     ),
                   ),
@@ -81,16 +82,4 @@ class _CreateAnnouncementState extends State<CreateAnnouncement> {
     );
   }
 
-  Future<void> _showMyDialog() async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return BlocProvider.value(
-            value: _fmNotificationBloc,
-            child: WriteNoticeScreen(),
-          );
-        }
-    );
-  }
 }
