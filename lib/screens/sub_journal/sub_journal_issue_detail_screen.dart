@@ -52,7 +52,6 @@ class _SubJournalIssueDetailScreenState
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
-
   @override
   void initState() {
     super.initState();
@@ -888,6 +887,9 @@ class _SubJournalIssueDetailScreenState
                                   id: state.selectedIssue.issid,
                                   comment: comment,
                                   cmtid: cmtid,
+                                ));
+                                _journalBloc.add(SetUpdatedDateIssue(
+                                  id: state.selectedIssue.issid,
                                 ));
                               } else {
                                 _commentBloc.add(AddComment(

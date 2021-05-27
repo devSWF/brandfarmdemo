@@ -1,16 +1,20 @@
 import 'dart:io';
 
 import 'package:BrandFarm/blocs/journal_issue_create/bloc.dart';
+import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
+import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
+import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/resize_image.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 
 class JournalIssueCreateBloc
     extends Bloc<JournalIssueCreateEvent, JournalIssueCreateState> {
@@ -19,9 +23,9 @@ class JournalIssueCreateBloc
   @override
   Stream<JournalIssueCreateState> mapEventToState(
       JournalIssueCreateEvent event) async* {
-    if(event is TitleChanged){
+    if (event is TitleChanged) {
       yield* _mapTitleChangedToState(event.title);
-    }else if (event is AddImageFile) {
+    } else if (event is AddImageFile) {
       yield* _mapAddImageFileToState(
           imageFile: event.imageFile, index: event.index, from: event.from);
     } else if (event is SelectImage) {
@@ -79,7 +83,7 @@ class JournalIssueCreateBloc
 
   Stream<JournalIssueCreateState> _mapPressCompleteToState() async* {
     yield state.update(
-        isComplete: true,
+      isComplete: true,
     );
   }
 
@@ -93,16 +97,17 @@ class JournalIssueCreateBloc
     );
   }
 
-  Stream<JournalIssueCreateState> _mapUploadJournalToState(
-      {String fid,
-      String sfmid,
-      String uid,
-      String title,
-      int category,
-      int issueState,
-      String contents,
-        bool isReadByFM,
-        bool isReadByOffice,}) async* {
+  Stream<JournalIssueCreateState> _mapUploadJournalToState({
+    String fid,
+    String sfmid,
+    String uid,
+    String title,
+    int category,
+    int issueState,
+    String contents,
+    bool isReadByFM,
+    bool isReadByOffice,
+  }) async* {
     String issid = '';
     issid = FirebaseFirestore.instance.collection('Issue').doc().id;
     SubJournalIssue subJournalIssue = SubJournalIssue(
@@ -119,10 +124,10 @@ class JournalIssueCreateBloc
       comments: 0,
       isReadByOffice: isReadByOffice ?? false,
       isReadByFM: isReadByFM ?? false,
+      updatedDate: Timestamp.now(),
     );
 
-    await SubJournalRepository()
-        .uploadIssue(subJournalIssue: subJournalIssue);
+    await SubJournalRepository().uploadIssue(subJournalIssue: subJournalIssue);
 
     List<File> imageList = state.imageList;
     String pid = '';
@@ -146,12 +151,34 @@ class JournalIssueCreateBloc
       });
     }
 
+    Farm farm = await SubHomeRepository()
+        .getFarm(await FieldUtil.getField().fieldCategory);
+    User user = await SubHomeRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '새로 등록된 이슈일지를 확인하세요',
+      content: '이슈일지',
+      postedDate: Timestamp.now(),
+      jid: '',
+      issid: issid,
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    SubHomeRepository().sendNotification(_sendToFarm);
+
     yield state.update(
       isUploaded: true,
     );
   }
 
-  Stream<JournalIssueCreateState> _mapDateSelectedToState(Timestamp selectedDate) async* {
+  Stream<JournalIssueCreateState> _mapDateSelectedToState(
+      Timestamp selectedDate) async* {
     yield state.update(
       selectedDate: selectedDate,
     );
