@@ -11,17 +11,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class Comments extends StatefulWidget {
+  final VoidCallback onPressed1;
+  final VoidCallback onPressed2;
+  final VoidCallback onPressed3;
+  final VoidCallback onPressed4;
+  final VoidCallback onPressed5;
+
+  const Comments(
+      {Key key,
+      this.onPressed1,
+      this.onPressed2,
+      this.onPressed3,
+      this.onPressed4,
+      this.onPressed5})
+      : super(key: key);
+
   @override
   _CommentsState createState() => _CommentsState();
 }
 
 class _CommentsState extends State<Comments> {
-  FMHomeBloc _fmHomeBloc;
+  VoidCallback onPressed1;
+  VoidCallback onPressed2;
+  VoidCallback onPressed3;
+  VoidCallback onPressed4;
+  VoidCallback onPressed5;
 
   @override
   void initState() {
     super.initState();
-    _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
+    onPressed1 = widget.onPressed1;
+    onPressed2 = widget.onPressed2;
+    onPressed3 = widget.onPressed3;
+    onPressed4 = widget.onPressed4;
+    onPressed5 = widget.onPressed5;
   }
 
   @override
@@ -30,7 +53,7 @@ class _CommentsState extends State<Comments> {
       listener: (context, state) {},
       builder: (context, state) {
         return (state.isLoading)
-            ? LinearProgressIndicator()
+            ? Container(width: 772,child: Center(child: CircularProgressIndicator()))
             : (state.recentUpdateList.isNotEmpty)
                 ? Row(
                     children: [
