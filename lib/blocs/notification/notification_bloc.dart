@@ -68,7 +68,6 @@ class NotificationBloc
       importantList: importantList,
       generalList: generalList,
       unRead: unRead,
-      isLoading: false,
     );
   }
 

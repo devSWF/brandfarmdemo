@@ -1,13 +1,9 @@
 import 'dart:io';
 
 import 'package:BrandFarm/blocs/journal_create/bloc.dart';
-import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_models.dart';
-import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
-import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
-import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
 import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/journal.category.dart';
@@ -435,7 +431,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       watering: state.wateringList.isEmpty ? null : state.wateringList,
       workforce: state.workforceList.isEmpty ? null : state.workforceList,
       farming: state.farmingList.isEmpty ? null : state.farmingList,
-      updatedDate: state.existJournal.updatedDate,
     );
 
     await SubJournalRepository().updateJournal(
@@ -504,7 +499,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       watering: state.wateringList.isEmpty ? null : state.wateringList,
       workforce: state.workforceList.isEmpty ? null : state.workforceList,
       farming: state.farmingList.isEmpty ? null : state.farmingList,
-      updatedDate: Timestamp.now(),
     );
 
     await SubJournalRepository().uploadJournal(
@@ -533,27 +527,6 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
         );
       });
     }
-
-    Farm farm = await SubHomeRepository()
-        .getFarm(await FieldUtil.getField().fieldCategory);
-    User user = await SubHomeRepository().getUser(farm.managerID);
-    String docID =
-        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
-    SendToFarm _sendToFarm = SendToFarm(
-      docID: docID,
-      uid: UserUtil.getUser().uid,
-      name: UserUtil.getUser().name,
-      farmid: farm.farmID,
-      title: '새로 등록된 성장일지를 확인하세요',
-      content: '성장일지',
-      postedDate: Timestamp.now(),
-      jid: jid,
-      issid: '',
-      cmtid: '',
-      scmtid: '',
-      fcmToken: user.fcmToken,
-    );
-    SubHomeRepository().sendNotification(_sendToFarm);
 
     yield state.update(writeComplete: true);
   }

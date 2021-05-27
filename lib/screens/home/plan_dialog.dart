@@ -37,29 +37,29 @@ class _PlanDialogState extends State<PlanDialog> {
               style: Theme.of(context).textTheme.bodyText1.copyWith(
                 color: Colors.black,
               ),),
-            // Text('확인하시겠습니까?',
-            //   style: Theme.of(context).textTheme.bodyText1.copyWith(
-            //     color: Colors.black,
-            //   ),),
+            Text('확인하시겠습니까?',
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                color: Colors.black,
+              ),),
             SizedBox(height: 10,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // ElevatedButton(
-                //   onPressed: (){
-                //     _homeBloc.add(UpdatePlanState());
-                //     Navigator.pop(context);
-                //   },
-                //   style: ElevatedButton.styleFrom(
-                //     primary: Colors.grey[300],
-                //   ),
-                //   child: Text('취소',
-                //     style: Theme.of(context).textTheme.bodyText1.copyWith(
-                //       fontWeight: FontWeight.bold,
-                //       color: Colors.white,
-                //     ),),
-                // ),
-                // SizedBox(width: 10,),
+                ElevatedButton(
+                  onPressed: (){
+                    _homeBloc.add(UpdatePlanState());
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.grey[300],
+                  ),
+                  child: Text('취소',
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),),
+                ),
+                SizedBox(width: 10,),
                 ElevatedButton(
                   onPressed: (){
                     _homeBloc.add(UpdatePlanState());

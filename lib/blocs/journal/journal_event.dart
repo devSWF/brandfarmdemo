@@ -14,9 +14,9 @@ class LoadJournal extends JournalEvent {}
 
 class GetInitialList extends JournalEvent {}
 
-class LoadJournalDetail extends JournalEvent {}
+class LoadJournalDetail extends JournalEvent{}
 
-class JournalDetailLoaded extends JournalEvent {}
+class JournalDetailLoaded extends JournalEvent{}
 
 class GetListBySelectedDate extends JournalEvent {
   final String year;
@@ -52,15 +52,15 @@ class GetIssueListByTimeOrder extends JournalEvent {
 class GetIssueListByCategory extends JournalEvent {
   final int issueState;
 
-  const GetIssueListByCategory({
-    @required this.issueState,
-  });
+  const GetIssueListByCategory(
+      {@required this.issueState,});
 
   @override
   List<Object> get props => [issueState];
 
   @override
-  String toString() => 'GetIssueListByCategory { issueState: $issueState, }';
+  String toString() =>
+      'GetIssueListByCategory { issueState: $issueState, }';
 }
 
 class WaitForLoadMore extends JournalEvent {}
@@ -68,49 +68,32 @@ class WaitForLoadMore extends JournalEvent {}
 class LoadMore extends JournalEvent {
   final int tab;
 
-  const LoadMore({
-    @required this.tab,
-  });
+  const LoadMore(
+      {@required this.tab,});
 
   @override
   List<Object> get props => [tab];
 
   @override
-  String toString() => 'LoadMore { tab: $tab, }';
+  String toString() =>
+      'LoadMore { tab: $tab, }';
 }
 
 class AddIssueComment extends JournalEvent {
   final String id;
 
   const AddIssueComment({
-    @required this.id,
-  });
+        @required this.id,
+      });
 
   @override
   List<Object> get props => [
-        id,
-      ];
+    id,
+  ];
 
   @override
-  String toString() => '''AddComment { 
-      id: $id, 
-      }''';
-}
-
-class SetUpdatedDateIssue extends JournalEvent {
-  final String id;
-
-  const SetUpdatedDateIssue({
-    @required this.id,
-  });
-
-  @override
-  List<Object> get props => [
-        id,
-      ];
-
-  @override
-  String toString() => '''SetUpdatedDateIssue { 
+  String toString() =>
+      '''AddComment { 
       id: $id, 
       }''';
 }
@@ -124,34 +107,17 @@ class AddJournalComment extends JournalEvent {
 
   @override
   List<Object> get props => [
-        id,
-      ];
+    id,
+  ];
 
   @override
-  String toString() => '''AddComment { 
+  String toString() =>
+      '''AddComment { 
       id: $id, 
       }''';
 }
 
-class SetUpdatedDate extends JournalEvent {
-  final String id;
-
-  const SetUpdatedDate({
-    @required this.id,
-  });
-
-  @override
-  List<Object> get props => [
-        id,
-      ];
-
-  @override
-  String toString() => '''SetUpdatedDate { 
-      id: $id, 
-      }''';
-}
-
-class PassSelectedJournal extends JournalEvent {
+class PassSelectedJournal extends JournalEvent{
   final Journal journal;
   const PassSelectedJournal({
     this.journal,
@@ -164,7 +130,7 @@ class PassSelectedJournal extends JournalEvent {
   }
 }
 
-class PassSelectedIssue extends JournalEvent {
+class PassSelectedIssue extends JournalEvent{
   final SubJournalIssue issue;
   const PassSelectedIssue({
     @required this.issue,

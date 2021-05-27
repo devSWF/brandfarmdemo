@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
@@ -48,7 +50,6 @@ class SubJournalIssue {
   final int comments;
   final bool isReadByFM;
   final bool isReadByOffice;
-  final Timestamp updatedDate;
 
   SubJournalIssue({
     @required this.date,
@@ -64,7 +65,6 @@ class SubJournalIssue {
     @required this.comments,
     @required this.isReadByFM,
     @required this.isReadByOffice,
-    @required this.updatedDate,
   });
 
   factory SubJournalIssue.fromSnapshot(DocumentSnapshot ds) {
@@ -82,27 +82,24 @@ class SubJournalIssue {
       comments: ds['comments'],
       isReadByFM: ds['isReadByFM'],
       isReadByOffice: ds['isReadByOffice'],
-      updatedDate: ds['updatedDate'],
     );
   }
 
-  factory SubJournalIssue.empty() {
+  factory SubJournalIssue.empty(){
     return SubJournalIssue(
-      date: Timestamp.now(),
-      fid: '',
-      fieldCategory: '',
-      sfmid: '',
-      issid: '',
-      uid: '',
-      title: '',
-      category: 0,
-      issueState: 0,
-      contents: '',
-      comments: 0,
-      isReadByFM: false,
-      isReadByOffice: false,
-      updatedDate: Timestamp.now(),
-    );
+        date: Timestamp.now(),
+        fid: '',
+        fieldCategory: '',
+        sfmid: '',
+        issid: '',
+        uid: '',
+        title: '',
+        category: 0,
+        issueState: 0,
+        contents: '',
+        comments: 0,
+        isReadByFM: false,
+        isReadByOffice: false);
   }
 
   Map<String, dynamic> toMap() {
@@ -120,7 +117,6 @@ class SubJournalIssue {
       'comments': comments,
       'isReadByFM': isReadByFM,
       'isReadByOffice': isReadByOffice,
-      'updatedDate': updatedDate,
     };
   }
 }

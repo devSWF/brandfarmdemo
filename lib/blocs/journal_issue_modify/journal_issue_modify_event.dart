@@ -1,23 +1,25 @@
+
 import 'dart:io';
 
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-abstract class JournalIssueModifyEvent extends Equatable {
+
+abstract class JournalIssueModifyEvent extends Equatable{
   const JournalIssueModifyEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class ModifyLoading extends JournalIssueModifyEvent {}
+class ModifyLoading extends JournalIssueModifyEvent{}
 
-class ModifyLoaded extends JournalIssueModifyEvent {}
+class ModifyLoaded extends JournalIssueModifyEvent{}
 
-class SelectImageM extends JournalIssueModifyEvent {
+class SelectImageM extends JournalIssueModifyEvent{
   final List<Asset> assetList;
 
   const SelectImageM({@required this.assetList});
@@ -26,7 +28,7 @@ class SelectImageM extends JournalIssueModifyEvent {
   String toString() => 'SelectImageM {assetList: $assetList}';
 }
 
-class AddImageFileM extends JournalIssueModifyEvent {
+class AddImageFileM extends JournalIssueModifyEvent{
   final File imageFile;
   final int index;
   final int from; // gallery 0 / camera 1
@@ -39,7 +41,7 @@ class AddImageFileM extends JournalIssueModifyEvent {
   String toString() => 'AddImageFileM {imageFile: ${imageFile.path}}';
 }
 
-class DeleteImageFile extends JournalIssueModifyEvent {
+class DeleteImageFile extends JournalIssueModifyEvent{
   final File removedFile;
 
   const DeleteImageFile({@required this.removedFile});
@@ -48,7 +50,7 @@ class DeleteImageFile extends JournalIssueModifyEvent {
   String toString() => 'DeleteImageFile {removedFile: ${removedFile}}';
 }
 
-class PressComplete extends JournalIssueModifyEvent {}
+class PressComplete extends JournalIssueModifyEvent{}
 
 class UpdateIssue extends JournalIssueModifyEvent {
   final String fid;
@@ -63,7 +65,6 @@ class UpdateIssue extends JournalIssueModifyEvent {
   final bool isReadByFM;
   final bool isReadByOffice;
   final Timestamp selectedDate;
-  final Timestamp updatedDate;
 
   const UpdateIssue({
     @required this.fid,
@@ -78,7 +79,6 @@ class UpdateIssue extends JournalIssueModifyEvent {
     @required this.isReadByFM,
     @required this.isReadByOffice,
     @required this.selectedDate,
-    @required this.updatedDate,
   });
 
   @override
@@ -95,7 +95,6 @@ class UpdateIssue extends JournalIssueModifyEvent {
       comments: $comments,
       isReadByFM: $isReadByFM,
       isReadByOffice: $isReadByOffice,
-      updatedDate: $updatedDate,
     }''';
   }
 }

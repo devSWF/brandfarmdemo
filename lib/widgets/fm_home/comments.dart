@@ -1,11 +1,6 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
 import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
-import 'package:BrandFarm/widgets/fm_home/nav_pages/issue.dart';
-import 'package:BrandFarm/widgets/fm_home/nav_pages/journal.dart';
-import 'package:BrandFarm/widgets/fm_home/nav_pages/notice.dart';
-import 'package:BrandFarm/widgets/fm_home/nav_pages/plan.dart';
-import 'package:BrandFarm/widgets/fm_home/nav_pages/purchase.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -13,17 +8,40 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class Comments extends StatefulWidget {
+  final VoidCallback onPressed1;
+  final VoidCallback onPressed2;
+  final VoidCallback onPressed3;
+  final VoidCallback onPressed4;
+  final VoidCallback onPressed5;
+
+  const Comments(
+      {Key key,
+      this.onPressed1,
+      this.onPressed2,
+      this.onPressed3,
+      this.onPressed4,
+      this.onPressed5})
+      : super(key: key);
+
   @override
   _CommentsState createState() => _CommentsState();
 }
 
 class _CommentsState extends State<Comments> {
-  FMHomeBloc _fmHomeBloc;
+  VoidCallback onPressed1;
+  VoidCallback onPressed2;
+  VoidCallback onPressed3;
+  VoidCallback onPressed4;
+  VoidCallback onPressed5;
 
   @override
   void initState() {
     super.initState();
-    _fmHomeBloc = BlocProvider.of<FMHomeBloc>(context);
+    onPressed1 = widget.onPressed1;
+    onPressed2 = widget.onPressed2;
+    onPressed3 = widget.onPressed3;
+    onPressed4 = widget.onPressed4;
+    onPressed5 = widget.onPressed5;
   }
 
   @override
@@ -32,21 +50,7 @@ class _CommentsState extends State<Comments> {
       listener: (context, state) {},
       builder: (context, state) {
         return (state.isLoading)
-            ? Center(
-                child: Container(
-                  width: 814,
-                  child: Center(
-                    child: Text(
-                      'LOADING...',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                        fontSize: 50,
-                      ),
-                    ),
-                  ),
-                ),
-              )
+            ? Container(width: 772,child: Center(child: CircularProgressIndicator()))
             : (state.recentUpdateList.isNotEmpty)
                 ? Row(
                     children: [
@@ -252,18 +256,6 @@ class _CommentsState extends State<Comments> {
     }
   }
 
-  Future<void> _showNotificationDialog(FMHomeState state, int index) async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return BlocProvider.value(
-            value: _fmHomeBloc,
-            child: Notice(index: index, state: state),
-          );
-        });
-  }
-
   Widget _notice(FMHomeState state, int index) {
     FMHomeRecentUpdates obj = state.recentUpdateList[index];
     // setUserInfo(obj.user.uid, 1);
@@ -340,9 +332,7 @@ class _CommentsState extends State<Comments> {
                         width: 6,
                       ),
                       InkResponse(
-                        onTap: () async {
-                          await _showNotificationDialog(state, index);
-                        },
+                        onTap: onPressed1,
                         child: Text(
                           '${date}의 기록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -385,18 +375,6 @@ class _CommentsState extends State<Comments> {
             ],
           )
         : CircularProgressIndicator();
-  }
-
-  Future<void> _showPlanDialog(FMHomeState state, int index) async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return BlocProvider.value(
-            value: _fmHomeBloc,
-            child: Plan(index: index, state: state),
-          );
-        });
   }
 
   Widget _plan(FMHomeState state, int index) {
@@ -474,9 +452,7 @@ class _CommentsState extends State<Comments> {
                         width: 6,
                       ),
                       InkResponse(
-                        onTap: () async {
-                          await _showPlanDialog(state, index);
-                        },
+                        onTap: onPressed2,
                         child: Text(
                           '${date}의 기록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -521,18 +497,6 @@ class _CommentsState extends State<Comments> {
         : CircularProgressIndicator();
   }
 
-  Future<void> _showPurchaseDialog(FMHomeState state, int index) async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return BlocProvider.value(
-            value: _fmHomeBloc,
-            child: Purchase(index: index, state: state),
-          );
-        });
-  }
-
   Widget _purchase(FMHomeState state, int index) {
     FMHomeRecentUpdates obj = state.recentUpdateList[index];
     // setUserInfo(obj.user.uid, 3);
@@ -548,7 +512,7 @@ class _CommentsState extends State<Comments> {
                     children: [
                       Container(
                         width: 31,
-                        child: (obj.purchase.isThereUpdates)
+                        child: (!obj.purchase.isThereUpdates)
                             ? Text(
                                 '확인',
                                 style: Theme.of(context)
@@ -608,9 +572,7 @@ class _CommentsState extends State<Comments> {
                         width: 6,
                       ),
                       InkResponse(
-                        onTap: () async {
-                          await _showPurchaseDialog(state, index);
-                        },
+                        onTap: onPressed3,
                         child: Text(
                           '${date}의 기록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -653,18 +615,6 @@ class _CommentsState extends State<Comments> {
             ],
           )
         : CircularProgressIndicator();
-  }
-
-  Future<void> _showJournalDialog(FMHomeState state, int index) async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return BlocProvider.value(
-            value: _fmHomeBloc,
-            child: Journal(index: index, state: state),
-          );
-        });
   }
 
   Widget _journal(FMHomeState state, int index) {
@@ -742,9 +692,7 @@ class _CommentsState extends State<Comments> {
                         width: 6,
                       ),
                       InkResponse(
-                        onTap: () async {
-                          await _showJournalDialog(state, index);
-                        },
+                        onTap: onPressed4,
                         child: Text(
                           '${date}의 기록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -787,18 +735,6 @@ class _CommentsState extends State<Comments> {
             ],
           )
         : CircularProgressIndicator();
-  }
-
-  Future<void> _showIssueDialog(FMHomeState state, int index) async {
-    return showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return BlocProvider.value(
-            value: _fmHomeBloc,
-            child: Issue(state: state, index: index),
-          );
-        });
   }
 
   Widget _issue(FMHomeState state, int index) {
@@ -876,15 +812,7 @@ class _CommentsState extends State<Comments> {
                         width: 6,
                       ),
                       InkResponse(
-                        onTap: () async {
-                          // Navigator.push(context, MaterialPageRoute(
-                          //   builder: (context) => BlocProvider.value(
-                          //       value: _fmHomeBloc,
-                          //     child: Issue(state: state, index: index,),
-                          //   ),
-                          // ));
-                          await _showIssueDialog(state, index);
-                        },
+                        onTap: onPressed5,
                         child: Text(
                           '${date}의 기록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(

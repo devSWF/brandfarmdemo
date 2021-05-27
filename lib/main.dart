@@ -50,33 +50,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // import 'package:timezone/data/latest.dart' as tz;
 // import 'package:timezone/timezone.dart' as tz;
 
-Future<NotificationSettings> getSettings() async {
-  NotificationSettings settings = await FirebaseMessaging.instance.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-  // print('User granted permission: ${settings.authorizationStatus}');
-  return settings;
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await Firebase.initializeApp();
-  await getSettings().then((settings) {
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
-    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
-    } else {
-      print('User declined or has not accepted permission');
-    }
-  });
+
   // Set the background messaging handler early on, as a named top-level function
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
