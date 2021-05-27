@@ -4,10 +4,8 @@
     <!--
       If you are serving your web app in a path other than the root, change the
       href value below to reflect the base path you are serving from.
-
       The path provided below has to start and end with a slash "/" in order for
       it to work correctly.
-
       Fore more details:
       * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
     -->
@@ -30,7 +28,7 @@
     <link rel="manifest" href="manifest.json">
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
-<!--    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>-->
+    <!--    <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>-->
 
     <!-- TODO: Add SDKs for Firebase products that you want to use
          (firebase-auth.js, firebase-firestore.js, firebase-analytics.js...)
@@ -46,6 +44,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/7.5.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.5.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.1/firebase-functions.js"></script>
 
     <script>
       // Your web app's Firebase configuration
@@ -63,10 +62,6 @@
       firebase.initializeApp(firebaseConfig);
       firebase.analytics();
 
-
-
-
-
     </script>
 </head>
 <body>
@@ -76,12 +71,10 @@
 <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('flutter-first-frame', function () {
-        navigator.serviceWorker.register('/flutter_service_worker.js');
         navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        navigator.serviceWorker.register('/flutter_service_worker.js');
       });
     }
-
-
 
 </script>
 <script src="main.dart.js" type="application/javascript"></script>

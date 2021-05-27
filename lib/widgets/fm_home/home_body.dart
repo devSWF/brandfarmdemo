@@ -54,10 +54,9 @@ class _HomeBodyState extends State<HomeBody> {
                     controller: _scrollController,
                     child: ListView(
                       shrinkWrap: true,
-
                       children: [
                         CreateAnnouncement(
-                          onPressed:() async {
+                          onPressed: () async {
                             await _showMyDialog();
                           },
                         ),
@@ -78,27 +77,30 @@ class _HomeBodyState extends State<HomeBody> {
                         SizedBox(
                           height: defaultPadding,
                         ),
-                        Comments(
-                          onPressed1: () {
-                            _fmHomeBloc.add(SetPageIndex(index: 1));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
-                          onPressed2: () {
-                            _fmHomeBloc.add(SetPageIndex(index: 2));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
-                          onPressed3:  () {
-                            _fmHomeBloc.add(SetPageIndex(index: 4));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
-                          onPressed4: () {
-                            _fmHomeBloc.add(SetPageIndex(index: 5));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
-                          onPressed5: () {
-                            _fmHomeBloc.add(SetPageIndex(index: 5));
-                            _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                          },
+                        BlocProvider.value(
+                          value: _fmHomeBloc,
+                          child: Comments(
+                            onPressed1: () {
+                              _fmHomeBloc.add(SetPageIndex(index: 1));
+                              _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                            },
+                            onPressed2: () {
+                              _fmHomeBloc.add(SetPageIndex(index: 2));
+                              _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                            },
+                            onPressed3: () {
+                              _fmHomeBloc.add(SetPageIndex(index: 4));
+                              _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                            },
+                            onPressed4: () {
+                              _fmHomeBloc.add(SetPageIndex(index: 5));
+                              _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                            },
+                            onPressed5: () {
+                              _fmHomeBloc.add(SetPageIndex(index: 5));
+                              _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                            },
+                          ),
                         ),
                         SizedBox(
                           height: defaultPadding,
@@ -112,6 +114,7 @@ class _HomeBodyState extends State<HomeBody> {
       },
     );
   }
+
   Future<void> _showMyDialog() async {
     return showDialog(
         context: context,

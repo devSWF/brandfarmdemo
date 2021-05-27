@@ -1,40 +1,38 @@
 //screens
+//flutter firebase
+import 'dart:async';
+
+import 'package:BrandFarm/blocs/authentication/bloc.dart';
+import 'package:BrandFarm/blocs/blocObserver.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
+import 'package:BrandFarm/blocs/login/bloc.dart';
+import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
 import 'package:BrandFarm/blocs/purchase/purchase_bloc.dart';
-import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
 import 'package:BrandFarm/fm_screens/home/fm_home_screen.dart';
 import 'package:BrandFarm/om_screens/home/om_home_screen.dart';
-import 'package:BrandFarm/screens/home/sub_home_screen.dart';
-import 'package:BrandFarm/screens/splash/splash_screen.dart';
-import 'package:BrandFarm/screens/login/login_screen.dart';
-import 'package:BrandFarm/utils/user/user_util.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-
-//bloc
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc/bloc.dart';
-import 'package:BrandFarm/blocs/login/bloc.dart';
-import 'blocs/home/bloc.dart';
-import 'package:BrandFarm/blocs/authentication/bloc.dart';
-import 'package:BrandFarm/blocs/blocObserver.dart';
-import 'blocs/om_home/om_home_bloc.dart';
-
 //repository
 import 'package:BrandFarm/repository/user/user_repository.dart';
-
-//flutter firebase
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:BrandFarm/screens/home/sub_home_screen.dart';
+import 'package:BrandFarm/screens/login/login_screen.dart';
+import 'package:BrandFarm/screens/splash/splash_screen.dart';
 //util
 import 'package:BrandFarm/utils/themes/farm_theme_data.dart';
+import 'package:BrandFarm/utils/user/user_util.dart';
+import 'package:bloc/bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+//bloc
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'blocs/home/bloc.dart';
+import 'blocs/om_home/om_home_bloc.dart';
 
 /// Define a top-level named handler which background/terminated messages will
 /// call.
@@ -50,10 +48,36 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 // import 'package:timezone/data/latest.dart' as tz;
 // import 'package:timezone/timezone.dart' as tz;
 
+Future<NotificationSettings> getSettings() async {
+  NotificationSettings settings =
+      await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+  // print('User granted permission: ${settings.authorizationStatus}');
+  return settings;
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = MyBlocObserver();
   await Firebase.initializeApp();
+
+  await getSettings().then((settings) {
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  });
 
   // Set the background messaging handler early on, as a named top-level function
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);

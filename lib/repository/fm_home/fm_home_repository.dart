@@ -1,7 +1,7 @@
-
 import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
@@ -13,6 +13,53 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FMHomeRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> updateFcmToken(String uid, String deviceToken) async {
+    DocumentReference reference = _firestore.collection('User').doc(uid);
+    await reference.update({"fcmToken": deviceToken});
+  }
+
+  Future<void> updateIssue(SubJournalIssue issue) async {
+    DocumentReference reference =
+        _firestore.collection('Issue').doc(issue.issid);
+    await reference.update(issue.toMap());
+  }
+
+  Future<void> updateJournal(Journal journal) async {
+    DocumentReference reference =
+        _firestore.collection('Journal').doc(journal.jid);
+    await reference.update(journal.toMap());
+  }
+
+  Future<void> updateNotice(NotificationNotice notice) async {
+    DocumentReference reference =
+        _firestore.collection('Notification').doc(notice.notid);
+    await reference.update(notice.toDocument());
+  }
+
+  Future<void> updatePlan(Plan plan) async {
+    DocumentReference reference =
+        _firestore.collection('Plan').doc(plan.planID);
+    await reference.update(plan.toDocument());
+  }
+
+  Future<void> updatePurchase(Purchase purchase) async {
+    DocumentReference reference =
+        _firestore.collection('Purchase').doc(purchase.purchaseID);
+    await reference.update(purchase.toDocument());
+  }
+
+  Future<void> updateComment(Comment comment) async {
+    DocumentReference reference =
+        _firestore.collection('Comment').doc(comment.cmtid);
+    await reference.update(comment.toDocument());
+  }
+
+  Future<void> updateSComment(SubComment subComment) async {
+    DocumentReference reference =
+        _firestore.collection('SubComment').doc(subComment.scmtid);
+    await reference.update(subComment.toDocument());
+  }
 
   Future<User> getDetailUserInfo(uid) async {
     User user;
@@ -109,7 +156,7 @@ class FMHomeRepository {
     QuerySnapshot _journal = await _firestore
         .collection('Journal')
         .where('fieldCategory', isEqualTo: fieldCategory)
-        .orderBy('date', descending: true)
+        .orderBy('updatedDate', descending: true)
         .limit(10)
         .get();
 
@@ -125,7 +172,7 @@ class FMHomeRepository {
     QuerySnapshot _issue = await _firestore
         .collection('Issue')
         .where('fieldCategory', isEqualTo: fieldCategory)
-        .orderBy('date', descending: true)
+        .orderBy('updatedDate', descending: true)
         .limit(10)
         .get();
 
@@ -168,73 +215,118 @@ class FMHomeRepository {
     return subComment;
   }
 
-  // Future<void> updateIssue({
-  //   SubJournalIssue obj,
-  // }) async {
-  //   DocumentReference reference = _firestore.collection('Issue').doc(obj.issid);
-  //   await reference.update(obj.toMap());
-  // }
-  //
-  // Future<void> addCommentIssue({
-  //   String issid,
-  // })async{
-  //   DocumentReference reference = _firestore.collection('Issue').doc(issid);
-  //
-  //   await reference.update({"comments": FieldValue.increment(1)});
-  // }
-  //
-  // Future<void> addCommentJournal({
-  //   String jid,
-  // })async{
-  //   DocumentReference reference = _firestore.collection('Journal').doc(jid);
-  //
-  //   await reference.update({"comments": FieldValue.increment(1)});
-  // }
-  //
-  // Future<List<ImagePicture>> getImage(Field field) async {
-  //   List<ImagePicture> image = [];
-  //   QuerySnapshot img = await _firestore
-  //       .collection('Picture')
-  //       .where('uid', isEqualTo: field.sfmid)
-  //       .where('jid', isEqualTo: '--')
-  //       .get();
-  //   img.docs.forEach((ds) {
-  //     image.add(ImagePicture.fromSnapshot(ds));
-  //   });
-  //
-  //   return image;
-  // }
-  //
-  // Future<List<Comment>> getComment(String issid) async {
-  //   List<Comment> cmt = [];
-  //   QuerySnapshot _cmt = await _firestore
-  //       .collection('Comment')
-  //       .where('issid', isEqualTo: issid)
-  //       .get();
-  //
-  //   _cmt.docs.forEach((ds) {
-  //     cmt.add(Comment.fromSnapshot(ds));
-  //   });
-  //
-  //   return cmt;
-  // }
-  //
-  // Future<List<SubComment>> getSubComment(String issid) async {
-  //   List<SubComment> scmt = [];
-  //   QuerySnapshot _scmt = await _firestore
-  //       .collection('SubComment')
-  //       .where('issid', isEqualTo: issid)
-  //       .get();
-  //
-  //   _scmt.docs.forEach((ds) {
-  //     scmt.add(SubComment.fromSnapshot(ds));
-  //   });
-  //
-  //   return scmt;
-  // }
-  //
-  // Future<void> updateIssueComment({String issid, int cmts}) async {
-  //   DocumentReference reference = _firestore.collection('Issue').doc(issid);
-  //   await reference.update({"comments": cmts});
-  // }
+  Future<void> addComment({
+    Comment cmt,
+  }) async {
+    DocumentReference reference =
+        _firestore.collection('Comment').doc(cmt.cmtid);
+    await reference.set(cmt.toDocument());
+  }
+
+  Future<void> addSComment({SubComment scmt}) async {
+    DocumentReference reference =
+        _firestore.collection('SubComment').doc(scmt.scmtid);
+    await reference.set(scmt.toDocument());
+  }
+
+  Future<void> postNotification({NotificationNotice notice}) async {
+    DocumentReference reference =
+        _firestore.collection('Notification').doc(notice.notid);
+    await reference.set(notice.toDocument());
+  }
+
+  Future<List<ImagePicture>> getIssueImage(String issid) async {
+    List<ImagePicture> image = [];
+    QuerySnapshot img = await _firestore
+        .collection('Picture')
+        .where('issid', isEqualTo: issid)
+        .get();
+    img.docs.forEach((ds) {
+      image.add(ImagePicture.fromSnapshot(ds));
+    });
+
+    return image;
+  }
+
+  Future<List<ImagePicture>> getJournalImage(String jid) async {
+    List<ImagePicture> image = [];
+    QuerySnapshot img = await _firestore
+        .collection('Picture')
+        .where('jid', isEqualTo: jid)
+        .get();
+    img.docs.forEach((ds) {
+      image.add(ImagePicture.fromSnapshot(ds));
+    });
+
+    return image;
+  }
+
+  Future<List<Comment>> getIssueComment(String issid) async {
+    List<Comment> comment = [];
+    QuerySnapshot _comment = await _firestore
+        .collection('Comment')
+        .where('issid', isEqualTo: issid)
+        .orderBy('date', descending: true)
+        .limit(10)
+        .get();
+
+    _comment.docs.forEach((ds) {
+      comment.add(Comment.fromSnapshot(ds));
+    });
+
+    return comment;
+  }
+
+  Future<List<Comment>> getJournalComment(String jid) async {
+    List<Comment> comment = [];
+    QuerySnapshot _comment = await _firestore
+        .collection('Comment')
+        .where('jid', isEqualTo: jid)
+        .orderBy('date', descending: true)
+        .limit(10)
+        .get();
+
+    _comment.docs.forEach((ds) {
+      comment.add(Comment.fromSnapshot(ds));
+    });
+
+    return comment;
+  }
+
+  Future<List<SubComment>> getIssueSComment(String issid) async {
+    List<SubComment> subComment = [];
+    QuerySnapshot _subComment = await _firestore
+        .collection('SubComment')
+        .where('issid', isEqualTo: issid)
+        .orderBy('date', descending: true)
+        .limit(10)
+        .get();
+
+    _subComment.docs.forEach((ds) {
+      subComment.add(SubComment.fromSnapshot(ds));
+    });
+
+    return subComment;
+  }
+
+  Future<List<SubComment>> getJournalSComment(String jid) async {
+    List<SubComment> subComment = [];
+    QuerySnapshot _subComment = await _firestore
+        .collection('SubComment')
+        .where('jid', isEqualTo: jid)
+        .orderBy('date', descending: true)
+        .limit(10)
+        .get();
+
+    _subComment.docs.forEach((ds) {
+      subComment.add(SubComment.fromSnapshot(ds));
+    });
+
+    return subComment;
+  }
+
+// Future<void> updateIssueComment({String issid, int cmts}) async {
+//   DocumentReference reference = _firestore.collection('Issue').doc(issid);
+//   await reference.update({"comments": cmts});
+// }
 }
