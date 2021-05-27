@@ -1,6 +1,9 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
+import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
 import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
+import 'package:BrandFarm/repository/fm_home/fm_home_repository.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -263,117 +266,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.notice != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 31,
-                        child: (obj.notice.isReadByFM)
-                            ? Text(
-                                '확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Color(0xFF15B85B),
-                                    ),
-                              )
-                            : Text(
-                                '미확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Colors.red,
-                                    ),
-                              ),
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.notice.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(
-                                    obj.notice.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.notice.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (obj.notice.isReadByFM)
+                          ? Text(
+                              '확인',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                    color: Color(0xFF15B85B),
+                                  ),
+                            )
+                          : Text(
+                              '미확인',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 10,
+                                    color: Colors.red,
+                                  ),
                             ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      InkResponse(
-                        onTap: onPressed1,
-                        child: Text(
-                          '${date}의 기록',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xFF2489FF),
-                              ),
-                        ),
-                      ),
-                      Text(
-                        '에 공지사항을 남겼습니다',
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.notice.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.notice.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.notice.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 1));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
+                        '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                              color: Color(0xFF2489FF),
                             ),
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 공지사항을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 
@@ -384,116 +390,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.plan != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 31,
-                        child: (obj.plan.isReadByFM)
-                            ? Text(
-                                '확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Color(0xFF15B85B),
-                                    ),
-                              )
-                            : Text(
-                                '미확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Colors.red,
-                                    ),
-                              ),
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.plan.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(obj.plan.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.plan.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (obj.plan.isReadByFM)
+                          ? Text(
+                            '확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Color(0xFF15B85B),
                             ),
-                      ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                          )
+                          : Text(
+                            '미확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Colors.red,
                             ),
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      InkResponse(
-                        onTap: onPressed2,
-                        child: Text(
-                          '${date}의 기록',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xFF2489FF),
-                              ),
-                        ),
-                      ),
-                      Text(
-                        '에 영농계획을 남겼습니다',
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.plan.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.plan.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.plan.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 2));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
+                        '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                              color: Color(0xFF2489FF),
                             ),
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 영농계획을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 
@@ -504,116 +514,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.purchase != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 31,
-                        child: (!obj.purchase.isThereUpdates)
-                            ? Text(
-                                '확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Color(0xFF15B85B),
-                                    ),
-                              )
-                            : Text(
-                                '미확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Colors.red,
-                                    ),
-                              ),
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.user.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(obj.user.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.user.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (!obj.purchase.isThereUpdates)
+                          ? Text(
+                            '확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Color(0xFF15B85B),
                             ),
-                      ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                          )
+                          : Text(
+                            '미확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Colors.red,
                             ),
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      InkResponse(
-                        onTap: onPressed3,
-                        child: Text(
-                          '${date}의 기록',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xFF2489FF),
-                              ),
-                        ),
-                      ),
-                      Text(
-                        '에 구매요청을 남겼습니다',
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.user.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.user.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.user.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 4));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
+                        '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                              color: Color(0xFF2489FF),
                             ),
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 구매요청을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 
@@ -624,116 +638,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.journal != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 31,
-                        child: (obj.journal.isReadByFM)
-                            ? Text(
-                                '확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Color(0xFF15B85B),
-                                    ),
-                              )
-                            : Text(
-                                '미확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Colors.red,
-                                    ),
-                              ),
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.user.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(obj.user.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.user.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (obj.journal.isReadByFM)
+                          ? Text(
+                            '확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Color(0xFF15B85B),
                             ),
-                      ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                          )
+                          : Text(
+                            '미확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Colors.red,
                             ),
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      InkResponse(
-                        onTap: onPressed4,
-                        child: Text(
-                          '${date}의 기록',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xFF2489FF),
-                              ),
-                        ),
-                      ),
-                      Text(
-                        '에 성장일지을 남겼습니다',
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.user.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.user.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.user.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 5));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
+                        '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                              color: Color(0xFF2489FF),
                             ),
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 성장일지을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 
@@ -744,116 +762,120 @@ class _CommentsState extends State<Comments> {
         '${obj.date.toDate().year}년 ${obj.date.toDate().month}월 ${obj.date.toDate().day}일';
     return (obj.issue != null)
         ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 31,
-                        child: (obj.issue.isReadByFM)
-                            ? Text(
-                                '확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Color(0xFF15B85B),
-                                    ),
-                              )
-                            : Text(
-                                '미확인',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                      color: Colors.red,
-                                    ),
-                              ),
-                      ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      Container(
-                        width: 37,
-                        height: 37,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: CircleAvatar(
-                            radius: 19.0,
-                            backgroundImage: (obj.user.imgUrl.isEmpty)
-                                ? AssetImage('assets/profile.png')
-                                : CachedNetworkImageProvider(obj.user.imgUrl)),
-                      ),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Text(
-                        '${obj.user.name}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 31,
+                      child: (obj.issue.isReadByFM)
+                          ? Text(
+                            '확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Color(0xFF15B85B),
                             ),
-                      ),
-                      Text(
-                        '님이',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                          )
+                          : Text(
+                            '미확인',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                .copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              color: Colors.red,
                             ),
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    Container(
+                      width: 37,
+                      height: 37,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
                       ),
-                      SizedBox(
-                        width: 6,
-                      ),
-                      InkResponse(
-                        onTap: onPressed5,
-                        child: Text(
-                          '${date}의 기록',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xFF2489FF),
-                              ),
-                        ),
-                      ),
-                      Text(
-                        '에 이슈일지을 남겼습니다',
+                      child: CircleAvatar(
+                          radius: 19.0,
+                          backgroundImage: (obj.user.imgUrl.isEmpty)
+                              ? AssetImage('assets/profile.png')
+                              : CachedNetworkImageProvider(
+                                  obj.user.imgUrl)),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Text(
+                      '${obj.user.name}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      '님이',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    InkResponse(
+                      onTap: (){
+                        _fmHomeBloc.add(SetPageIndex(index: 5));
+                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
+                      },
+                      child: Text(
+                        '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w400,
-                              color: Colors.black,
+                              color: Color(0xFF2489FF),
                             ),
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${getTime(date: state.recentUpdateList[index].date)}',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              color: Color(0xFF828282),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 18,
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              Divider(
-                height: 60,
-                thickness: 1,
-                color: Color(0xFFDFDFDF),
-              ),
-            ],
-          )
+                    ),
+                    Text(
+                      '에 이슈일지을 남겼습니다',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${getTime(date: state.recentUpdateList[index].date)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Color(0xFF828282),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                    ),
+                    SizedBox(
+                      width: 18,
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Divider(
+              height: 60,
+              thickness: 1,
+              color: Color(0xFFDFDFDF),
+            ),
+          ],
+        )
         : CircularProgressIndicator();
   }
 }
