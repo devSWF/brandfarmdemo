@@ -335,10 +335,7 @@ class _CommentsState extends State<Comments> {
                       width: 6,
                     ),
                     InkResponse(
-                      onTap: (){
-                        _fmHomeBloc.add(SetPageIndex(index: 1));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                      },
+                      onTap: onPressed1,
                       child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -459,10 +456,7 @@ class _CommentsState extends State<Comments> {
                       width: 6,
                     ),
                     InkResponse(
-                      onTap: (){
-                        _fmHomeBloc.add(SetPageIndex(index: 2));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                      },
+                      onTap: onPressed2,
                       child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -583,10 +577,7 @@ class _CommentsState extends State<Comments> {
                       width: 6,
                     ),
                     InkResponse(
-                      onTap: (){
-                        _fmHomeBloc.add(SetPageIndex(index: 4));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                      },
+                      onTap: onPressed3,
                       child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -707,10 +698,7 @@ class _CommentsState extends State<Comments> {
                       width: 6,
                     ),
                     InkResponse(
-                      onTap: (){
-                        _fmHomeBloc.add(SetPageIndex(index: 5));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                      },
+                      onTap: onPressed4,
                       child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -831,10 +819,7 @@ class _CommentsState extends State<Comments> {
                       width: 6,
                     ),
                     InkResponse(
-                      onTap: (){
-                        _fmHomeBloc.add(SetPageIndex(index: 5));
-                        _fmHomeBloc.add(SetSubPageIndex(index: 1));
-                      },
+                      onTap: onPressed5,
                       child: Text(
                         '${date}의 기록',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
