@@ -1,9 +1,6 @@
 import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
-import 'package:BrandFarm/blocs/fm_home/fm_home_event.dart';
 import 'package:BrandFarm/blocs/fm_home/fm_home_state.dart';
 import 'package:BrandFarm/models/fm_home/fm_home_model.dart';
-import 'package:BrandFarm/models/user/user_model.dart';
-import 'package:BrandFarm/repository/fm_home/fm_home_repository.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
