@@ -188,7 +188,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       User user = await FMHomeRepository().getDetailUserInfo(journal[i].uid);
       FMHomeRecentUpdates obj = FMHomeRecentUpdates(
           user: user,
-          date: journal[i].date,
+          date: journal[i].updatedDate,
           plan: null,
           notice: null,
           purchase: null,
@@ -207,7 +207,7 @@ class FMHomeBloc extends Bloc<FMHomeEvent, FMHomeState> {
       User user = await FMHomeRepository().getDetailUserInfo(issue[i].uid);
       FMHomeRecentUpdates obj = FMHomeRecentUpdates(
           user: user,
-          date: issue[i].date,
+          date: issue[i].updatedDate,
           plan: null,
           notice: null,
           purchase: null,

@@ -1,9 +1,13 @@
 import 'dart:io';
 
 import 'package:BrandFarm/blocs/journal_issue_modify/bloc.dart';
+import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
+import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/image/image_repository.dart';
+import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
 import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/resize_image.dart';
@@ -146,9 +150,9 @@ class JournalIssueModifyBloc
       issueState: issueState,
       contents: contents,
       comments: comments ?? 0,
-      isReadByFM: isReadByFM ?? false,
+      isReadByFM: false,
       isReadByOffice: isReadByOffice ?? false,
-      updatedDate: updatedDate,
+      updatedDate: Timestamp.now(),
     );
 
     await SubJournalRepository().updateIssue(subJournalIssue: subJournalIssue);
@@ -174,6 +178,27 @@ class JournalIssueModifyBloc
         );
       });
     }
+
+    Farm farm = await SubHomeRepository()
+        .getFarm(await FieldUtil.getField().fieldCategory);
+    User user = await SubHomeRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '이슈일지 수정',
+      content: '새로 수정된 이슈일지를 확인하세요',
+      postedDate: Timestamp.now(),
+      jid: '',
+      issid: issid,
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    SubHomeRepository().sendNotification(_sendToFarm);
 
     yield state.update(
       isUploaded: true,

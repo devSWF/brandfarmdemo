@@ -1,8 +1,13 @@
 import 'package:BrandFarm/blocs/journal/bloc.dart';
+import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
 import 'package:BrandFarm/models/journal/journal_model.dart';
+import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
 import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
+import 'package:BrandFarm/repository/sub_home/sub_home_repository.dart';
 import 'package:BrandFarm/repository/sub_journal/sub_journal_repository.dart';
+import 'package:BrandFarm/utils/field_util.dart';
 import 'package:BrandFarm/utils/issue/issue_util.dart';
 import 'package:BrandFarm/utils/journal/journal_util.dart';
 import 'package:bloc/bloc.dart';
@@ -303,6 +308,27 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       rev.insert(index3, await IssueUtil.getIssue());
     }
 
+    Farm farm = await SubHomeRepository()
+        .getFarm(await FieldUtil.getField().fieldCategory);
+    User user = await SubHomeRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '이슈일지 댓글',
+      content: '새로 등록된 댓글을 확인하세요',
+      postedDate: Timestamp.now(),
+      jid: '',
+      issid: issid,
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    SubHomeRepository().sendNotification(_sendToFarm);
+
     yield state.update(
       issueList: issue,
       issueListByCategorySelection: cat,
@@ -312,6 +338,26 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
   Stream<JournalState> _mapSetUpdatedDateIssueToState({String issid}) async* {
     await SubJournalRepository().setUpdatedDateIssue(issid: issid);
+    Farm farm = await SubHomeRepository()
+        .getFarm(await FieldUtil.getField().fieldCategory);
+    User user = await SubHomeRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '이슈일지 댓글',
+      content: '새로 등록된 댓글을 확인하세요',
+      postedDate: Timestamp.now(),
+      jid: '',
+      issid: issid,
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    SubHomeRepository().sendNotification(_sendToFarm);
 
     yield state.update();
   }
@@ -367,6 +413,27 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
       rev.insert(index3, await JournalUtil.getJournal());
     }
 
+    Farm farm = await SubHomeRepository()
+        .getFarm(await FieldUtil.getField().fieldCategory);
+    User user = await SubHomeRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '새로 등록된 성장일지를 확인하세요',
+      content: '성장일지',
+      postedDate: Timestamp.now(),
+      jid: jid,
+      issid: '',
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    SubHomeRepository().sendNotification(_sendToFarm);
+
     yield state.update(
       orderByRecent: journal,
       listBySelection: cat,
@@ -376,6 +443,27 @@ class JournalBloc extends Bloc<JournalEvent, JournalState> {
 
   Stream<JournalState> _mapSetUpdatedDateToState({String jid}) async* {
     await SubJournalRepository().setUpdatedDate(jid: jid);
+
+    Farm farm = await SubHomeRepository()
+        .getFarm(await FieldUtil.getField().fieldCategory);
+    User user = await SubHomeRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '새로 등록된 성장일지를 확인하세요',
+      content: '성장일지',
+      postedDate: Timestamp.now(),
+      jid: jid,
+      issid: '',
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    SubHomeRepository().sendNotification(_sendToFarm);
 
     yield state.update();
   }

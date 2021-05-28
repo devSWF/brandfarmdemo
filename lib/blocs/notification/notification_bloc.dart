@@ -1,4 +1,3 @@
-
 import 'package:BrandFarm/blocs/notification/notification_event.dart';
 import 'package:BrandFarm/blocs/notification/notification_state.dart';
 import 'package:BrandFarm/models/comment/comment_model.dart';
@@ -13,13 +12,11 @@ import 'package:BrandFarm/repository/notification/notification_repository.dart';
 import 'package:BrandFarm/utils/field_util.dart';
 import 'package:bloc/bloc.dart';
 
-class NotificationBloc
-    extends Bloc<NotificationEvent, NotificationState> {
+class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc() : super(NotificationState.empty());
 
   @override
-  Stream<NotificationState> mapEventToState(
-      NotificationEvent event) async* {
+  Stream<NotificationState> mapEventToState(NotificationEvent event) async* {
     if (event is LoadNotification) {
       yield* _mapLoadFMNotificationToState();
     } else if (event is GetNotificationList) {
@@ -42,13 +39,17 @@ class NotificationBloc
   }
 
   Stream<NotificationState> _mapGetNotificationListToState() async* {
-    Farm farm = await NotificationRepository().getFarmInfo(FieldUtil.getField().fieldCategory);
+    Farm farm = await NotificationRepository()
+        .getFarmInfo(FieldUtil.getField().fieldCategory);
 
     // List<NotificationNotice> officeList = await NotificationRepository().getOfficeNotification();
-    List<NotificationNotice> farmList = await NotificationRepository().getFarmNotification(farm.farmID);
+    List<NotificationNotice> farmList =
+        await NotificationRepository().getFarmNotification(farm.farmID);
 
-    List<NotificationNotice> importantList = farmList.where((element) => element.type != '일반').toList();
-    List<NotificationNotice> generalList = farmList.where((element) => element.type == '일반').toList();
+    List<NotificationNotice> importantList =
+        farmList.where((element) => element.type != '일반').toList();
+    List<NotificationNotice> generalList =
+        farmList.where((element) => element.type == '일반').toList();
 
     // List<NotificationNotice> totalList = [
     //   ...farmList,
@@ -57,7 +58,7 @@ class NotificationBloc
 
     int unRead = 0;
     farmList.forEach((element) {
-      if(!element.isReadBySFM){
+      if (!element.isReadBySFM) {
         unRead += 1;
       }
     });
@@ -71,25 +72,26 @@ class NotificationBloc
     );
   }
 
-  Stream<NotificationState> _mapCheckAsReadToState(NotificationNotice obj) async* {
+  Stream<NotificationState> _mapCheckAsReadToState(
+      NotificationNotice obj) async* {
     NotificationNotice isRead = NotificationNotice(
-        no: obj.no,
-        uid: obj.uid,
-        name: obj.name,
-        imgUrl: obj.imgUrl,
-        fid: obj.fid,
-        farmid: obj.farmid,
-        title: obj.title,
-        content: obj.content,
-        postedDate: obj.postedDate,
-        scheduledDate: obj.scheduledDate,
-        isReadByFM: obj.isReadByFM,
-        isReadByOffice: obj.isReadByOffice,
-        isReadBySFM: true,
-        notid: obj.notid,
-        type: obj.type,
-        department: obj.department,
-        jid: obj.jid,
+      no: obj.no,
+      uid: obj.uid,
+      name: obj.name,
+      imgUrl: obj.imgUrl,
+      fid: obj.fid,
+      farmid: obj.farmid,
+      title: obj.title,
+      content: obj.content,
+      postedDate: obj.postedDate,
+      scheduledDate: obj.scheduledDate,
+      isReadByFM: obj.isReadByFM,
+      isReadByOffice: obj.isReadByOffice,
+      isReadBySFM: true,
+      notid: obj.notid,
+      type: obj.type,
+      department: obj.department,
+      jid: obj.jid,
       issid: obj.issid,
       planid: obj.planid,
     );
@@ -122,6 +124,7 @@ class NotificationBloc
       NotificationNotice obj) async* {
     Journal _jObj;
     List<Comment> _cmt = [];
+    List<Comment> clist = [];
     List<SubComment> _scmt = [];
     List<ImagePicture> _pic = [];
     List<User> _cmtUsers = [];
@@ -131,6 +134,17 @@ class NotificationBloc
     _cmt = await NotificationRepository().getCommentForJournal(obj.jid);
     _scmt = await NotificationRepository().getSubCommentForJournal(obj.jid);
     _pic = await NotificationRepository().getImagePictureForJournal(obj.jid);
+
+    clist = List.from(_cmt);
+    if (_cmt.length > 0 || _cmt != null) {
+      for (int i = 0; i < clist.length; i++) {
+        var cmtMap = <String, Object>{};
+        cmtMap = clist[i].toDocument();
+        cmtMap.addAll({'isExpanded': true});
+        _cmt.removeAt(i);
+        _cmt.insert(i, Comment.toObject(cmtMap));
+      }
+    }
 
     await Future.forEach(_cmt, (element) async {
       _cmtUsers.add(await NotificationRepository().getUserInfo(element.uid));
@@ -150,8 +164,7 @@ class NotificationBloc
     );
   }
 
-  Stream<NotificationState> _mapSetExpansionStateToState(
-      int index) async* {
+  Stream<NotificationState> _mapSetExpansionStateToState(int index) async* {
     List<Comment> list = state.clist;
     Comment cObj = list[index];
     Comment newObj = Comment(
@@ -182,6 +195,7 @@ class NotificationBloc
       NotificationNotice obj) async* {
     SubJournalIssue _iObj;
     List<Comment> _cmt = [];
+    List<Comment> clist = [];
     List<SubComment> _scmt = [];
     List<ImagePicture> _pic = [];
     List<User> _cmtUsers = [];
@@ -191,6 +205,17 @@ class NotificationBloc
     _cmt = await NotificationRepository().getCommentForIssue(obj.issid);
     _scmt = await NotificationRepository().getSubCommentForIssue(obj.issid);
     _pic = await NotificationRepository().getImagePictureForIssue(obj.issid);
+
+    clist = List.from(_cmt);
+    if (_cmt.length > 0 || _cmt != null) {
+      for (int i = 0; i < clist.length; i++) {
+        var cmtMap = <String, Object>{};
+        cmtMap = clist[i].toDocument();
+        cmtMap.addAll({'isExpanded': true});
+        _cmt.removeAt(i);
+        _cmt.insert(i, Comment.toObject(cmtMap));
+      }
+    }
 
     await Future.forEach(_cmt, (element) async {
       _cmtUsers.add(await NotificationRepository().getUserInfo(element.uid));
