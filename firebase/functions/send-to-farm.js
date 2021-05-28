@@ -39,5 +39,3 @@ exports.pushNotification = functions.firestore
             return console.log(error);
           });
     });
-
-

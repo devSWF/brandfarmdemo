@@ -1,13 +1,11 @@
 import 'package:BrandFarm/models/farm/farm_model.dart';
-import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:flutter/material.dart';
 
-class FMNotificationState {
+class OMNotificationState {
   bool isLoading;
   Farm farm;
-  List<Field> fieldList;
-  Field field;
+  List<Farm> farmList;
 
   int currentSortColumn;
   bool isAscending;
@@ -20,11 +18,10 @@ class FMNotificationState {
   bool showDropdownMenu;
   NotificationNotice notice;
 
-  FMNotificationState({
+  OMNotificationState({
     @required this.isLoading,
     @required this.farm,
-    @required this.fieldList,
-    @required this.field,
+    @required this.farmList,
     @required this.currentSortColumn,
     @required this.isAscending,
     @required this.notificationList,
@@ -35,21 +32,11 @@ class FMNotificationState {
     @required this.notice,
   });
 
-  factory FMNotificationState.empty() {
-    return FMNotificationState(
+  factory OMNotificationState.empty() {
+    return OMNotificationState(
       isLoading: false,
-      farm: Farm(
-          farmID: '', fieldCategory: '', managerID: '', officeNum: 1, name: ''),
-      fieldList: [],
-      field: Field(
-          fieldCategory: '',
-          fid: '',
-          sfmid: '',
-          lat: '',
-          lng: '',
-          city: '',
-          province: '',
-          name: ''),
+      farm: Farm(farmID: '', fieldCategory: '', managerID: ''),
+      farmList: [],
       currentSortColumn: 0,
       isAscending: false,
       notificationList: [],
@@ -65,11 +52,10 @@ class FMNotificationState {
     );
   }
 
-  FMNotificationState copyWith({
+  OMNotificationState copyWith({
     bool isLoading,
     Farm farm,
-    List<Field> fieldList,
-    Field field,
+    List<Farm> farmList,
     int currentSortColumn,
     bool isAscending,
     List<NotificationNotice> notificationList,
@@ -79,11 +65,10 @@ class FMNotificationState {
     bool showDropdownMenu,
     NotificationNotice notice,
   }) {
-    return FMNotificationState(
+    return OMNotificationState(
       isLoading: isLoading ?? this.isLoading,
       farm: farm ?? this.farm,
-      fieldList: fieldList ?? this.fieldList,
-      field: field ?? this.field,
+      farmList: farmList ?? this.farmList,
       currentSortColumn: currentSortColumn ?? this.currentSortColumn,
       isAscending: isAscending ?? this.isAscending,
       notificationList: notificationList ?? this.notificationList,
@@ -96,11 +81,10 @@ class FMNotificationState {
     );
   }
 
-  FMNotificationState update({
+  OMNotificationState update({
     bool isLoading,
     Farm farm,
-    List<Field> fieldList,
-    Field field,
+    List<Farm> farmList,
     int currentSortColumn,
     bool isAscending,
     List<NotificationNotice> notificationList,
@@ -113,8 +97,7 @@ class FMNotificationState {
     return copyWith(
       isLoading: isLoading,
       farm: farm,
-      fieldList: fieldList,
-      field: field,
+      farmList: farmList,
       currentSortColumn: currentSortColumn,
       isAscending: isAscending,
       notificationList: notificationList,
@@ -128,11 +111,10 @@ class FMNotificationState {
 
   @override
   String toString() {
-    return '''FMNotificationState{
+    return '''OMNotificationState{
     isLoading: $isLoading,
     farm: ${farm},
-    fieldList: ${fieldList.length},
-    field: ${field},
+    farmList: ${farmList.length},
     currentSortColumn: ${currentSortColumn},
     isAscending: ${isAscending},
     notificationList: ${notificationList.length},

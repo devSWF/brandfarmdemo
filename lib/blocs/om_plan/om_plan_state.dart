@@ -1,44 +1,41 @@
 import 'package:BrandFarm/models/farm/farm_model.dart';
-import 'package:BrandFarm/models/field_model.dart';
-import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/om_plan/om_plan_model.dart';
 import 'package:flutter/material.dart';
 
-class PlanState {
+class OMPlanState {
   bool isLoading;
   Farm farm;
-  List<Field> fieldList;
-  Field field;
+  List<Farm> farmList;
 
-  List<Plan> planList;
+  List<OMPlan> planList;
   DateTime selectedDate;
-  List<Plan> detailList;
-  List<Plan> todoPlanListShort;
+  List<OMPlan> detailList;
+  List<OMPlan> todoPlanListShort;
   List<CalendarPlan> detailListShort;
   List<List<List<CalendarPlan>>> sortedList;
-  List<DateTime> fmHomeCalendarDateList;
+  List<DateTime> omHomeCalendarDateList;
   int selectedIndex;
 
-  int selectedField;
+  int selectedFarm;
   DateTime startDate;
   DateTime endDate;
   WaitingConfirmation wPlan;
   bool isConfirmed;
-  Plan newPlan;
+  OMPlan newPlan;
 
-  PlanState({
+  OMPlanState({
     @required this.isLoading,
     @required this.farm,
-    @required this.fieldList,
-    @required this.field,
+    @required this.farmList,
     @required this.planList,
     @required this.detailList,
     @required this.todoPlanListShort,
     @required this.detailListShort,
     @required this.sortedList,
-    @required this.fmHomeCalendarDateList,
+    @required this.omHomeCalendarDateList,
     @required this.selectedIndex,
     @required this.selectedDate,
-    @required this.selectedField,
+    @required this.selectedFarm,
     @required this.startDate,
     @required this.endDate,
     @required this.wPlan,
@@ -46,30 +43,21 @@ class PlanState {
     @required this.newPlan,
   });
 
-  factory PlanState.empty() {
-    return PlanState(
+  factory OMPlanState.empty() {
+    return OMPlanState(
       isLoading: false,
       farm: Farm(
           farmID: '', fieldCategory: '', managerID: '', officeNum: 1, name: ''),
-      fieldList: [],
-      field: Field(
-          fieldCategory: '',
-          fid: '',
-          sfmid: '',
-          lat: '',
-          lng: '',
-          city: '',
-          province: '',
-          name: ''),
+      farmList: [],
       planList: [],
       detailList: [],
       todoPlanListShort: [],
       detailListShort: [],
       sortedList: [],
-      fmHomeCalendarDateList: [],
+      omHomeCalendarDateList: [],
       selectedIndex: 2,
       selectedDate: DateTime.now(),
-      selectedField: 0,
+      selectedFarm: 0,
       startDate: DateTime.now(),
       endDate: DateTime.now(),
       wPlan: WaitingConfirmation(
@@ -77,7 +65,7 @@ class PlanState {
         endDate: DateTime.now(),
         title: '',
         content: '',
-        selectedFieldIndex: 0,
+        selectedFarmIndex: 0,
         isUpdated: false,
       ),
       isConfirmed: false,
@@ -85,40 +73,38 @@ class PlanState {
     );
   }
 
-  PlanState copyWith(
+  OMPlanState copyWith(
       {bool isLoading,
       Farm farm,
-      List<Field> fieldList,
-      Field field,
-      List<Plan> planList,
-      List<Plan> detailList,
-      List<Plan> todoPlanListShort,
+      List<Farm> farmList,
+      List<OMPlan> planList,
+      List<OMPlan> detailList,
+      List<OMPlan> todoPlanListShort,
       List<CalendarPlan> detailListShort,
       List<List<List<CalendarPlan>>> sortedList,
-      List<DateTime> fmHomeCalendarDateList,
+      List<DateTime> omHomeCalendarDateList,
       int selectedIndex,
       DateTime selectedDate,
-      int selectedField,
+      int selectedFarm,
       DateTime startDate,
       DateTime endDate,
       WaitingConfirmation wPlan,
       bool isConfirmed,
-      Plan newPlan}) {
-    return PlanState(
+      OMPlan newPlan}) {
+    return OMPlanState(
       isLoading: isLoading ?? this.isLoading,
       farm: farm ?? this.farm,
-      fieldList: fieldList ?? this.fieldList,
-      field: field ?? this.field,
+      farmList: farmList ?? this.farmList,
       planList: planList ?? this.planList,
       detailList: detailList ?? this.detailList,
       todoPlanListShort: todoPlanListShort ?? this.todoPlanListShort,
       detailListShort: detailListShort ?? this.detailListShort,
       sortedList: sortedList ?? this.sortedList,
-      fmHomeCalendarDateList:
-          fmHomeCalendarDateList ?? this.fmHomeCalendarDateList,
+      omHomeCalendarDateList:
+          omHomeCalendarDateList ?? this.omHomeCalendarDateList,
       selectedIndex: selectedIndex ?? this.selectedIndex,
       selectedDate: selectedDate ?? this.selectedDate,
-      selectedField: selectedField ?? this.selectedField,
+      selectedFarm: selectedFarm ?? this.selectedFarm,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       wPlan: wPlan ?? this.wPlan,
@@ -127,39 +113,37 @@ class PlanState {
     );
   }
 
-  PlanState update(
+  OMPlanState update(
       {bool isLoading,
       Farm farm,
-      List<Field> fieldList,
-      Field field,
-      List<Plan> planList,
-      List<Plan> detailList,
-      List<Plan> todoPlanListShort,
+      List<Farm> farmList,
+      List<OMPlan> planList,
+      List<OMPlan> detailList,
+      List<OMPlan> todoPlanListShort,
       List<CalendarPlan> detailListShort,
       List<List<List<CalendarPlan>>> sortedList,
-      List<DateTime> fmHomeCalendarDateList,
+      List<DateTime> omHomeCalendarDateList,
       int selectedIndex,
       DateTime selectedDate,
-      int selectedField,
+      int selectedFarm,
       DateTime startDate,
       DateTime endDate,
       WaitingConfirmation wPlan,
       bool isConfirmed,
-      Plan newPlan}) {
+      OMPlan newPlan}) {
     return copyWith(
       isLoading: isLoading,
       farm: farm,
-      fieldList: fieldList,
-      field: field,
+      farmList: farmList,
       planList: planList,
       detailList: detailList,
       todoPlanListShort: todoPlanListShort,
       detailListShort: detailListShort,
       sortedList: sortedList,
-      fmHomeCalendarDateList: fmHomeCalendarDateList,
+      omHomeCalendarDateList: omHomeCalendarDateList,
       selectedIndex: selectedIndex,
       selectedDate: selectedDate,
-      selectedField: selectedField,
+      selectedFarm: selectedFarm,
       startDate: startDate,
       endDate: endDate,
       wPlan: wPlan,
@@ -170,20 +154,19 @@ class PlanState {
 
   @override
   String toString() {
-    return '''PlanState{
+    return '''OMPlanState{
     isLoading: $isLoading,
     farm: ${farm},
-    fieldList: ${fieldList.length},
-    field: ${field},
+    farmList: ${farmList.length},
     planList: ${planList.length},
     detailList: ${detailList.length},
     todoPlanListShort: ${todoPlanListShort.length},
     detailListShort: ${detailListShort.length},
     sortedList: ${sortedList.length},
-    fmHomeCalendarDateList: ${fmHomeCalendarDateList.length},
+    omHomeCalendarDateList: ${omHomeCalendarDateList.length},
     selectedIndex: ${selectedIndex},
     selectedDate: ${selectedDate},
-    selectedField: ${selectedField},
+    selectedFarm: ${selectedFarm},
     startDate: ${startDate},
     endDate: ${endDate},
     wPlan: ${wPlan},
