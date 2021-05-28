@@ -1,4 +1,3 @@
-
 import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/image_picture/image_picture_model.dart';
@@ -47,9 +46,11 @@ class NotificationState {
     return NotificationState(
       isLoading: false,
       farm: Farm(
-          farmID: '',
-          fieldCategory: '',
-          managerID: ''
+        farmID: '',
+        fieldCategory: '',
+        managerID: '',
+        officeNum: 1,
+        name: '',
       ),
       allList: [],
       importantList: [],

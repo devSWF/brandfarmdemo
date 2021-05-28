@@ -1,5 +1,3 @@
-
-
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/purchase/purchase_model.dart';
@@ -46,7 +44,8 @@ class PurchaseState {
     return PurchaseState(
       isLoading: false,
       curr: Timestamp.now(),
-      farm: Farm(farmID: '', fieldCategory: '', managerID: ''),
+      farm: Farm(
+          farmID: '', fieldCategory: '', managerID: '', officeNum: 1, name: ''),
       fieldList: [],
       field: Field(
           fieldCategory: '',

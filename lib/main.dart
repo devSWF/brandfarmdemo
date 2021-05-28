@@ -8,6 +8,8 @@ import 'package:BrandFarm/blocs/fm_home/fm_home_bloc.dart';
 import 'package:BrandFarm/blocs/fm_notification/bloc.dart';
 import 'package:BrandFarm/blocs/login/bloc.dart';
 import 'package:BrandFarm/blocs/notification/notification_bloc.dart';
+import 'package:BrandFarm/blocs/om_notification/om_notification_bloc.dart';
+import 'package:BrandFarm/blocs/om_plan/om_plan_bloc.dart';
 import 'package:BrandFarm/blocs/plan/plan_bloc.dart';
 import 'package:BrandFarm/blocs/purchase/purchase_bloc.dart';
 import 'package:BrandFarm/blocs/weather/bloc.dart';
@@ -192,7 +194,13 @@ class _AppState extends State<App> {
                 return MultiBlocProvider(providers: [
                   BlocProvider<OMHomeBloc>(
                     create: (BuildContext context) => OMHomeBloc(),
-                  )
+                  ),
+                  BlocProvider<OMPlanBloc>(
+                    create: (BuildContext context) => OMPlanBloc(),
+                  ),
+                  BlocProvider<OMNotificationBloc>(
+                    create: (BuildContext context) => OMNotificationBloc(),
+                  ),
                 ], child: OMHomeScreen());
               }
               // return (UserUtil.getUser().position == 3)

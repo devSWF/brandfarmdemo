@@ -72,7 +72,8 @@ class FMJournalState {
       navTo: 1,
       index: 0,
       isIssue: false,
-      farm: Farm(farmID: '', fieldCategory: '', managerID: ''),
+      farm: Farm(
+          farmID: '', fieldCategory: '', managerID: '', officeNum: 1, name: ''),
       fieldList: [],
       field: Field(
           fieldCategory: '',
@@ -153,11 +154,13 @@ class FMJournalState {
       month: month ?? this.month,
       shouldReload: shouldReload ?? this.shouldReload,
       order: order ?? this.order,
-      fieldMenuButtonHeight: fieldMenuButtonHeight ?? this.fieldMenuButtonHeight,
+      fieldMenuButtonHeight:
+          fieldMenuButtonHeight ?? this.fieldMenuButtonHeight,
       fieldMenuButtonWidth: fieldMenuButtonWidth ?? this.fieldMenuButtonWidth,
       fieldMenuButtonX: fieldMenuButtonX ?? this.fieldMenuButtonX,
       fieldMenuButtonY: fieldMenuButtonY ?? this.fieldMenuButtonY,
-      isFieldMenuButtonVisible: isFieldMenuButtonVisible ?? this.isFieldMenuButtonVisible,
+      isFieldMenuButtonVisible:
+          isFieldMenuButtonVisible ?? this.isFieldMenuButtonVisible,
       journalList: journalList ?? this.journalList,
       reverseList: reverseList ?? this.reverseList,
       imageList: imageList ?? this.imageList,
