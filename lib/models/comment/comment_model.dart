@@ -78,7 +78,27 @@ class Comment {
       'isReadBySFM': isReadBySFM,
     };
   }
+
+  factory Comment.toObject(Map<String, Object> map) {
+    return Comment(
+        date: map['date'],
+        name: map['name'],
+        uid: map['uid'],
+        issid: map['issid'],
+        jid: map['jid'],
+        cmtid: map['cmtid'],
+        comment: map['comment'],
+        isThereSubComment: map['isThereSubComment'],
+        isExpanded: map['isExpanded'],
+        fid: map['fid'],
+        imgUrl: map['imgUrl'],
+        isWriteSubCommentClicked: map['isWriteSubCommentClicked'],
+        isReadByFM: map['isReadByFM'],
+        isReadByOM: map['isReadByOM'],
+        isReadBySFM: map['isReadBySFM']);
+  }
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -149,4 +169,3 @@ class SubComment {
     };
   }
 }
-

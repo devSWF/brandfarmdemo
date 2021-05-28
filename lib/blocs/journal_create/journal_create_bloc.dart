@@ -423,7 +423,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       widgets: state.widgets,
       widgetList: state.widgetList,
       comments: state.existJournal.comments,
-      isReadByFM: state.existJournal.isReadByFM,
+      isReadByFM: false,
       isReadByOffice: state.existJournal.isReadByOffice,
       shipment: state.shipmentList.isEmpty ? null : state.shipmentList,
       fertilize: state.fertilizerList.isEmpty ? null : state.fertilizerList,
@@ -435,7 +435,7 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
       watering: state.wateringList.isEmpty ? null : state.wateringList,
       workforce: state.workforceList.isEmpty ? null : state.workforceList,
       farming: state.farmingList.isEmpty ? null : state.farmingList,
-      updatedDate: state.existJournal.updatedDate,
+      updatedDate: Timestamp.now(),
     );
 
     await SubJournalRepository().updateJournal(
@@ -471,6 +471,27 @@ class JournalCreateBloc extends Bloc<JournalCreateEvent, JournalCreateState> {
         );
       });
     }
+
+    Farm farm = await SubHomeRepository()
+        .getFarm(await FieldUtil.getField().fieldCategory);
+    User user = await SubHomeRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '성장일지 수정 사항',
+      content: '새로 수정된 성장일지를 확인하세요',
+      postedDate: Timestamp.now(),
+      jid: state.existJournal.jid,
+      issid: '',
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    SubHomeRepository().sendNotification(_sendToFarm);
 
     yield state.update(
       writeComplete: true,

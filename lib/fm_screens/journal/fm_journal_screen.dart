@@ -102,7 +102,7 @@ class _FMJournalScreenState extends State<FMJournalScreen> {
                                     top: state.fieldMenuButtonY -
                                         state.fieldMenuButtonHeight -
                                         10,
-                                    left: state.fieldMenuButtonX + 20,
+                                    left: state.fieldMenuButtonX,
                                     child: _dropdownMenu(state),
                                   )
                                 : Container(),

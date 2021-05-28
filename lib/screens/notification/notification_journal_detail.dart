@@ -19,10 +19,12 @@ import 'package:intl/intl.dart';
 class NotificationJournalDetail extends StatefulWidget {
   final NotificationNotice obj;
 
-  const NotificationJournalDetail({Key key, @required this.obj}) : super(key: key);
+  const NotificationJournalDetail({Key key, @required this.obj})
+      : super(key: key);
 
   @override
-  _NotificationJournalDetailState createState() => _NotificationJournalDetailState();
+  _NotificationJournalDetailState createState() =>
+      _NotificationJournalDetailState();
 }
 
 class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
@@ -34,10 +36,10 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
     super.initState();
     _notificationBloc = BlocProvider.of<NotificationBloc>(context);
     obj = widget.obj;
-    if(!widget.obj.isReadBySFM){
+    if (!widget.obj.isReadBySFM) {
       _notificationBloc.add(CheckAsRead(obj: obj));
     }
-    if(obj != null) {
+    if (obj != null) {
       _notificationBloc.add(GetJournalNotificationInitials(obj: obj));
     }
   }
@@ -56,9 +58,7 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
               )
             : Scaffold(
                 appBar: _appBar(state: state),
-                body: _journalBody(
-                  state: state
-                ));
+                body: _journalBody(state: state));
       },
     );
   }
@@ -188,8 +188,8 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
           state.piclist.isEmpty
               ? Container()
               : SizedBox(
-            height: defaultPadding,
-          ),
+                  height: defaultPadding,
+                ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
@@ -206,32 +206,34 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
           ),
           (state.clist.isNotEmpty)
               ? Divider(
-            height: 0,
-            thickness: 1,
-            color: Color(0x20000000),
-          )
+                  height: 0,
+                  thickness: 1,
+                  color: Color(0x20000000),
+                )
               : Container(),
           (state.clist.isNotEmpty)
               ? SizedBox(
-            height: 20,
-          )
+                  height: 20,
+                )
               : Container(),
-          (state.clist.isNotEmpty)
-              ? _comment(state: state)
-              : Container(),
+          (state.clist.isNotEmpty) ? _comment(state: state) : Container(),
           (state.clist.isNotEmpty)
               ? SizedBox(
-            height: 20,
-          )
+                  height: 20,
+                )
               : Container(),
           Row(
             children: [
-              SizedBox(width: 16,),
-              Text('수정/추가는 일지 목록을 이용해 주세요',
+              SizedBox(
+                width: 16,
+              ),
+              Text(
+                '수정/추가는 일지 목록을 이용해 주세요',
                 style: Theme.of(context).textTheme.bodyText1.copyWith(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),),
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
             ],
           ),
         ],
@@ -466,8 +468,8 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
               ),
               (index == state.piclist.length - 1)
                   ? SizedBox(
-                width: defaultPadding,
-              )
+                      width: defaultPadding,
+                    )
                   : Container(),
             ],
           );
@@ -538,7 +540,7 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
     return user;
   }
 
-  Widget commentTile({NotificationState state, int index}){
+  Widget commentTile({NotificationState state, int index}) {
     List<SubComment> subComments = state.sclist
         .where((comment) => comment.cmtid == state.clist[index].cmtid)
         .toList();
@@ -557,11 +559,9 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
               CircleAvatar(
                   radius: 18.0,
                   backgroundImage:
-                  (commentsUser.isEmpty ||
-                      commentsUser[index].imgUrl == '')
-                      ?
-                  AssetImage('assets/profile.png')
-                      : NetworkImage(commentsUser[index].imgUrl)),
+                      (commentsUser.isEmpty || commentsUser[index].imgUrl == '')
+                          ? AssetImage('assets/profile.png')
+                          : NetworkImage(commentsUser[index].imgUrl)),
               SizedBox(
                 width: 10,
               ),
@@ -573,8 +573,8 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
                       Text(
                         state.clist[index].name,
                         style: Theme.of(context).textTheme.bodyText1.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                       SizedBox(
                         width: 7,
@@ -582,9 +582,9 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
                       Text(
                         time,
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
                       ),
                     ],
                   ),
@@ -605,35 +605,36 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
           ),
           (subComments.isNotEmpty)
               ? SizedBox(
-            height: 10,
-          )
+                  height: 10,
+                )
               : Container(),
           (subComments.isNotEmpty)
               ? Row(
-            children: [
-              SizedBox(
-                width: 77,
-              ),
-              Container(
-                child: InkWell(
-                  onTap: () {
-                    _notificationBloc.add(SetExpansionState(index: index));
-                  },
-                  child: (!state.clist[index].isExpanded)
-                      ? Text('답글 ${subComments.length}개 펼치기',
-                      style: Theme.of(context).textTheme.bodyText2)
-                      : Text('답글 ${subComments.length}개 숨기기',
-                      style: Theme.of(context).textTheme.bodyText2),
-                ),
-              ),
-            ],
-          )
+                  children: [
+                    SizedBox(
+                      width: 77,
+                    ),
+                    Container(
+                      child: InkWell(
+                        onTap: () {
+                          _notificationBloc
+                              .add(SetExpansionState(index: index));
+                        },
+                        child: (!state.clist[index].isExpanded)
+                            ? Text('답글 ${subComments.length}개 펼치기',
+                                style: Theme.of(context).textTheme.bodyText2)
+                            : Text('답글 ${subComments.length}개 숨기기',
+                                style: Theme.of(context).textTheme.bodyText2),
+                      ),
+                    ),
+                  ],
+                )
               : Container(),
           (state.clist[index].isExpanded)
               ? showSubComments(
-              context: context,
-              scmts: subComments,
-              subCommentsUser: subCommentsUser)
+                  context: context,
+                  scmts: subComments,
+                  subCommentsUser: subCommentsUser)
               : Container(),
         ],
       ),
@@ -642,8 +643,8 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
 
   Widget showSubComments(
       {BuildContext context,
-        List<SubComment> scmts,
-        List<User> subCommentsUser}) {
+      List<SubComment> scmts,
+      List<User> subCommentsUser}) {
     return Container(
       // padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -657,8 +658,8 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
                   subCommentsUser: subCommentsUser),
               (index != scmts.length - 1)
                   ? SizedBox(
-                height: 20,
-              )
+                      height: 20,
+                    )
                   : Container(),
             ],
           );
@@ -669,9 +670,9 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
 
   Widget subComment(
       {BuildContext context,
-        List<SubComment> scmts,
-        int index,
-        List<User> subCommentsUser}){
+      List<SubComment> scmts,
+      int index,
+      List<User> subCommentsUser}) {
     String time = getTime(date: scmts[index].date);
     return Container(
       child: Row(
@@ -688,8 +689,7 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
           ),
           CircleAvatar(
               radius: 18.0,
-              backgroundImage: (subCommentsUser[index].imgUrl == '' ||
-                  subCommentsUser.isEmpty)
+              backgroundImage: (subCommentsUser.length == 0)
                   ? AssetImage('assets/profile.png')
                   : NetworkImage(subCommentsUser[index].imgUrl)),
           SizedBox(
@@ -703,8 +703,8 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
                   Text(
                     '${scmts[index].name}',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   SizedBox(
                     width: 10,
@@ -712,9 +712,9 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
                   Text(
                     '${time}',
                     style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
                   ),
                 ],
               ),
@@ -724,8 +724,8 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
               Text(
                 '${scmts[index].scomment}',
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontSize: 12,
-                ),
+                      fontSize: 12,
+                    ),
               ),
             ],
           ),
@@ -737,7 +737,7 @@ class _NotificationJournalDetailState extends State<NotificationJournalDetail> {
   String getTime({Timestamp date}) {
     DateTime now = DateTime.now();
     DateTime _date =
-    DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
+        DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
     int diffDays = now.difference(_date).inDays;
     if (diffDays < 1) {
       int diffHours = now.difference(_date).inHours;
