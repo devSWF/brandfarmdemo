@@ -189,90 +189,90 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
     );
   }
 
-  Widget _appBarNotificationIcon() {
-    return Container(
-      height: 50,
-      child: Card(
-        margin: EdgeInsets.symmetric(vertical: 10),
-        elevation: 3,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(45),
-        ),
-        child: FittedBox(
-          child: Stack(
-            children: [
-              Container(
-                // height: 42,
-                // width: 42,
-                padding: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.notifications_none,
-                  size: 28,
-                  color: Color(0x80000000),
-                ),
-              ),
-              Positioned(top: 0, right: 0, child: _notificationBadge()),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _appBarNotificationIcon() {
+  //   return Container(
+  //     height: 50,
+  //     child: Card(
+  //       margin: EdgeInsets.symmetric(vertical: 10),
+  //       elevation: 3,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(45),
+  //       ),
+  //       child: FittedBox(
+  //         child: Stack(
+  //           children: [
+  //             Container(
+  //               // height: 42,
+  //               // width: 42,
+  //               padding: EdgeInsets.zero,
+  //               decoration: BoxDecoration(
+  //                 color: Colors.white,
+  //                 shape: BoxShape.circle,
+  //               ),
+  //               child: Icon(
+  //                 Icons.notifications_none,
+  //                 size: 28,
+  //                 color: Color(0x80000000),
+  //               ),
+  //             ),
+  //             Positioned(top: 0, right: 0, child: _notificationBadge()),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _notificationBadge() {
-    return Container(
-      height: 12,
-      width: 12,
-      decoration: BoxDecoration(
-        color: Colors.red,
-        shape: BoxShape.circle,
-      ),
-      child: Align(
-        alignment: Alignment.center,
-        child: FittedBox(
-          child: Text(
-            '1',
-            style: Theme.of(context).textTheme.bodyText1.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _notificationBadge() {
+  //   return Container(
+  //     height: 12,
+  //     width: 12,
+  //     decoration: BoxDecoration(
+  //       color: Colors.red,
+  //       shape: BoxShape.circle,
+  //     ),
+  //     child: Align(
+  //       alignment: Alignment.center,
+  //       child: FittedBox(
+  //         child: Text(
+  //           '1',
+  //           style: Theme.of(context).textTheme.bodyText1.copyWith(
+  //                 fontWeight: FontWeight.bold,
+  //                 color: Colors.white,
+  //               ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _appBarNotification({BuildContext context}) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(15, 4, 15, 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(width: 1, color: Color(0xFFBCBCBC)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.error_outline_rounded,
-            color: Color(0xFFFDD015),
-          ),
-          SizedBox(
-            width: 13,
-          ),
-          Text(
-            '날씨가 아직 춥습니다. 매니저분들 모두 농작물 관리에 주의해 주시길 바랍니다',
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _appBarNotification({BuildContext context}) {
+  //   return Container(
+  //     padding: EdgeInsets.fromLTRB(15, 4, 15, 4),
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(18),
+  //       border: Border.all(width: 1, color: Color(0xFFBCBCBC)),
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         Icon(
+  //           Icons.error_outline_rounded,
+  //           color: Color(0xFFFDD015),
+  //         ),
+  //         SizedBox(
+  //           width: 13,
+  //         ),
+  //         Text(
+  //           '날씨가 아직 춥습니다. 매니저분들 모두 농작물 관리에 주의해 주시길 바랍니다',
+  //           style: Theme.of(context).textTheme.bodyText2.copyWith(
+  //                 fontWeight: FontWeight.w600,
+  //                 color: Colors.black,
+  //               ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _appBarProfile() {
     return Container(
@@ -1089,7 +1089,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
       case 1:
         {
           List<OMNotificationNotice> notice = state.notice.where((element) {
-            return element.isReadByFM == false;
+            return element.isReadByOffice == false;
           }).toList();
           if (notice.length > 0) {
             return OMHomeUpdateState(state: true, num: notice.length);
@@ -1101,7 +1101,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
       case 2:
         {
           List<OMPlan> plan = state.plan.where((element) {
-            return element.isReadByFM == false;
+            return element.isReadByOffice == false;
           }).toList();
           if (plan.length > 0) {
             return OMHomeUpdateState(state: true, num: plan.length);

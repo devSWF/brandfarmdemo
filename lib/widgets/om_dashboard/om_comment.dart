@@ -1,5 +1,8 @@
 import 'package:BrandFarm/blocs/om_home/bloc.dart';
 import 'package:BrandFarm/models/om_home/om_home_model.dart';
+import 'package:BrandFarm/widgets/om_dashboard/nav_pages/notice.dart';
+import 'package:BrandFarm/widgets/om_dashboard/nav_pages/plan.dart';
+import 'package:BrandFarm/widgets/om_dashboard/nav_pages/purchase.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +29,7 @@ class _OMCommentsState extends State<OMComments> {
   VoidCallback onPressed1;
   VoidCallback onPressed2;
   VoidCallback onPressed3;
+  OMHomeBloc _omHomeBloc;
 
   @override
   void initState() {
@@ -33,6 +37,7 @@ class _OMCommentsState extends State<OMComments> {
     onPressed1 = widget.onPressed1;
     onPressed2 = widget.onPressed2;
     onPressed3 = widget.onPressed3;
+    _omHomeBloc = BlocProvider.of<OMHomeBloc>(context);
   }
 
   @override
@@ -249,6 +254,18 @@ class _OMCommentsState extends State<OMComments> {
   //   return user;
   // }
 
+  Future<void> _showNotificationDialog(OMHomeState state, int index) async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return BlocProvider.value(
+            value: _omHomeBloc,
+            child: Notice(index: index, state: state),
+          );
+        });
+  }
+
   Widget _notice(OMHomeState state, int index) {
     OMHomeRecentUpdates obj = state.recentUpdateList[index];
     // User user = setUserInfo(obj.user.uid);
@@ -264,7 +281,7 @@ class _OMCommentsState extends State<OMComments> {
                     children: [
                       Container(
                         width: 31,
-                        child: (obj.notice.isReadByFM)
+                        child: (obj.notice.isReadByOffice)
                             ? Text(
                                 '확인',
                                 style: Theme.of(context)
@@ -324,7 +341,10 @@ class _OMCommentsState extends State<OMComments> {
                         width: 6,
                       ),
                       InkResponse(
-                        onTap: onPressed1,
+                        // onTap: onPressed1,
+                        onTap: () async {
+                          await _showNotificationDialog(state, index);
+                        },
                         child: Text(
                           '${date}의 기록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -369,6 +389,18 @@ class _OMCommentsState extends State<OMComments> {
         : CircularProgressIndicator();
   }
 
+  Future<void> _showPlanDialog(OMHomeState state, int index) async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return BlocProvider.value(
+            value: _omHomeBloc,
+            child: Plan(index: index, state: state),
+          );
+        });
+  }
+
   Widget _plan(OMHomeState state, int index) {
     OMHomeRecentUpdates obj = state.recentUpdateList[index];
     // User user = setUserInfo(obj.user.uid);
@@ -384,7 +416,7 @@ class _OMCommentsState extends State<OMComments> {
                     children: [
                       Container(
                         width: 31,
-                        child: (obj.plan.isReadByFM)
+                        child: (obj.plan.isReadByOffice)
                             ? Text(
                                 '확인',
                                 style: Theme.of(context)
@@ -444,7 +476,10 @@ class _OMCommentsState extends State<OMComments> {
                         width: 6,
                       ),
                       InkResponse(
-                        onTap: onPressed2,
+                        // onTap: onPressed2,
+                        onTap: () async {
+                          await _showPlanDialog(state, index);
+                        },
                         child: Text(
                           '${date}의 기록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -487,6 +522,18 @@ class _OMCommentsState extends State<OMComments> {
             ],
           )
         : CircularProgressIndicator();
+  }
+
+  Future<void> _showPurchaseDialog(OMHomeState state, int index) async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return BlocProvider.value(
+            value: _omHomeBloc,
+            child: Purchase(index: index, state: state),
+          );
+        });
   }
 
   Widget _purchase(OMHomeState state, int index) {
@@ -564,7 +611,10 @@ class _OMCommentsState extends State<OMComments> {
                         width: 6,
                       ),
                       InkResponse(
-                        onTap: onPressed3,
+                        // onTap: onPressed3,
+                        onTap: () async {
+                          await _showPurchaseDialog(state, index);
+                        },
                         child: Text(
                           '${date}의 기록',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(

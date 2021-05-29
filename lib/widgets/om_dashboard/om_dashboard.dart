@@ -58,7 +58,10 @@ class _OMDashboardState extends State<OMDashboard> {
             SizedBox(
               height: defaultPadding,
             ),
-            OMComments(),
+            BlocProvider.value(
+              value: _omHomeBloc,
+              child: OMComments(),
+            ),
           ],
         ),
       ),
