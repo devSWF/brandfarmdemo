@@ -73,7 +73,7 @@ class OMPlan {
   }
 }
 
-class WaitingConfirmation {
+class OMWaitingConfirmation {
   DateTime startDate;
   DateTime endDate;
   String title;
@@ -81,7 +81,7 @@ class WaitingConfirmation {
   int selectedFarmIndex;
   bool isUpdated;
 
-  WaitingConfirmation({
+  OMWaitingConfirmation({
     @required this.startDate,
     @required this.endDate,
     @required this.title,
@@ -91,7 +91,7 @@ class WaitingConfirmation {
   });
 }
 
-class CalendarPlan {
+class OMCalendarPlan {
   DateTime date;
   String title;
   String content;
@@ -99,7 +99,7 @@ class CalendarPlan {
   String planID;
   bool isUpdated;
 
-  CalendarPlan({
+  OMCalendarPlan({
     this.date,
     this.title,
     this.content,

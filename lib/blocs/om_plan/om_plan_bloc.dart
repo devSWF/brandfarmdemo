@@ -60,7 +60,7 @@ class OMPlanBloc extends Bloc<OMPlanEvent, OMPlanState> {
   Stream<OMPlanState> _mapGetPlanListToState() async* {
     // get plan list
     List<OMPlan> plist = [];
-    plist = await OMPlanRepository().getPlanList();
+    plist = await OMPlanRepository().getOPlanList();
 
     yield state.update(
       planList: plist,
@@ -164,7 +164,7 @@ class OMPlanBloc extends Bloc<OMPlanEvent, OMPlanState> {
   }
 
   Stream<OMPlanState> _mapSetWaitingPlanToState(
-      WaitingConfirmation wPlan) async* {
+      OMWaitingConfirmation wPlan) async* {
     // wait for post confirmation
     yield state.update(
       wPlan: wPlan,

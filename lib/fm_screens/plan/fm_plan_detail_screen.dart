@@ -64,7 +64,8 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
                             getField(state, _list[main][sub].fid);
                         return (state.selectedField == 0)
                             ? _all(main, sub, _list, fieldName)
-                            : _fromFieldSelection(main, sub, _list, fieldName, state);
+                            : _fromFieldSelection(
+                                main, sub, _list, fieldName, state);
                       }),
                     )
                   : Container();
@@ -73,8 +74,8 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
         : Container();
   }
 
-  Widget _fromFieldSelection(
-      int main, int sub, List<List<Plan>> list, String fieldName, PlanState state) {
+  Widget _fromFieldSelection(int main, int sub, List<List<Plan>> list,
+      String fieldName, PlanState state) {
     return Column(
       children: [
         (sub == 0)
@@ -135,9 +136,11 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
                                     ? Color(0xFF15B85B)
                                     : (main == 1 && state.selectedField == 1)
                                         ? Colors.orange
-                                        : (main == 1 && state.selectedField == 2)
+                                        : (main == 1 &&
+                                                state.selectedField == 2)
                                             ? Colors.yellow
-                                            : (main == 1 && state.selectedField == 3)
+                                            : (main == 1 &&
+                                                    state.selectedField == 3)
                                                 ? Colors.blue
                                                 : Colors.purple,
                               ),
@@ -164,7 +167,8 @@ class _FMPlanDetailScreenState extends State<FMPlanDetailScreen> {
                                     ? Colors.orange
                                     : (main == 1 && state.selectedField == 2)
                                         ? Colors.yellow
-                                        : (main == 1 && state.selectedField == 3)
+                                        : (main == 1 &&
+                                                state.selectedField == 3)
                                             ? Colors.blue
                                             : Colors.purple,
                           ),

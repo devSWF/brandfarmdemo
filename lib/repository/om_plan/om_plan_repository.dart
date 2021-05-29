@@ -41,11 +41,11 @@ class OMPlanRepository {
     await reference.set(plan.toDocument());
   }
 
-  Future<List<OMPlan>> getPlanList() async {
+  Future<List<OMPlan>> getOPlanList() async {
     List<OMPlan> plist = [];
     QuerySnapshot _plist = await _firestore
         .collection('OMPlan')
-        .where('officeNum', isEqualTo: 1)
+        .orderBy('postedDate', descending: true)
         .get();
 
     _plist.docs.forEach((ds) {
@@ -54,6 +54,45 @@ class OMPlanRepository {
 
     return plist;
   }
+
+  Future<List<OMCalendarPlan>> sortOPlanList(List<OMPlan> plist) async {
+    List<OMCalendarPlan> cplist = [];
+    plist.forEach((plan) {
+      DateTime start = plan.startDate.toDate();
+      DateTime end = plan.endDate.toDate();
+      int days = end.difference(start).inDays;
+      for (int i = 0; i <= days; i++) {
+        OMCalendarPlan cp = OMCalendarPlan(
+          date: start.add(Duration(days: i)),
+          title: plan.title,
+          content: plan.content,
+          farmID: plan.farmID,
+          planID: plan.planID,
+          isUpdated: plan.isUpdated,
+        );
+        if (cplist.length > 0) {
+          cplist.add(cp);
+        } else {
+          cplist.insert(0, cp);
+        }
+      }
+    });
+    return cplist;
+  }
+
+  // Future<List<OMPlan>> getOPlanList() async {
+  //   List<OMPlan> plist = [];
+  //   QuerySnapshot _plist = await _firestore
+  //       .collection('OMPlan')
+  //       .orderBy('postedDate', descending: true)
+  //       .get();
+  //
+  //   _plist.docs.forEach((ds) {
+  //     plist.add(OMPlan.fromSnapshot(ds));
+  //   });
+  //
+  //   return plist;
+  // }
 
 // Future<User> getDetailUserInfo(uid) async {
 //   User user;

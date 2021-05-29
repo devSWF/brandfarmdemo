@@ -5,6 +5,7 @@ import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_add_plan.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_calendar_widget.dart';
 import 'package:BrandFarm/fm_screens/plan/fm_plan_detail_screen.dart';
+import 'package:BrandFarm/models/om_plan/om_plan_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -74,18 +75,33 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
                       SizedBox(
                         width: 10,
                       ),
-                      Container(
-                        width: 253,
-                        height: 361,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.fromLTRB(20, 17, 19, 0),
-                        child: BlocProvider.value(
-                          value: _fmPlanBloc,
-                          child: FMPlanDetailScreen(),
-                        ),
+                      Column(
+                        children: [
+                          Container(
+                            width: 253,
+                            height: 361,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.fromLTRB(20, 17, 19, 0),
+                            child: BlocProvider.value(
+                              value: _fmPlanBloc,
+                              child: FMPlanDetailScreen(),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 12,
+                          ),
+                          Container(
+                            height: 206,
+                            width: 253,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Color(0xFFD0F1DE)),
+                            child: _officePlan(state),
+                          )
+                        ],
                       ),
                     ],
                   ),
@@ -95,6 +111,63 @@ class _FMPlanScreenState extends State<FMPlanScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _officePlan(PlanState state) {
+    List<OMCalendarPlan> cplist = state.cplist
+        .where((element) =>
+            DateTime(element.date.year, element.date.month, element.date.day)
+                .isAtSameMomentAs(DateTime(state.selectedDate.year,
+                    state.selectedDate.month, state.selectedDate.day)))
+        .toList();
+    print('${cplist.length}');
+    return Container(
+      width: 253,
+      height: 103,
+      decoration: BoxDecoration(
+          color: Color(0xFFD0F1DE), borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        padding: EdgeInsets.fromLTRB(16, 16, 0, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Office: ${state.selectedDate.year}/${state.selectedDate.month}/${state.selectedDate.day}',
+              style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              children: [
+                Text(
+                  '내용:',
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  children: List.generate(cplist.length, (index) {
+                    return Text('${cplist[index].content}',
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              color: Colors.black,
+                            ));
+                  }),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 

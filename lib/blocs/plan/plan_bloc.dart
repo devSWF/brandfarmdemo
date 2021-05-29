@@ -2,7 +2,9 @@ import 'package:BrandFarm/blocs/plan/plan_event.dart';
 import 'package:BrandFarm/blocs/plan/plan_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/om_plan/om_plan_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/repository/om_plan/om_plan_repository.dart';
 import 'package:BrandFarm/repository/plan/plan_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
@@ -76,10 +78,15 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
   Stream<PlanState> _mapGetPlanListToState() async* {
     // get plan list
     List<Plan> plist = [];
+    List<OMPlan> oplist = [];
+    List<OMCalendarPlan> cplist;
     plist = await PlanRepository().getPlanList(state.farm.farmID);
-
+    oplist = await OMPlanRepository().getOPlanList();
+    cplist = await OMPlanRepository().sortOPlanList(oplist);
+    cplist.sort((a, b) => a.date.compareTo(b.date));
     yield state.update(
       planList: plist,
+      cplist: cplist,
     );
   }
 
@@ -102,7 +109,9 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
       isReadBySFM: false,
       from: 2,
       // 1 : office, 2 : FM
-      fid: (state.wPlan.selectedFieldIndex > 0) ? state.fieldList[state.wPlan.selectedFieldIndex].fid : '',
+      fid: (state.wPlan.selectedFieldIndex > 0)
+          ? state.fieldList[state.wPlan.selectedFieldIndex].fid
+          : '',
       farmID: state.farm.farmID,
       isUpdated: true,
     );
@@ -180,7 +189,8 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     );
   }
 
-  Stream<PlanState> _mapSetWaitingPlanToState(WaitingConfirmation wPlan) async* {
+  Stream<PlanState> _mapSetWaitingPlanToState(
+      WaitingConfirmation wPlan) async* {
     // wait for post confirmation
     yield state.update(
       wPlan: wPlan,
@@ -202,40 +212,46 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     DateTime curr = DateTime.utc(now.year, now.month, now.day);
     DateTime oneDayMore = DateTime.utc(now.year, now.month, now.day + 1);
     DateTime twoDaysMore = DateTime.utc(now.year, now.month, now.day + 2);
-    List<DateTime> dList = [twoDaysLess, oneDayLess, curr, oneDayMore, twoDaysMore,];
+    List<DateTime> dList = [
+      twoDaysLess,
+      oneDayLess,
+      curr,
+      oneDayMore,
+      twoDaysMore,
+    ];
     List<Plan> _selectedList = state.planList
         .where((plan) => (
-        // two days less
-        ((plan.endDate.toDate().isAfter(twoDaysLess) || twoDaysLess.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
-            ((plan.startDate.toDate().isBefore(twoDaysLess) ||
-                twoDaysLess.isAtSameMomentAs(DateTime.utc(
-                    plan.startDate.toDate().year,
-                    plan.startDate.toDate().month,
-                    plan.startDate.toDate().day))))) ||
-            // one day less
-            ((plan.endDate.toDate().isAfter(oneDayLess) || oneDayLess.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
-                ((plan.startDate.toDate().isBefore(oneDayLess) ||
-                    oneDayLess.isAtSameMomentAs(DateTime.utc(
-                        plan.startDate.toDate().year,
-                        plan.startDate.toDate().month,
-                        plan.startDate.toDate().day))))) ||
-            // today
-            ((plan.endDate.toDate().isAfter(curr) || curr.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
-                ((plan.startDate.toDate().isBefore(curr) ||
-                    curr.isAtSameMomentAs(DateTime.utc(
-                        plan.startDate.toDate().year,
-                        plan.startDate.toDate().month,
-                        plan.startDate.toDate().day))))) ||
-            // one day more
-            ((plan.endDate.toDate().isAfter(oneDayMore) || oneDayMore.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
-                ((plan.startDate.toDate().isBefore(oneDayMore) ||
-                    oneDayMore.isAtSameMomentAs(DateTime.utc(
-                        plan.startDate.toDate().year,
-                        plan.startDate.toDate().month,
-                        plan.startDate.toDate().day))))) ||
-            // two days more
-            ((plan.endDate.toDate().isAfter(twoDaysMore) || twoDaysMore.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
-                ((plan.startDate.toDate().isBefore(twoDaysMore) || twoDaysMore.isAtSameMomentAs(DateTime.utc(plan.startDate.toDate().year, plan.startDate.toDate().month, plan.startDate.toDate().day)))))))
+            // two days less
+            ((plan.endDate.toDate().isAfter(twoDaysLess) || twoDaysLess.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+                    ((plan.startDate.toDate().isBefore(twoDaysLess) ||
+                        twoDaysLess.isAtSameMomentAs(DateTime.utc(
+                            plan.startDate.toDate().year,
+                            plan.startDate.toDate().month,
+                            plan.startDate.toDate().day))))) ||
+                // one day less
+                ((plan.endDate.toDate().isAfter(oneDayLess) || oneDayLess.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+                    ((plan.startDate.toDate().isBefore(oneDayLess) ||
+                        oneDayLess.isAtSameMomentAs(DateTime.utc(
+                            plan.startDate.toDate().year,
+                            plan.startDate.toDate().month,
+                            plan.startDate.toDate().day))))) ||
+                // today
+                ((plan.endDate.toDate().isAfter(curr) || curr.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+                    ((plan.startDate.toDate().isBefore(curr) ||
+                        curr.isAtSameMomentAs(DateTime.utc(
+                            plan.startDate.toDate().year,
+                            plan.startDate.toDate().month,
+                            plan.startDate.toDate().day))))) ||
+                // one day more
+                ((plan.endDate.toDate().isAfter(oneDayMore) || oneDayMore.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+                    ((plan.startDate.toDate().isBefore(oneDayMore) ||
+                        oneDayMore.isAtSameMomentAs(DateTime.utc(
+                            plan.startDate.toDate().year,
+                            plan.startDate.toDate().month,
+                            plan.startDate.toDate().day))))) ||
+                // two days more
+                ((plan.endDate.toDate().isAfter(twoDaysMore) || twoDaysMore.isAtSameMomentAs(DateTime.utc(plan.endDate.toDate().year, plan.endDate.toDate().month, plan.endDate.toDate().day))) &&
+                    ((plan.startDate.toDate().isBefore(twoDaysMore) || twoDaysMore.isAtSameMomentAs(DateTime.utc(plan.startDate.toDate().year, plan.startDate.toDate().month, plan.startDate.toDate().day)))))))
         .toList();
     // print('sorted list: ${_selectedList.length}');
     // _selectedList.forEach((element) {
@@ -244,11 +260,20 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
 
     // divide period to days
     List<CalendarPlan> cpList = [];
-    for(int i = 0; i < _selectedList.length; i++) {
-      int period = (_selectedList[i].endDate.toDate().isAtSameMomentAs(_selectedList[i].startDate.toDate()))
-          ? 1 : _selectedList[i].endDate.toDate().difference(_selectedList[i].startDate.toDate()).inDays + 1;
+    for (int i = 0; i < _selectedList.length; i++) {
+      int period = (_selectedList[i]
+              .endDate
+              .toDate()
+              .isAtSameMomentAs(_selectedList[i].startDate.toDate()))
+          ? 1
+          : _selectedList[i]
+                  .endDate
+                  .toDate()
+                  .difference(_selectedList[i].startDate.toDate())
+                  .inDays +
+              1;
       // print('period: ${period}');
-      for(int j = 0; j < period; j++) {
+      for (int j = 0; j < period; j++) {
         int year = _selectedList[i].startDate.toDate().year;
         int month = _selectedList[i].startDate.toDate().month;
         int day = _selectedList[i].startDate.toDate().day;
@@ -266,9 +291,10 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
         // } else {
         //   cpList.insert(0, cp);
         // }
-        if((cp.date.isAfter(DateTime(twoDaysLess.year, twoDaysLess.month, twoDaysLess.day - 1)))
-            && (cp.date.isBefore(twoDaysMore))){
-          if(cpList.isNotEmpty) {
+        if ((cp.date.isAfter(DateTime(
+                twoDaysLess.year, twoDaysLess.month, twoDaysLess.day - 1))) &&
+            (cp.date.isBefore(twoDaysMore))) {
+          if (cpList.isNotEmpty) {
             cpList.add(cp);
           } else {
             cpList.insert(0, cp);
@@ -292,7 +318,7 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     // get sorted detail list
     // sort list by field id
     List<List<CalendarPlan>> listByField =
-    List.generate(state.fieldList.length, (col) {
+        List.generate(state.fieldList.length, (col) {
       List<CalendarPlan> cpList = state.detailListShort.where((element) {
         if (col == 0) {
           return element.farmID == state.farm.farmID && element.fid.isEmpty;
@@ -306,14 +332,19 @@ class PlanBloc extends Bloc<PlanEvent, PlanState> {
     // print('list by field : ${listByField.length}');
 
     // sort list by date
-    List<List<List<CalendarPlan>>> listByDate = List.generate(state.fmHomeCalendarDateList.length, (row) {
-      List<List<CalendarPlan>> fieldList = List.generate(listByField.length, (col) {
+    List<List<List<CalendarPlan>>> listByDate =
+        List.generate(state.fmHomeCalendarDateList.length, (row) {
+      List<List<CalendarPlan>> fieldList =
+          List.generate(listByField.length, (col) {
         List<CalendarPlan> dateList = [];
-        for(int i = 0; i < listByField[col].length; i++) {
-          if(listByField[col][i].date.year == state.fmHomeCalendarDateList[row].year
-          && listByField[col][i].date.month == state.fmHomeCalendarDateList[row].month
-          && listByField[col][i].date.day == state.fmHomeCalendarDateList[row].day) {
-            if(dateList.isEmpty) {
+        for (int i = 0; i < listByField[col].length; i++) {
+          if (listByField[col][i].date.year ==
+                  state.fmHomeCalendarDateList[row].year &&
+              listByField[col][i].date.month ==
+                  state.fmHomeCalendarDateList[row].month &&
+              listByField[col][i].date.day ==
+                  state.fmHomeCalendarDateList[row].day) {
+            if (dateList.isEmpty) {
               dateList.insert(0, listByField[col][i]);
             } else {
               dateList.add(listByField[col][i]);
