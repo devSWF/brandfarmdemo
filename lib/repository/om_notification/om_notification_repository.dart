@@ -1,23 +1,47 @@
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/om_notification/om_notification_model.dart';
+import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OMNotificationRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Future<Farm> getFarmInfo() async {
-  //   Farm farm;
-  //   await _firestore
-  //       .collection('Farm')
-  //       .where('managerID', isEqualTo: UserUtil.getUser().uid)
-  //       .get()
-  //       .then((qs) {
-  //     qs.docs.forEach((ds) {
-  //       farm = Farm.fromSnapshot(ds);
-  //     });
-  //   });
-  //   return farm;
-  // }
+  Future<Farm> getFarm(String farmid) async {
+    Farm farm;
+    await _firestore
+        .collection('Farm')
+        .where('farmID', isEqualTo: farmid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        farm = Farm.fromSnapshot(ds);
+      });
+    });
+    return farm;
+  }
+
+  Future<User> getUser(String uid) async {
+    User user;
+    await _firestore
+        .collection('User')
+        .where('uid', isEqualTo: uid)
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        user = User.fromSnapshot(ds);
+      });
+    });
+    return user;
+  }
+
+  Future<void> sendNotification(
+    SendToFarm stf,
+  ) async {
+    DocumentReference reference =
+        _firestore.collection('SendToFarm').doc(stf.docID);
+    await reference.set(stf.toDocument());
+  }
 
   Future<List<Farm>> getFarmInfo() async {
     List<Farm> fList = [];

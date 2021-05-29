@@ -31,7 +31,7 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
                 contentPadding: EdgeInsets.zero,
                 content: SingleChildScrollView(
                   child: Container(
-                    height: 700, // 349
+                    height: 349, // 349
                     width: 452, // 452
                     padding: EdgeInsets.fromLTRB(29, 6, 5, 0),
                     decoration: BoxDecoration(
@@ -117,19 +117,21 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
                         child: Text(
                           '신청일자',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
+                                fontWeight: FontWeight.w200,
+                                fontSize: 10,
+                                color: Colors.black,
+                              ),
                         )),
-                    SizedBox(width: 14,),
+                    SizedBox(
+                      width: 14,
+                    ),
                     Container(
                         width: 148,
                         child: Text(
                           '${reqDate}',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            color: Colors.black,
-                          ),
+                                color: Colors.black,
+                              ),
                         )),
                   ],
                 ),
@@ -144,19 +146,21 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
                         child: Text(
                           '자재명(수량)',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
+                                fontWeight: FontWeight.w200,
+                                fontSize: 10,
+                                color: Colors.black,
+                              ),
                         )),
-                    SizedBox(width: 14,),
+                    SizedBox(
+                      width: 14,
+                    ),
                     Container(
                         width: 148,
                         child: Text(
                           '${state.product.productName}(${state.product.amount}EA)',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            color: Colors.black,
-                          ),
+                                color: Colors.black,
+                              ),
                         )),
                   ],
                 ),
@@ -171,19 +175,21 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
                         child: Text(
                           '신청인',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
+                                fontWeight: FontWeight.w200,
+                                fontSize: 10,
+                                color: Colors.black,
+                              ),
                         )),
-                    SizedBox(width: 14,),
+                    SizedBox(
+                      width: 14,
+                    ),
                     Container(
                         width: 148,
                         child: Text(
                           '${state.product.requester}',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            color: Colors.black,
-                          ),
+                                color: Colors.black,
+                              ),
                         )),
                   ],
                 ),
@@ -201,19 +207,21 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
                         child: Text(
                           '수령일자',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
+                                fontWeight: FontWeight.w200,
+                                fontSize: 10,
+                                color: Colors.black,
+                              ),
                         )),
-                    SizedBox(width: 14,),
+                    SizedBox(
+                      width: 14,
+                    ),
                     Container(
                         child: Text(
-                          '${recDate}',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      '${recDate}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
                             color: Colors.black,
                           ),
-                        )),
+                    )),
                   ],
                 ),
                 SizedBox(
@@ -227,19 +235,22 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
                         child: Text(
                           '상태',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
+                                fontWeight: FontWeight.w200,
+                                fontSize: 10,
+                                color: Colors.black,
+                              ),
                         )),
-                    SizedBox(width: 14,),
-                    Container( // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
+                    SizedBox(
+                      width: 14,
+                    ),
+                    Container(
+                        // 미처리: 1 ; 승인: 2 ; 대기: 3 ; 완료: 4
                         child: Text(
-                          '${_waitingState(state.product.waitingState)}',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      '${_waitingState(state.product.waitingState)}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
                             color: Colors.black,
                           ),
-                        )),
+                    )),
                   ],
                 ),
                 SizedBox(
@@ -253,19 +264,21 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
                         child: Text(
                           '수령인',
                           style: Theme.of(context).textTheme.bodyText2.copyWith(
-                            fontWeight: FontWeight.w200,
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
+                                fontWeight: FontWeight.w200,
+                                fontSize: 10,
+                                color: Colors.black,
+                              ),
                         )),
-                    SizedBox(width: 14,),
+                    SizedBox(
+                      width: 14,
+                    ),
                     Container(
                         child: Text(
-                          '${state.product.receiver}',
-                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      '${state.product.receiver}',
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
                             color: Colors.black,
                           ),
-                        )),
+                    )),
                   ],
                 ),
               ],
@@ -277,19 +290,27 @@ class _FMPurchaseDetailScreenState extends State<FMPurchaseDetailScreen> {
   }
 
   String _waitingState(int state) {
-    switch(state) {
-      case 1 : {
-        return '미처리';
-      } break;
-      case 2 : {
-        return '승인';
-      } break;
-      case 3 : {
-        return '대기';
-      } break;
-      case 4 : {
-        return '완료';
-      } break;
+    switch (state) {
+      case 1:
+        {
+          return '미처리';
+        }
+        break;
+      case 2:
+        {
+          return '승인';
+        }
+        break;
+      case 3:
+        {
+          return '대기';
+        }
+        break;
+      case 4:
+        {
+          return '완료';
+        }
+        break;
     }
   }
 

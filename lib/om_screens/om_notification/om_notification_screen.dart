@@ -201,7 +201,13 @@ class _OMNotificationScreenState extends State<OMNotificationScreen> {
                   ),
                 ),
               )
-            : LinearProgressIndicator();
+            : Row(
+                children: [
+                  Container(
+                      width: 814,
+                      child: Center(child: CircularProgressIndicator())),
+                ],
+              );
       },
     );
   }

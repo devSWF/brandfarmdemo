@@ -36,7 +36,7 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
     return BlocConsumer<PurchaseBloc, PurchaseState>(
       listener: (context, state) {},
       builder: (context, state) {
-        if(!state.isLoading){
+        if (!state.isLoading) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final RenderBox renderBox =
                 _searchMenu.currentContext.findRenderObject();
@@ -129,7 +129,8 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
                                         state.productListBySearch.length,
                                         (index) {
                                       String reqDate = DateFormat('yyyy-MM-dd')
-                                          .format(state.productListBySearch[index]
+                                          .format(state
+                                              .productListBySearch[index]
                                               .requestDate
                                               .toDate());
                                       String recDate = (state
@@ -148,8 +149,8 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
                                               state.productListBySearch[index]
                                                       .receiver !=
                                                   null)
-                                          ? state
-                                              .productListBySearch[index].receiver
+                                          ? state.productListBySearch[index]
+                                              .receiver
                                           : '--';
                                       return DataRow(
                                           cells: [
@@ -157,7 +158,9 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               children: [
-                                                (state.productListBySearch[index]
+                                                (state
+                                                        .productListBySearch[
+                                                            index]
                                                         .isThereUpdates)
                                                     ? Container(
                                                         height: 6,
@@ -193,7 +196,10 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
                                             DataCell(Text('${rec}')),
                                           ],
                                           onSelectChanged: (value) async {
-                                            _fmPurchaseBloc.add(SetProduct(product: state.productListBySearch[index]));
+                                            _fmPurchaseBloc.add(SetProduct(
+                                                product:
+                                                    state.productListBySearch[
+                                                        index]));
                                             await _showDetail();
                                           });
                                     }),
@@ -205,7 +211,7 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
                           (state.showDropdownMenu)
                               ? Positioned(
                                   top: y - 40,
-                                  left: x - 328,
+                                  left: x - 328 + 65,
                                   child: _searchMenuList(state))
                               : Container(),
                         ],
@@ -214,7 +220,13 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
                   ),
                 ),
               )
-            : LinearProgressIndicator();
+            : Row(
+                children: [
+                  Container(
+                      width: 814,
+                      child: Center(child: CircularProgressIndicator())),
+                ],
+              );
       },
     );
   }
@@ -355,7 +367,7 @@ class _FMPurchaseScreenState extends State<FMPurchaseScreen> {
               onTap: () {
                 _searchNode.requestFocus();
               },
-              onChanged: (text){},
+              onChanged: (text) {},
               onSubmitted: (text) {
                 _fmPurchaseBloc.add(GetPurchaseListBySearch(word: text));
               },

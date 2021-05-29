@@ -30,7 +30,7 @@ class _PurchaseState extends State<Purchase> {
       contentPadding: EdgeInsets.zero,
       content: SingleChildScrollView(
         child: Container(
-          height: 700, // 349
+          height: 349, // 349
           width: 452, // 452
           padding: EdgeInsets.fromLTRB(29, 6, 5, 0),
           decoration: BoxDecoration(
