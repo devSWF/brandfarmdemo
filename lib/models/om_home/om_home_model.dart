@@ -1,24 +1,16 @@
-import 'package:BrandFarm/models/comment/comment_model.dart';
-import 'package:BrandFarm/models/journal/journal_model.dart';
-import 'package:BrandFarm/models/notification/notification_model.dart';
-import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/om_notification/om_notification_model.dart';
+import 'package:BrandFarm/models/om_plan/om_plan_model.dart';
 import 'package:BrandFarm/models/purchase/purchase_model.dart';
-import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-
 class OMHomeRecentUpdates {
   final User user;
   final Timestamp date;
-  final Plan plan;
-  final NotificationNotice notice;
+  final OMPlan plan;
+  final OMNotificationNotice notice;
   final Purchase purchase;
-  final Journal journal;
-  final SubJournalIssue issue;
-  final Comment comment;
-  final SubComment subComment;
 
   OMHomeRecentUpdates({
     @required this.date,
@@ -26,10 +18,6 @@ class OMHomeRecentUpdates {
     @required this.plan,
     @required this.notice,
     @required this.purchase,
-    @required this.journal,
-    @required this.issue,
-    @required this.comment,
-    @required this.subComment,
   });
 
   factory OMHomeRecentUpdates.fromSnapshot(DocumentSnapshot ds) {
@@ -39,10 +27,6 @@ class OMHomeRecentUpdates {
       plan: ds['plan'],
       notice: ds['notice'],
       purchase: ds['purchase'],
-      journal: ds['journal'],
-      issue: ds['issue'],
-      comment: ds['comment'],
-      subComment: ds['subComment'],
     );
   }
 
@@ -53,10 +37,6 @@ class OMHomeRecentUpdates {
       'date': date,
       'notice': notice,
       'purchase': purchase,
-      'journal': journal,
-      'issue': issue,
-      'comment': comment,
-      'subComment': subComment,
     };
   }
 }
