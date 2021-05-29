@@ -2,13 +2,13 @@ import 'package:BrandFarm/blocs/om_home/bloc.dart';
 import 'package:BrandFarm/blocs/om_notification/om_notification_bloc.dart';
 import 'package:BrandFarm/blocs/om_notification/om_notification_event.dart';
 import 'package:BrandFarm/blocs/om_plan/bloc.dart';
+import 'package:BrandFarm/empty_screen.dart';
 import 'package:BrandFarm/fm_screens/home/fm_logout_screen.dart';
-import 'package:BrandFarm/models/journal/journal_model.dart';
-import 'package:BrandFarm/models/notification/notification_model.dart';
 import 'package:BrandFarm/models/om_home/om_home_model.dart';
-import 'package:BrandFarm/models/plan/plan_model.dart';
+import 'package:BrandFarm/models/om_notification/om_notification_model.dart';
+import 'package:BrandFarm/models/om_plan/om_plan_model.dart';
 import 'package:BrandFarm/models/purchase/purchase_model.dart';
-import 'package:BrandFarm/models/sub_journal/sub_journal_model.dart';
+import 'package:BrandFarm/om_screens/om_notification/om_notification_screen.dart';
 import 'package:BrandFarm/om_screens/om_plan/om_plan_screen.dart';
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
@@ -90,10 +90,10 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                 children: [
                   Row(
                     children: [
-                      _appBarNotificationIcon(),
-                      SizedBox(
-                        width: 25,
-                      ),
+                      // _appBarNotificationIcon(),
+                      // SizedBox(
+                      //   width: 25,
+                      // ),
                       _appBarProfile(),
                     ],
                   ),
@@ -228,9 +228,9 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
               BlocProvider.value(
                 value: _omHomeBloc,
               ),
-              // BlocProvider.value(
-              //   value: _fmNotificationBloc,
-              // ),
+              BlocProvider.value(
+                value: _omNotificationBloc,
+              ),
             ],
             child: GetPage(
               index: state.pageIndex,
@@ -259,9 +259,9 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
               BlocProvider.value(
                 value: _omHomeBloc,
               ),
-              // BlocProvider.value(
-              //   value: _fmNotificationBloc,
-              // ),
+              BlocProvider.value(
+                value: _omNotificationBloc,
+              ),
             ],
             child: GetPage(
               index: state.pageIndex,
@@ -277,8 +277,6 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
     OMHomeUpdateState isThereNewNotice = _getUpdateState(state, 1);
     OMHomeUpdateState isThereNewPlan = _getUpdateState(state, 2);
     OMHomeUpdateState isThereNewPurchase = _getUpdateState(state, 3);
-    OMHomeUpdateState isThereNewJournal = _getUpdateState(state, 4);
-    OMHomeUpdateState isThereNewIssue = _getUpdateState(state, 5);
     return Theme(
       data: Theme.of(context).copyWith(
         canvasColor: Color(0xFFEEEEEE),
@@ -394,10 +392,11 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                     });
                   },
                   title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.circle,
-                        color: (isThereNewPlan.state)
+                        color: (isThereNewNotice.state)
                             ? Colors.red
                             : Colors.transparent,
                         size: 6,
@@ -406,7 +405,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                         width: 10,
                       ),
                       Icon(
-                        Icons.mail_outline_outlined,
+                        Icons.calendar_today_outlined,
                         color: (state.pageIndex == 2)
                             ? Color(0xFF15B85B)
                             : Colors.black,
@@ -416,7 +415,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                         width: 16,
                       ),
                       Text(
-                        '승인요청',
+                        '영농계획',
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 13,
@@ -452,6 +451,61 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                     children: [
                       Icon(
                         Icons.circle,
+                        color: (isThereNewPlan.state)
+                            ? Colors.red
+                            : Colors.transparent,
+                        size: 6,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Icon(
+                        Icons.mail_outline_outlined,
+                        color: (state.pageIndex == 3)
+                            ? Color(0xFF15B85B)
+                            : Colors.black,
+                        size: 18,
+                      ),
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Text(
+                        '승인요청',
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13,
+                              color: (state.pageIndex == 3)
+                                  ? Color(0xFF15B85B)
+                                  : Colors.black,
+                            ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      (isThereNewPlan.num > 0)
+                          ? Text(
+                              '+${isThereNewPlan.num}',
+                              style: GoogleFonts.lato(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                color: Colors.red,
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  ),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                  onTap: () {
+                    setState(() {
+                      _omHomeBloc.add(SetPageIndex(index: 4));
+                    });
+                  },
+                  title: Row(
+                    children: [
+                      Icon(
+                        Icons.circle,
                         color: Colors.transparent,
                         size: 6,
                       ),
@@ -460,7 +514,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                       ),
                       Icon(
                         Icons.person_outline,
-                        color: (state.pageIndex == 3)
+                        color: (state.pageIndex == 4)
                             ? Color(0xFF15B85B)
                             : Colors.black,
                         size: 18,
@@ -473,7 +527,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 13,
-                              color: (state.pageIndex == 3)
+                              color: (state.pageIndex == 4)
                                   ? Color(0xFF15B85B)
                                   : Colors.black,
                             ),
@@ -485,7 +539,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                   contentPadding: EdgeInsets.fromLTRB(8, 0, 0, 0),
                   onTap: () {
                     setState(() {
-                      _omHomeBloc.add(SetPageIndex(index: 4));
+                      _omHomeBloc.add(SetPageIndex(index: 5));
                       _omHomeBloc.add(SetSubPageIndex(index: 1));
                     });
                   },
@@ -503,7 +557,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                       ),
                       Icon(
                         Icons.chat_bubble_outline,
-                        color: (state.pageIndex == 4)
+                        color: (state.pageIndex == 5)
                             ? Color(0xFF15B85B)
                             : Colors.black,
                         size: 18,
@@ -516,7 +570,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 13,
-                              color: (state.pageIndex == 4)
+                              color: (state.pageIndex == 5)
                                   ? Color(0xFF15B85B)
                                   : Colors.black,
                             ),
@@ -537,7 +591,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                     ],
                   ),
                 ),
-                (state.pageIndex == 4)
+                (state.pageIndex == 5)
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -545,7 +599,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                           ListTile(
                             onTap: () {
                               setState(() {
-                                _omHomeBloc.add(SetPageIndex(index: 4));
+                                _omHomeBloc.add(SetPageIndex(index: 5));
                                 _omHomeBloc.add(SetSubPageIndex(index: 1));
                               });
                             },
@@ -561,7 +615,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                                       .bodyText2
                                       .copyWith(
                                         fontSize: 13,
-                                        color: (state.pageIndex == 4 &&
+                                        color: (state.pageIndex == 5 &&
                                                 state.subPageIndex == 1)
                                             ? Color(0xFF15B85B)
                                             : Colors.black,
@@ -573,7 +627,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                           ListTile(
                             onTap: () {
                               setState(() {
-                                _omHomeBloc.add(SetPageIndex(index: 4));
+                                _omHomeBloc.add(SetPageIndex(index: 5));
                                 _omHomeBloc.add(SetSubPageIndex(index: 2));
                               });
                             },
@@ -589,7 +643,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                                       .bodyText2
                                       .copyWith(
                                         fontSize: 13,
-                                        color: (state.pageIndex == 4 &&
+                                        color: (state.pageIndex == 5 &&
                                                 state.subPageIndex == 2)
                                             ? Color(0xFF15B85B)
                                             : Colors.black,
@@ -601,127 +655,6 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                         ],
                       )
                     : Container(),
-                ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                  onTap: () {
-                    setState(() {
-                      _omHomeBloc.add(SetPageIndex(index: 5));
-                      _omHomeBloc.add(SetSubPageIndex(index: 1));
-                    });
-                  },
-                  title: Row(
-                    children: [
-                      Icon(
-                        Icons.circle,
-                        color:
-                            (isThereNewJournal.state || isThereNewIssue.state)
-                                ? Colors.red
-                                : Colors.transparent,
-                        size: 6,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Icon(
-                        Icons.article_outlined,
-                        color: (state.pageIndex == 5)
-                            ? Color(0xFF15B85B)
-                            : Colors.black,
-                        size: 18,
-                      ),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Text(
-                        '영농계획',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13,
-                              color: (state.pageIndex == 5)
-                                  ? Color(0xFF15B85B)
-                                  : Colors.black,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      ((isThereNewJournal.num + isThereNewIssue.num) > 0)
-                          ? Text(
-                              '+${isThereNewJournal.num + isThereNewIssue.num}',
-                              style: GoogleFonts.lato(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                                color: Colors.red,
-                              ),
-                            )
-                          : Container(),
-                    ],
-                  ),
-                ),
-                // (state.pageIndex == 5)
-                //     ? Column(
-                //         mainAxisAlignment: MainAxisAlignment.start,
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         children: [
-                //           ListTile(
-                //             onTap: () {
-                //               setState(() {
-                //                 _omHomeBloc.add(SetPageIndex(index: 5));
-                //                 _omHomeBloc.add(SetSubPageIndex(index: 1));
-                //               });
-                //             },
-                //             title: Row(
-                //               children: [
-                //                 SizedBox(
-                //                   width: 76,
-                //                 ),
-                //                 Text(
-                //                   '영농계획',
-                //                   style: Theme.of(context)
-                //                       .textTheme
-                //                       .bodyText2
-                //                       .copyWith(
-                //                         fontSize: 13,
-                //                         color: (state.pageIndex == 5 &&
-                //                                 state.subPageIndex == 1)
-                //                             ? Color(0xFF15B85B)
-                //                             : Colors.black,
-                //                       ),
-                //                 ),
-                //               ],
-                //             ),
-                //           ),
-                // ListTile(
-                //   onTap: () {
-                //     setState(() {
-                //       _omHomeBloc.add(SetPageIndex(index: 5));
-                //       _omHomeBloc.add(SetSubPageIndex(index: 2));
-                //     });
-                //   },
-                //   title: Row(
-                //     children: [
-                //       SizedBox(
-                //         width: 76,
-                //       ),
-                //       Text(
-                //         '보고서 작성',
-                //         style: Theme.of(context)
-                //             .textTheme
-                //             .bodyText2
-                //             .copyWith(
-                //               fontSize: 13,
-                //               color: (state.pageIndex == 5 &&
-                //                       state.subPageIndex == 2)
-                //                   ? Color(0xFF15B85B)
-                //                   : Colors.black,
-                //             ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                //     ],
-                //   )
-                // : Container(),
                 Divider(
                   height: 50,
                   thickness: 1,
@@ -786,8 +719,6 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
     OMHomeUpdateState isThereNewNotice = _getUpdateState(state, 1);
     OMHomeUpdateState isThereNewPlan = _getUpdateState(state, 2);
     OMHomeUpdateState isThereNewPurchase = _getUpdateState(state, 3);
-    OMHomeUpdateState isThereNewJournal = _getUpdateState(state, 4);
-    OMHomeUpdateState isThereNewIssue = _getUpdateState(state, 5);
     return Theme(
       data: Theme.of(context).copyWith(
         canvasColor: Color(0xFFEEEEEE),
@@ -910,7 +841,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                           width: 10,
                         ),
                         Icon(
-                          Icons.person_outline,
+                          Icons.mail_outline_outlined,
                           color: (state.pageIndex == 3)
                               ? Color(0xFF15B85B)
                               : Colors.black,
@@ -926,6 +857,31 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                     padding: EdgeInsets.zero,
                     onPressed: () {
                       _omHomeBloc.add(SetPageIndex(index: 4));
+                    },
+                    icon: Row(
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: Colors.transparent,
+                          size: 6,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Icon(
+                          Icons.person_outline,
+                          color: (state.pageIndex == 4)
+                              ? Color(0xFF15B85B)
+                              : Colors.black,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {
+                      _omHomeBloc.add(SetPageIndex(index: 5));
                       _omHomeBloc.add(SetSubPageIndex(index: 1));
                     },
                     icon: Row(
@@ -942,74 +898,6 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                         ),
                         Icon(
                           Icons.chat_bubble_outline,
-                          color: (state.pageIndex == 4)
-                              ? Color(0xFF15B85B)
-                              : Colors.black,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ),
-                  (state.pageIndex == 4)
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                _omHomeBloc.add(SetPageIndex(index: 4));
-                                _omHomeBloc.add(SetSubPageIndex(index: 1));
-                              },
-                              icon: Icon(
-                                Icons.circle,
-                                color: (state.pageIndex == 4 &&
-                                        state.subPageIndex == 1)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                                size: 6,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                _omHomeBloc.add(SetPageIndex(index: 4));
-                                _omHomeBloc.add(SetSubPageIndex(index: 2));
-                              },
-                              icon: Icon(
-                                Icons.circle,
-                                color: (state.pageIndex == 4 &&
-                                        state.subPageIndex == 2)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                                size: 6,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      _omHomeBloc.add(SetPageIndex(index: 5));
-                      _omHomeBloc.add(SetSubPageIndex(index: 1));
-                    },
-                    icon: Row(
-                      children: [
-                        Icon(
-                          Icons.circle,
-                          color:
-                              (isThereNewJournal.state || isThereNewIssue.state)
-                                  ? Colors.red
-                                  : Colors.transparent,
-                          size: 6,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Icon(
-                          Icons.article_outlined,
                           color: (state.pageIndex == 5)
                               ? Color(0xFF15B85B)
                               : Colors.black,
@@ -1054,6 +942,9 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                           ],
                         )
                       : Container(),
+                  SizedBox(
+                    height: 30,
+                  ),
                   Divider(
                     height: 50,
                     thickness: 1,
@@ -1112,7 +1003,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
     switch (from) {
       case 1:
         {
-          List<NotificationNotice> notice = state.notice.where((element) {
+          List<OMNotificationNotice> notice = state.notice.where((element) {
             return element.isReadByFM == false;
           }).toList();
           if (notice.length > 0) {
@@ -1124,7 +1015,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
         break;
       case 2:
         {
-          List<Plan> plan = state.plan.where((element) {
+          List<OMPlan> plan = state.plan.where((element) {
             return element.isReadByFM == false;
           }).toList();
           if (plan.length > 0) {
@@ -1143,30 +1034,6 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
             return OMHomeUpdateState(state: true, num: purchase.length);
           } else {
             return OMHomeUpdateState(state: false, num: purchase.length);
-          }
-        }
-        break;
-      case 4:
-        {
-          List<Journal> journal = state.journal.where((element) {
-            return element.isReadByFM == false;
-          }).toList();
-          if (journal.length > 0) {
-            return OMHomeUpdateState(state: true, num: journal.length);
-          } else {
-            return OMHomeUpdateState(state: false, num: journal.length);
-          }
-        }
-        break;
-      case 5:
-        {
-          List<SubJournalIssue> issue = state.issue.where((element) {
-            return element.isReadByFM == false;
-          }).toList();
-          if (issue.length > 0) {
-            return OMHomeUpdateState(state: true, num: issue.length);
-          } else {
-            return OMHomeUpdateState(state: false, num: issue.length);
           }
         }
         break;
@@ -1210,15 +1077,15 @@ class _GetPageState extends State<GetPage> {
   @override
   Widget build(BuildContext context) {
     switch (widget.index) {
-      // case 1:
-      //   {
-      //     return BlocProvider.value(
-      //       value: _fmNotificationBloc,
-      //       child: FMNotificationScreen(),
-      //     ); // 공지사항
-      //   }
-      //   break;
-      case 5:
+      case 1: // 공지사항
+        {
+          return BlocProvider.value(
+            value: _omNotificationBloc,
+            child: OMNotificationScreen(),
+          ); // 공지사항
+        }
+        break;
+      case 2: // 영농계획
         {
           return MultiBlocProvider(
             providers: [
@@ -1231,66 +1098,61 @@ class _GetPageState extends State<GetPage> {
             ],
             child: OMPlanScreen(),
           );
+          // return EmptyScreen();
         }
         break;
-      // case 3:
-      //   {
-      //     return BlocProvider<FMContactBloc>(
-      //       create: (BuildContext context) => FMContactBloc(),
-      //       child: FMContactScreen(),
-      //     ); // 연락처
-      //   }
-      //   break;
-      // case 4:
-      //   {
-      //     if (widget.subIndex == 1) {
-      //       return BlocProvider.value(
-      //         value: _fmPurchaseBloc,
-      //         child: FMPurchaseScreen(),
-      //       );
-      //     } else if (widget.subIndex == 2) {
-      //       return BlocProvider.value(
-      //         value: _fmPurchaseBloc,
-      //         child: FMRequestPurchaseScreen(),
-      //       );
-      //     } else {
-      //       return EmptyScreen();
-      //     }
-      //   }
-      //   break;
-      // case 5:
-      //   {
-      //     if (widget.subIndex == 1) {
-      //       return MultiBlocProvider(
-      //         providers: [
-      //           BlocProvider<FMJournalBloc>(
-      //             create: (BuildContext context) => FMJournalBloc(),
-      //           ),
-      //           BlocProvider<FMIssueBloc>(
-      //             create: (BuildContext context) => FMIssueBloc(),
-      //           ),
-      //         ],
-      //         child: FMJournalScreen(),
-      //       );
-      //     } else if (widget.subIndex == 2) {
-      //       return EmptyScreen();
-      //     } else {
-      //       return EmptyScreen();
-      //     }
-      //   }
-      //   break;
+      case 3: // 승인요청
+        {
+          // return BlocProvider<FMContactBloc>(
+          //   create: (BuildContext context) => FMContactBloc(),
+          //   child: FMContactScreen(),
+          // );
+          return EmptyScreen();
+        }
+        break;
+      case 4: // 연락처
+        {
+          // return BlocProvider<FMContactBloc>(
+          //   create: (BuildContext context) => FMContactBloc(),
+          //   child: FMContactScreen(),
+          // );
+          return EmptyScreen();
+        }
+        break;
+      case 5: // 구매요청
+        {
+          if (widget.subIndex == 1) {
+            // return BlocProvider.value(
+            //   value: _fmPurchaseBloc,
+            //   child: FMPurchaseScreen(),
+            // );
+            return EmptyScreen();
+          } else if (widget.subIndex == 2) {
+            // return BlocProvider.value(
+            //   value: _fmPurchaseBloc,
+            //   child: FMRequestPurchaseScreen(),
+            // );
+            return EmptyScreen();
+          } else {
+            return EmptyScreen();
+          }
+        }
+        break;
       // case 6:
       //   {
       //     return EmptyScreen(); // 설정 화면
       //   }
       //   break;
-      default:
+      default: // DashBoard
         // return EmptyScreen();
         {
           return MultiBlocProvider(
             providers: [
               BlocProvider.value(
                 value: _omHomeBloc,
+              ),
+              BlocProvider.value(
+                value: _omNotificationBloc,
               ),
             ],
             child: OMDashboard(),
