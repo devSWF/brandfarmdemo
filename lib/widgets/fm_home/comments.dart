@@ -57,8 +57,13 @@ class _CommentsState extends State<Comments> {
       listener: (context, state) {},
       builder: (context, state) {
         return (state.isLoading)
-            ? Container(
-                width: 772, child: Center(child: CircularProgressIndicator()))
+            ? Row(
+                children: [
+                  Container(
+                      width: 814,
+                      child: Center(child: CircularProgressIndicator())),
+                ],
+              )
             : (state.recentUpdateList.isNotEmpty)
                 ? Row(
                     children: [

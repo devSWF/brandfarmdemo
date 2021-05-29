@@ -14,6 +14,7 @@ import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:BrandFarm/widgets/om_dashboard/om_dashboard.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,13 +33,95 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
   @override
   void initState() {
     super.initState();
+    getMessage();
     _omHomeBloc = BlocProvider.of<OMHomeBloc>(context);
+    _omHomeBloc.add(LoadOMHome());
+    _omHomeBloc.add(SetFcmToken());
+    _omHomeBloc.add(GetFarmListForOMHome());
+    _omHomeBloc.add(GetRecentUpdates());
     _omPlanBloc = BlocProvider.of<OMPlanBloc>(context);
     _omPlanBloc.add(GetFarmListForOMPlan());
     _omPlanBloc.add(GetPlanList());
     _omNotificationBloc = BlocProvider.of<OMNotificationBloc>(context);
     _omNotificationBloc.add(GetFarmList());
     _omNotificationBloc.add(GetNotificationList());
+  }
+
+  void getMessage() {
+    // app이 <foreground>열려있일때 실행
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print('Got a message whilst in the foreground!');
+      print('Message: ${message}');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+        await _showUpdateDialog();
+      }
+    });
+  }
+
+  Future<void> _showUpdateDialog() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            content: Container(
+              height: 150,
+              width: 300,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('새로운 정보가 있습니다'),
+                  Text('불러오시겠습니까?'),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                        ),
+                        child: Text(
+                          '취소',
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _omHomeBloc.add(LoadOMHome());
+                          _omHomeBloc.add(GetRecentUpdates());
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '확인',
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -78,12 +161,12 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
         title: Row(
           children: [
             Image.asset('assets/fm_home_logo.png'),
-            SizedBox(
-              width: 118,
-            ),
-            (constraints.maxWidth >= 1150)
-                ? _appBarNotification(context: context)
-                : Container(),
+            // SizedBox(
+            //   width: 118,
+            // ),
+            // (constraints.maxWidth >= 1150)
+            //     ? _appBarNotification(context: context)
+            //     : Container(),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -451,7 +534,7 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                     children: [
                       Icon(
                         Icons.circle,
-                        color: (isThereNewPlan.state)
+                        color: (isThereNewPurchase.state)
                             ? Colors.red
                             : Colors.transparent,
                         size: 6,
@@ -482,9 +565,9 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                       SizedBox(
                         width: 20,
                       ),
-                      (isThereNewPlan.num > 0)
+                      (isThereNewPurchase.num > 0)
                           ? Text(
-                              '+${isThereNewPlan.num}',
+                              '+${isThereNewPurchase.num}',
                               style: GoogleFonts.lato(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
@@ -535,126 +618,126 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                     ],
                   ),
                 ),
-                ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(8, 0, 0, 0),
-                  onTap: () {
-                    setState(() {
-                      _omHomeBloc.add(SetPageIndex(index: 5));
-                      _omHomeBloc.add(SetSubPageIndex(index: 1));
-                    });
-                  },
-                  title: Row(
-                    children: [
-                      Icon(
-                        Icons.circle,
-                        color: (isThereNewPurchase.state)
-                            ? Colors.red
-                            : Colors.transparent,
-                        size: 6,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Icon(
-                        Icons.chat_bubble_outline,
-                        color: (state.pageIndex == 5)
-                            ? Color(0xFF15B85B)
-                            : Colors.black,
-                        size: 18,
-                      ),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Text(
-                        '구매요청',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13,
-                              color: (state.pageIndex == 5)
-                                  ? Color(0xFF15B85B)
-                                  : Colors.black,
-                            ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      (isThereNewPurchase.num > 0)
-                          ? Text(
-                              '+${isThereNewPurchase.num}',
-                              style: GoogleFonts.lato(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                                color: Colors.red,
-                              ),
-                            )
-                          : Container(),
-                    ],
-                  ),
-                ),
-                (state.pageIndex == 5)
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                _omHomeBloc.add(SetPageIndex(index: 5));
-                                _omHomeBloc.add(SetSubPageIndex(index: 1));
-                              });
-                            },
-                            title: Row(
-                              children: [
-                                SizedBox(
-                                  width: 76,
-                                ),
-                                Text(
-                                  '구매목록',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      .copyWith(
-                                        fontSize: 13,
-                                        color: (state.pageIndex == 5 &&
-                                                state.subPageIndex == 1)
-                                            ? Color(0xFF15B85B)
-                                            : Colors.black,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                _omHomeBloc.add(SetPageIndex(index: 5));
-                                _omHomeBloc.add(SetSubPageIndex(index: 2));
-                              });
-                            },
-                            title: Row(
-                              children: [
-                                SizedBox(
-                                  width: 76,
-                                ),
-                                Text(
-                                  '구매요청하기',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      .copyWith(
-                                        fontSize: 13,
-                                        color: (state.pageIndex == 5 &&
-                                                state.subPageIndex == 2)
-                                            ? Color(0xFF15B85B)
-                                            : Colors.black,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    : Container(),
+                // ListTile(
+                //   contentPadding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+                //   onTap: () {
+                //     setState(() {
+                //       _omHomeBloc.add(SetPageIndex(index: 5));
+                //       _omHomeBloc.add(SetSubPageIndex(index: 1));
+                //     });
+                //   },
+                //   title: Row(
+                //     children: [
+                //       Icon(
+                //         Icons.circle,
+                //         color: (isThereNewPurchase.state)
+                //             ? Colors.red
+                //             : Colors.transparent,
+                //         size: 6,
+                //       ),
+                //       SizedBox(
+                //         width: 10,
+                //       ),
+                //       Icon(
+                //         Icons.chat_bubble_outline,
+                //         color: (state.pageIndex == 5)
+                //             ? Color(0xFF15B85B)
+                //             : Colors.black,
+                //         size: 18,
+                //       ),
+                //       SizedBox(
+                //         width: 16,
+                //       ),
+                //       Text(
+                //         '구매요청',
+                //         style: Theme.of(context).textTheme.bodyText2.copyWith(
+                //               fontWeight: FontWeight.w500,
+                //               fontSize: 13,
+                //               color: (state.pageIndex == 5)
+                //                   ? Color(0xFF15B85B)
+                //                   : Colors.black,
+                //             ),
+                //       ),
+                //       SizedBox(
+                //         width: 20,
+                //       ),
+                //       (isThereNewPurchase.num > 0)
+                //           ? Text(
+                //               '+${isThereNewPurchase.num}',
+                //               style: GoogleFonts.lato(
+                //                 fontWeight: FontWeight.bold,
+                //                 fontSize: 12,
+                //                 color: Colors.red,
+                //               ),
+                //             )
+                //           : Container(),
+                //     ],
+                //   ),
+                // ),
+                // (state.pageIndex == 5)
+                //     ? Column(
+                //         mainAxisAlignment: MainAxisAlignment.start,
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           ListTile(
+                //             onTap: () {
+                //               setState(() {
+                //                 _omHomeBloc.add(SetPageIndex(index: 5));
+                //                 _omHomeBloc.add(SetSubPageIndex(index: 1));
+                //               });
+                //             },
+                //             title: Row(
+                //               children: [
+                //                 SizedBox(
+                //                   width: 76,
+                //                 ),
+                //                 Text(
+                //                   '구매목록',
+                //                   style: Theme.of(context)
+                //                       .textTheme
+                //                       .bodyText2
+                //                       .copyWith(
+                //                         fontSize: 13,
+                //                         color: (state.pageIndex == 5 &&
+                //                                 state.subPageIndex == 1)
+                //                             ? Color(0xFF15B85B)
+                //                             : Colors.black,
+                //                       ),
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //           ListTile(
+                //             onTap: () {
+                //               setState(() {
+                //                 _omHomeBloc.add(SetPageIndex(index: 5));
+                //                 _omHomeBloc.add(SetSubPageIndex(index: 2));
+                //               });
+                //             },
+                //             title: Row(
+                //               children: [
+                //                 SizedBox(
+                //                   width: 76,
+                //                 ),
+                //                 Text(
+                //                   '구매요청하기',
+                //                   style: Theme.of(context)
+                //                       .textTheme
+                //                       .bodyText2
+                //                       .copyWith(
+                //                         fontSize: 13,
+                //                         color: (state.pageIndex == 5 &&
+                //                                 state.subPageIndex == 2)
+                //                             ? Color(0xFF15B85B)
+                //                             : Colors.black,
+                //                       ),
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //         ],
+                //       )
+                //     : Container(),
                 Divider(
                   height: 50,
                   thickness: 1,
@@ -834,7 +917,9 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                       children: [
                         Icon(
                           Icons.circle,
-                          color: Colors.transparent,
+                          color: (isThereNewPurchase.state)
+                              ? Colors.red
+                              : Colors.transparent,
                           size: 6,
                         ),
                         SizedBox(
@@ -878,70 +963,70 @@ class _OMHomeScreenState extends State<OMHomeScreen> {
                       ],
                     ),
                   ),
-                  IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      _omHomeBloc.add(SetPageIndex(index: 5));
-                      _omHomeBloc.add(SetSubPageIndex(index: 1));
-                    },
-                    icon: Row(
-                      children: [
-                        Icon(
-                          Icons.circle,
-                          color: (isThereNewPurchase.state)
-                              ? Colors.red
-                              : Colors.transparent,
-                          size: 6,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Icon(
-                          Icons.chat_bubble_outline,
-                          color: (state.pageIndex == 5)
-                              ? Color(0xFF15B85B)
-                              : Colors.black,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ),
-                  (state.pageIndex == 5)
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                _omHomeBloc.add(SetPageIndex(index: 5));
-                                _omHomeBloc.add(SetSubPageIndex(index: 1));
-                              },
-                              icon: Icon(
-                                Icons.circle,
-                                color: (state.pageIndex == 5 &&
-                                        state.subPageIndex == 1)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                                size: 6,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                _omHomeBloc.add(SetPageIndex(index: 5));
-                                _omHomeBloc.add(SetSubPageIndex(index: 2));
-                              },
-                              icon: Icon(
-                                Icons.circle,
-                                color: (state.pageIndex == 5 &&
-                                        state.subPageIndex == 2)
-                                    ? Color(0xFF15B85B)
-                                    : Colors.black,
-                                size: 6,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Container(),
+                  // IconButton(
+                  //   padding: EdgeInsets.zero,
+                  //   onPressed: () {
+                  //     _omHomeBloc.add(SetPageIndex(index: 5));
+                  //     _omHomeBloc.add(SetSubPageIndex(index: 1));
+                  //   },
+                  //   icon: Row(
+                  //     children: [
+                  //       Icon(
+                  //         Icons.circle,
+                  //         color: (isThereNewPurchase.state)
+                  //             ? Colors.red
+                  //             : Colors.transparent,
+                  //         size: 6,
+                  //       ),
+                  //       SizedBox(
+                  //         width: 10,
+                  //       ),
+                  //       Icon(
+                  //         Icons.chat_bubble_outline,
+                  //         color: (state.pageIndex == 5)
+                  //             ? Color(0xFF15B85B)
+                  //             : Colors.black,
+                  //         size: 18,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // (state.pageIndex == 5)
+                  //     ? Column(
+                  //         mainAxisAlignment: MainAxisAlignment.start,
+                  //         crossAxisAlignment: CrossAxisAlignment.center,
+                  //         children: [
+                  //           IconButton(
+                  //             onPressed: () {
+                  //               _omHomeBloc.add(SetPageIndex(index: 5));
+                  //               _omHomeBloc.add(SetSubPageIndex(index: 1));
+                  //             },
+                  //             icon: Icon(
+                  //               Icons.circle,
+                  //               color: (state.pageIndex == 5 &&
+                  //                       state.subPageIndex == 1)
+                  //                   ? Color(0xFF15B85B)
+                  //                   : Colors.black,
+                  //               size: 6,
+                  //             ),
+                  //           ),
+                  //           IconButton(
+                  //             onPressed: () {
+                  //               _omHomeBloc.add(SetPageIndex(index: 5));
+                  //               _omHomeBloc.add(SetSubPageIndex(index: 2));
+                  //             },
+                  //             icon: Icon(
+                  //               Icons.circle,
+                  //               color: (state.pageIndex == 5 &&
+                  //                       state.subPageIndex == 2)
+                  //                   ? Color(0xFF15B85B)
+                  //                   : Colors.black,
+                  //               size: 6,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       )
+                  //     : Container(),
                   SizedBox(
                     height: 30,
                   ),
@@ -1119,25 +1204,25 @@ class _GetPageState extends State<GetPage> {
           return EmptyScreen();
         }
         break;
-      case 5: // 구매요청
-        {
-          if (widget.subIndex == 1) {
-            // return BlocProvider.value(
-            //   value: _fmPurchaseBloc,
-            //   child: FMPurchaseScreen(),
-            // );
-            return EmptyScreen();
-          } else if (widget.subIndex == 2) {
-            // return BlocProvider.value(
-            //   value: _fmPurchaseBloc,
-            //   child: FMRequestPurchaseScreen(),
-            // );
-            return EmptyScreen();
-          } else {
-            return EmptyScreen();
-          }
-        }
-        break;
+      // case 5: // 구매요청
+      //   {
+      //     if (widget.subIndex == 1) {
+      //       // return BlocProvider.value(
+      //       //   value: _fmPurchaseBloc,
+      //       //   child: FMPurchaseScreen(),
+      //       // );
+      //       return EmptyScreen();
+      //     } else if (widget.subIndex == 2) {
+      //       // return BlocProvider.value(
+      //       //   value: _fmPurchaseBloc,
+      //       //   child: FMRequestPurchaseScreen(),
+      //       // );
+      //       return EmptyScreen();
+      //     } else {
+      //       return EmptyScreen();
+      //     }
+      //   }
+      //   break;
       // case 6:
       //   {
       //     return EmptyScreen(); // 설정 화면

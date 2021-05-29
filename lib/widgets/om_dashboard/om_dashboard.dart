@@ -4,6 +4,7 @@ import 'package:BrandFarm/om_screens/om_notification/om_write_notice_screen.dart
 import 'package:BrandFarm/utils/themes/constants.dart';
 import 'package:BrandFarm/widgets/fm_home/create_announcement.dart';
 import 'package:BrandFarm/widgets/om_dashboard/om_comment.dart';
+import 'package:BrandFarm/widgets/om_dashboard/select_farm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,6 +43,13 @@ class _OMDashboardState extends State<OMDashboard> {
           controller: _scrollController,
           shrinkWrap: true,
           children: [
+            BlocProvider.value(
+              value: _omHomeBloc,
+              child: SelectFarm(),
+            ),
+            SizedBox(
+              height: 10,
+            ),
             CreateAnnouncement(
               onPressed: () async {
                 await _showMyDialog();
