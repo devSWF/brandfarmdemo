@@ -1,8 +1,8 @@
-
-
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/office/office_model.dart';
 import 'package:BrandFarm/models/purchase/purchase_model.dart';
+import 'package:BrandFarm/models/send_to_office/send_to_office_model.dart';
 import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +22,28 @@ class PurchaseRepository {
       });
     });
     return user;
+  }
+
+  Future<void> sendNotification(
+    SendToOffice sto,
+  ) async {
+    DocumentReference reference =
+        _firestore.collection('SendToOffice').doc(sto.docID);
+    await reference.set(sto.toDocument());
+  }
+
+  Future<Office> getOffice() async {
+    Office office;
+    await _firestore
+        .collection('Office')
+        .where('docID', isEqualTo: 'Office')
+        .get()
+        .then((qs) {
+      qs.docs.forEach((ds) {
+        office = Office.fromSnapshot(ds);
+      });
+    });
+    return office;
   }
 
   Future<Farm> getFarmInfo() async {
@@ -52,9 +74,11 @@ class PurchaseRepository {
     return fieldList;
   }
 
-  Future<void> postPurchaseItem(Purchase pur,) async {
+  Future<void> postPurchaseItem(
+    Purchase pur,
+  ) async {
     DocumentReference reference =
-    _firestore.collection('Purchase').doc(pur.purchaseID);
+        _firestore.collection('Purchase').doc(pur.purchaseID);
     await reference.set(pur.toDocument());
   }
 
@@ -75,7 +99,8 @@ class PurchaseRepository {
   Future<void> updatePurchaseInfo({
     Purchase obj,
   }) async {
-    DocumentReference reference = _firestore.collection('Purchase').doc(obj.purchaseID);
+    DocumentReference reference =
+        _firestore.collection('Purchase').doc(obj.purchaseID);
     await reference.update(obj.toDocument());
   }
 
