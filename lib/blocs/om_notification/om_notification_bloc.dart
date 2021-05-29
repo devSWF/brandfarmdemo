@@ -3,6 +3,8 @@ import 'package:BrandFarm/blocs/om_notification/om_notification_state.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/om_notification/om_notification_model.dart';
 import 'package:BrandFarm/models/om_plan/om_plan_model.dart';
+import 'package:BrandFarm/models/send_to_farm/send_to_farm_model.dart';
+import 'package:BrandFarm/models/user/user_model.dart';
 import 'package:BrandFarm/repository/om_notification/om_notification_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
 import 'package:bloc/bloc.dart';
@@ -113,6 +115,26 @@ class OMNotificationBloc
     );
 
     OMNotificationRepository().postNotification(_notice);
+
+    Farm farm = await OMNotificationRepository().getFarm(obj.farmid);
+    User user = await OMNotificationRepository().getUser(farm.managerID);
+    String docID =
+        await FirebaseFirestore.instance.collection('SendToFarm').doc().id;
+    SendToFarm _sendToFarm = SendToFarm(
+      docID: docID,
+      uid: UserUtil.getUser().uid,
+      name: UserUtil.getUser().name,
+      farmid: farm.farmID,
+      title: '오피스 매니저 알림',
+      content: '새로운 알림 내용이 있습니다',
+      postedDate: Timestamp.now(),
+      jid: '',
+      issid: '',
+      cmtid: '',
+      scmtid: '',
+      fcmToken: user.fcmToken,
+    );
+    OMNotificationRepository().sendNotification(_sendToFarm);
 
     yield state.update(isLoading: false);
   }

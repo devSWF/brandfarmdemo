@@ -31,7 +31,7 @@ class _FMNotificationScreenState extends State<FMNotificationScreen> {
     return BlocConsumer<FMNotificationBloc, FMNotificationState>(
       listener: (context, state) {},
       builder: (context, state) {
-        if(state.notificationList.isNotEmpty){
+        if (state.notificationList.isNotEmpty) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             final RenderBox renderBox =
                 _searchMenu.currentContext.findRenderObject();
@@ -133,30 +133,32 @@ class _FMNotificationScreenState extends State<FMNotificationScreen> {
                                       return DataRow(
                                           cells: [
                                             DataCell(Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 (!state.notificationList[index]
-                                                    .isReadByFM)
+                                                        .isReadByFM)
                                                     ? Container(
-                                                  height: 6,
-                                                  width: 6,
-                                                  decoration:
-                                                  BoxDecoration(
-                                                    color: Colors.red,
-                                                    shape:
-                                                    BoxShape.circle,
-                                                  ),
-                                                )
+                                                        height: 6,
+                                                        width: 6,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.red,
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                      )
                                                     : Container(
-                                                  height: 6,
-                                                  width: 6,
-                                                  color:
-                                                  Colors.transparent,
-                                                ),
+                                                        height: 6,
+                                                        width: 6,
+                                                        color:
+                                                            Colors.transparent,
+                                                      ),
                                                 SizedBox(
                                                   width: 14,
                                                 ),
-                                                Text('${state.notificationList[index].no}'),
+                                                Text(
+                                                    '${state.notificationList[index].no}'),
                                               ],
                                             )),
                                             DataCell(Text(
@@ -171,7 +173,8 @@ class _FMNotificationScreenState extends State<FMNotificationScreen> {
                                                     notice:
                                                         state.notificationList[
                                                             index]));
-                                            if(!state.notificationList[index].isReadByFM){
+                                            if (!state.notificationList[index]
+                                                .isReadByFM) {
                                               _fmNotificationBloc.add(
                                                   SetNoticeAsRead(
                                                       index: index));
@@ -187,7 +190,7 @@ class _FMNotificationScreenState extends State<FMNotificationScreen> {
                           (state.showDropdownMenu)
                               ? Positioned(
                                   top: y - 40,
-                                  left: x - 328,
+                                  left: x - 328 + 65,
                                   child: _searchMenuList(state))
                               : Container(),
                         ],
@@ -196,7 +199,13 @@ class _FMNotificationScreenState extends State<FMNotificationScreen> {
                   ),
                 ),
               )
-            : LinearProgressIndicator();
+            : Row(
+                children: [
+                  Container(
+                      width: 814,
+                      child: Center(child: CircularProgressIndicator())),
+                ],
+              );
       },
     );
   }
@@ -231,8 +240,8 @@ class _FMNotificationScreenState extends State<FMNotificationScreen> {
         child: Text(
           '전체보기',
           style: Theme.of(context).textTheme.bodyText2.copyWith(
-            color: Color(0xB3000000),
-          ),
+                color: Color(0xB3000000),
+              ),
         ),
       ),
     );

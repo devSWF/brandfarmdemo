@@ -53,7 +53,9 @@ class _FMContactScreenState extends State<FMContactScreen> {
                                       color: Colors.black,
                                     ),
                           ),
-                          SizedBox(height: 40,),
+                          SizedBox(
+                            height: 40,
+                          ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -66,7 +68,9 @@ class _FMContactScreenState extends State<FMContactScreen> {
                               _profileCard(state, 1000, 1000),
                             ],
                           ),
-                          SizedBox(height: 42,),
+                          SizedBox(
+                            height: 42,
+                          ),
                           _titleBar('관계자 연락처', 2),
                           Divider(
                             height: 30,
@@ -84,10 +88,14 @@ class _FMContactScreenState extends State<FMContactScreen> {
                                       Column(
                                         children: [
                                           _profileCard(state, col, row),
-                                          SizedBox(height: 20,),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
                                         ],
                                       ),
-                                      SizedBox(width: 41,),
+                                      SizedBox(
+                                        width: 41,
+                                      ),
                                     ],
                                   );
                                 }),
@@ -100,22 +108,34 @@ class _FMContactScreenState extends State<FMContactScreen> {
                   ),
                 ),
               )
-            : LinearProgressIndicator();
+            : Row(
+                children: [
+                  Container(
+                      width: 814,
+                      child: Center(child: CircularProgressIndicator())),
+                ],
+              );
       },
     );
   }
 
-  Widget _titleBar(String title, int from){
+  Widget _titleBar(String title, int from) {
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('${title}',
+          Text(
+            '${title}',
             style: Theme.of(context).textTheme.bodyText2.copyWith(
-              color: Colors.black,
-            ),),
+                  color: Colors.black,
+                ),
+          ),
           (from == 1)
-              ? Icon(Icons.settings, color: Colors.black,) : Container(),
+              ? Icon(
+                  Icons.settings,
+                  color: Colors.black,
+                )
+              : Container(),
         ],
       ),
     );
@@ -136,7 +156,9 @@ class _FMContactScreenState extends State<FMContactScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _profileAvatar(state, col, row),
-          SizedBox(width: 14,),
+          SizedBox(
+            width: 14,
+          ),
           _detailInfo(state, col, row),
         ],
       ),
@@ -148,39 +170,37 @@ class _FMContactScreenState extends State<FMContactScreen> {
       height: 50,
       width: 50,
       decoration: BoxDecoration(
-          color: Color(0xFF15B85B),
-          shape: BoxShape.circle,
+        color: Color(0xFF15B85B),
+        shape: BoxShape.circle,
       ),
       child: Center(
         child: Container(
           height: 44,
           width: 44,
           decoration: BoxDecoration(
-            color: Colors.lightGreen,
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: (col == 1000 && UserUtil.getUser().imgUrl.isNotEmpty)
-                  ? CachedNetworkImageProvider(UserUtil.getUser().imgUrl)
-                  : (col == 1000 && UserUtil.getUser().imgUrl.isEmpty)
-                  ? AssetImage('assets/profile.png')
-                  : (state.cList[col][row].imgUrl.isNotEmpty)
-                  ? CachedNetworkImageProvider(state.cList[col][row].imgUrl,)
-                  : AssetImage('assets/profile.png'),
-              fit: BoxFit.fitWidth,
-            )
-          ),
+              color: Colors.lightGreen,
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: (col == 1000 && UserUtil.getUser().imgUrl.isNotEmpty)
+                    ? CachedNetworkImageProvider(UserUtil.getUser().imgUrl)
+                    : (col == 1000 && UserUtil.getUser().imgUrl.isEmpty)
+                        ? AssetImage('assets/profile.png')
+                        : (state.cList[col][row].imgUrl.isNotEmpty)
+                            ? CachedNetworkImageProvider(
+                                state.cList[col][row].imgUrl,
+                              )
+                            : AssetImage('assets/profile.png'),
+                fit: BoxFit.fitWidth,
+              )),
         ),
       ),
     );
   }
 
   Widget _detailInfo(FMContactState state, int col, int row) {
-    String name = (col == 1000)
-        ? UserUtil.getUser().name
-        : state.cList[col][row].name;
-    String position = (col == 1000)
-        ? '필드매니저'
-        : state.cList[col][row].position;
+    String name =
+        (col == 1000) ? UserUtil.getUser().name : state.cList[col][row].name;
+    String position = (col == 1000) ? '필드매니저' : state.cList[col][row].position;
     String phoneNum = (col == 1000)
         ? UserUtil.getUser().phone
         : state.cList[col][row].phoneNum;
@@ -192,28 +212,36 @@ class _FMContactScreenState extends State<FMContactScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text('${name}',
+            Text(
+              '${name}',
               style: Theme.of(context).textTheme.bodyText1.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Color(0xB3000000),
-              ),),
-            SizedBox(width: 5,),
-            Text('${position}',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Color(0xB3000000),
+                  ),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            Text(
+              '${position}',
               style: Theme.of(context).textTheme.bodyText1.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-                color: Color(0x80000000),
-              ),),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12,
+                    color: Color(0x80000000),
+                  ),
+            ),
           ],
         ),
-        SizedBox(height: 3,),
+        SizedBox(
+          height: 3,
+        ),
         Text('${phoneNum}',
-          style: GoogleFonts.lato(
-            fontWeight: FontWeight.normal,
-            fontSize: 16,
-            color: Colors.black,
-          )),
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.normal,
+              fontSize: 16,
+              color: Colors.black,
+            )),
         // SizedBox(height: 5,),
       ],
     );
