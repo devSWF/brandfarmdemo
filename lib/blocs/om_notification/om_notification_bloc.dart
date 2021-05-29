@@ -1,8 +1,7 @@
 import 'package:BrandFarm/blocs/om_notification/om_notification_event.dart';
 import 'package:BrandFarm/blocs/om_notification/om_notification_state.dart';
-import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
-import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/om_notification/om_notification_model.dart';
 import 'package:BrandFarm/models/om_plan/om_plan_model.dart';
 import 'package:BrandFarm/repository/om_notification/om_notification_repository.dart';
 import 'package:BrandFarm/utils/user/user_util.dart';
@@ -43,14 +42,6 @@ class OMNotificationBloc
       yield* _mapSetNoticeAsReadToState(event.index);
     } else if (event is PushPlanNotification) {
       yield* _mapPushPlanNotificationToState(event.plan);
-    } else if (event is PushSCommentNotification) {
-      yield* _mapPushSCommentNotificationToState(event.scmt);
-    } else if (event is PostCommentNotification) {
-      yield* _mapPostCommentNotificationToState(event.cmt);
-    } else if (event is PostIssueCommentNotice) {
-      yield* _mapPostIssueCommentNoticeToState(event.cmt);
-    } else if (event is PostIssueSCommentNotice) {
-      yield* _mapPostIssueSCommentNoticeToState(event.scmt);
     }
   }
 
@@ -61,8 +52,12 @@ class OMNotificationBloc
   Stream<OMNotificationState> _mapGetFarmListToState() async* {
     List<Farm> tmp = await OMNotificationRepository().getFarmInfo();
     List<Farm> first = [];
-    first.add(
-        Farm(farmID: '전체농장', fieldCategory: '', managerID: '', officeNum: 1));
+    first.add(Farm(
+        farmID: '',
+        fieldCategory: '',
+        managerID: '',
+        officeNum: 1,
+        name: '전체알림'));
 
     yield state.update(
       farm: first[0],
@@ -75,7 +70,7 @@ class OMNotificationBloc
   }
 
   Stream<OMNotificationState> _mapPostNotificationToState(
-      NotificationNotice obj) async* {
+      OMNotificationNotice obj) async* {
     // post notification
     String year = obj.postedDate.toDate().year.toString().substring(2);
     String month = DateFormat('MM').format(obj.postedDate.toDate());
@@ -98,13 +93,11 @@ class OMNotificationBloc
     }
 
     String _notid = '';
-    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
-    NotificationNotice _notice = NotificationNotice(
+    _notid = FirebaseFirestore.instance.collection('OMNotification').doc().id;
+    OMNotificationNotice _notice = OMNotificationNotice(
       no: no,
       uid: obj.uid,
       name: obj.name,
-      imgUrl: obj.imgUrl,
-      fid: obj.fid,
       farmid: obj.farmid,
       title: obj.title,
       content: obj.content,
@@ -116,8 +109,6 @@ class OMNotificationBloc
       notid: _notid,
       type: obj.type,
       department: obj.department,
-      jid: obj.jid,
-      issid: obj.issid,
       planid: obj.planid,
     );
 
@@ -128,7 +119,7 @@ class OMNotificationBloc
 
   Stream<OMNotificationState> _mapSetNotificationListOrderToState(
       int columnIndex) async* {
-    List<NotificationNotice> nlist = state.notificationList;
+    List<OMNotificationNotice> nlist = state.notificationList;
     bool isAscending;
     if (state.isAscending == true) {
       isAscending = false;
@@ -150,7 +141,7 @@ class OMNotificationBloc
   }
 
   Stream<OMNotificationState> _mapSetNotificationToState(
-      NotificationNotice notice) async* {
+      OMNotificationNotice notice) async* {
     yield state.update(
       notice: notice,
     );
@@ -172,7 +163,7 @@ class OMNotificationBloc
   Stream<OMNotificationState> _mapGetNotificationListBySearchToState(
       String word) async* {
     // notification list by search
-    List<NotificationNotice> nlist = [];
+    List<OMNotificationNotice> nlist = [];
 
     if (state.menu[state.menuIndex].contains('No.')) {
       nlist = state.notificationList
@@ -195,9 +186,8 @@ class OMNotificationBloc
 
   Stream<OMNotificationState> _mapGetNotificationListToState() async* {
     // get notification list from firebase
-    List<NotificationNotice> nlist = [];
-    nlist =
-        await OMNotificationRepository().getNotificationList(state.farm.farmID);
+    List<OMNotificationNotice> nlist = [];
+    nlist = await OMNotificationRepository().getNotificationList();
 
     yield state.update(
       notificationList: nlist,
@@ -212,26 +202,22 @@ class OMNotificationBloc
   }
 
   Stream<OMNotificationState> _mapSetNoticeAsReadToState(int index) async* {
-    NotificationNotice obj = state.notificationList[index];
-    NotificationNotice newObj = NotificationNotice(
+    OMNotificationNotice obj = state.notificationList[index];
+    OMNotificationNotice newObj = OMNotificationNotice(
       no: obj.no,
       uid: obj.uid,
       name: obj.name,
-      imgUrl: obj.imgUrl,
-      fid: obj.fid,
       farmid: obj.farmid,
       title: obj.title,
       content: obj.content,
       postedDate: obj.postedDate,
       scheduledDate: obj.scheduledDate,
-      isReadByFM: !obj.isReadByFM,
-      isReadByOffice: obj.isReadByOffice,
+      isReadByFM: obj.isReadByFM,
+      isReadByOffice: !obj.isReadByOffice,
       isReadBySFM: obj.isReadBySFM,
       notid: obj.notid,
       type: obj.type,
       department: obj.department,
-      jid: obj.jid,
-      issid: obj.issid,
       planid: obj.planid,
     );
 
@@ -242,8 +228,8 @@ class OMNotificationBloc
             .indexWhere((element) => element.notid == obj.notid) ??
         -1;
 
-    List<NotificationNotice> nlist = state.notificationList;
-    List<NotificationNotice> nlistFromDB = state.notificationListFromDB;
+    List<OMNotificationNotice> nlist = state.notificationList;
+    List<OMNotificationNotice> nlistFromDB = state.notificationListFromDB;
     if (index1 != -1) {
       nlist.removeAt(index1);
       nlist.insert(index1, newObj);
@@ -286,13 +272,11 @@ class OMNotificationBloc
     }
 
     String _notid = '';
-    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
-    NotificationNotice _notice = NotificationNotice(
+    _notid = FirebaseFirestore.instance.collection('OMNotification').doc().id;
+    OMNotificationNotice _notice = OMNotificationNotice(
       no: no,
       uid: UserUtil.getUser().uid,
       name: UserUtil.getUser().name,
-      imgUrl: UserUtil.getUser().imgUrl,
-      fid: 'plan.fid', // TODO
       farmid: plan.farmID,
       title: plan.title,
       content: plan.content,
@@ -303,214 +287,8 @@ class OMNotificationBloc
       isReadBySFM: false,
       notid: _notid,
       type: '일반',
-      department: 'farm',
-      jid: '',
-      issid: '',
+      department: 'office',
       planid: plan.planID,
-    );
-
-    OMNotificationRepository().postNotification(_notice);
-    yield state.update();
-  }
-
-  Stream<OMNotificationState> _mapPushSCommentNotificationToState(
-      SubComment scmt) async* {
-    DateTime date = scmt.date.toDate();
-    String year = date.year.toString().substring(2);
-    String month = DateFormat('MM').format(date);
-    String day = DateFormat('dd').format(date);
-    String no;
-
-    for (int i = 0; i < 10; i++) {
-      String tmpNo = '${year}${month}${day}${i}';
-      bool exist = false;
-      for (int j = 0; j < state.notificationListFromDB.length; j++) {
-        if (state.notificationListFromDB[j].no.contains(tmpNo)) {
-          exist = true;
-          break;
-        }
-      }
-      if (!exist) {
-        no = tmpNo;
-        break;
-      }
-    }
-
-    String _notid = '';
-    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
-    NotificationNotice _notice = NotificationNotice(
-      no: no,
-      uid: UserUtil.getUser().uid,
-      name: UserUtil.getUser().name,
-      imgUrl: UserUtil.getUser().imgUrl,
-      fid: scmt.fid,
-      farmid: state.farm.farmID,
-      title: 'New Comment',
-      content: scmt.scomment,
-      postedDate: scmt.date,
-      scheduledDate: scmt.date,
-      isReadByFM: true,
-      isReadByOffice: false,
-      isReadBySFM: false,
-      notid: _notid,
-      type: '일반',
-      department: 'farm',
-      jid: scmt.jid,
-      issid: scmt.issid,
-      planid: '',
-    );
-
-    OMNotificationRepository().postNotification(_notice);
-    yield state.update();
-  }
-
-  Stream<OMNotificationState> _mapPostCommentNotificationToState(
-      Comment cmt) async* {
-    DateTime date = cmt.date.toDate();
-    String year = date.year.toString().substring(2);
-    String month = DateFormat('MM').format(date);
-    String day = DateFormat('dd').format(date);
-    String no;
-
-    for (int i = 0; i < 10; i++) {
-      String tmpNo = '${year}${month}${day}${i}';
-      bool exist = false;
-      for (int j = 0; j < state.notificationListFromDB.length; j++) {
-        if (state.notificationListFromDB[j].no.contains(tmpNo)) {
-          exist = true;
-          break;
-        }
-      }
-      if (!exist) {
-        no = tmpNo;
-        break;
-      }
-    }
-
-    String _notid = '';
-    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
-    NotificationNotice _notice = NotificationNotice(
-      no: no,
-      uid: UserUtil.getUser().uid,
-      name: UserUtil.getUser().name,
-      imgUrl: UserUtil.getUser().imgUrl,
-      fid: cmt.fid,
-      farmid: state.farm.farmID,
-      title: 'New Comment',
-      content: cmt.comment,
-      postedDate: cmt.date,
-      scheduledDate: cmt.date,
-      isReadByFM: true,
-      isReadByOffice: false,
-      isReadBySFM: false,
-      notid: _notid,
-      type: '일반',
-      department: 'farm',
-      jid: cmt.jid,
-      issid: cmt.issid,
-      planid: '',
-    );
-
-    OMNotificationRepository().postNotification(_notice);
-    yield state.update();
-  }
-
-  Stream<OMNotificationState> _mapPostIssueCommentNoticeToState(
-      Comment cmt) async* {
-    DateTime date = cmt.date.toDate();
-    String year = date.year.toString().substring(2);
-    String month = DateFormat('MM').format(date);
-    String day = DateFormat('dd').format(date);
-    String no;
-
-    for (int i = 0; i < 10; i++) {
-      String tmpNo = '${year}${month}${day}${i}';
-      bool exist = false;
-      for (int j = 0; j < state.notificationListFromDB.length; j++) {
-        if (state.notificationListFromDB[j].no.contains(tmpNo)) {
-          exist = true;
-          break;
-        }
-      }
-      if (!exist) {
-        no = tmpNo;
-        break;
-      }
-    }
-
-    String _notid = '';
-    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
-    NotificationNotice _notice = NotificationNotice(
-      no: no,
-      uid: UserUtil.getUser().uid,
-      name: UserUtil.getUser().name,
-      imgUrl: UserUtil.getUser().imgUrl,
-      fid: cmt.fid,
-      farmid: state.farm.farmID,
-      title: 'New Comment',
-      content: cmt.comment,
-      postedDate: cmt.date,
-      scheduledDate: cmt.date,
-      isReadByFM: true,
-      isReadByOffice: false,
-      isReadBySFM: false,
-      notid: _notid,
-      type: '일반',
-      department: 'farm',
-      jid: cmt.jid,
-      issid: cmt.issid,
-      planid: '',
-    );
-
-    OMNotificationRepository().postNotification(_notice);
-    yield state.update();
-  }
-
-  Stream<OMNotificationState> _mapPostIssueSCommentNoticeToState(
-      SubComment scmt) async* {
-    DateTime date = scmt.date.toDate();
-    String year = date.year.toString().substring(2);
-    String month = DateFormat('MM').format(date);
-    String day = DateFormat('dd').format(date);
-    String no;
-
-    for (int i = 0; i < 10; i++) {
-      String tmpNo = '${year}${month}${day}${i}';
-      bool exist = false;
-      for (int j = 0; j < state.notificationListFromDB.length; j++) {
-        if (state.notificationListFromDB[j].no.contains(tmpNo)) {
-          exist = true;
-          break;
-        }
-      }
-      if (!exist) {
-        no = tmpNo;
-        break;
-      }
-    }
-
-    String _notid = '';
-    _notid = FirebaseFirestore.instance.collection('Notification').doc().id;
-    NotificationNotice _notice = NotificationNotice(
-      no: no,
-      uid: UserUtil.getUser().uid,
-      name: UserUtil.getUser().name,
-      imgUrl: UserUtil.getUser().imgUrl,
-      fid: scmt.fid,
-      farmid: state.farm.farmID,
-      title: 'New Comment',
-      content: scmt.scomment,
-      postedDate: scmt.date,
-      scheduledDate: scmt.date,
-      isReadByFM: true,
-      isReadByOffice: false,
-      isReadBySFM: false,
-      notid: _notid,
-      type: '일반',
-      department: 'farm',
-      jid: scmt.jid,
-      issid: scmt.issid,
-      planid: '',
     );
 
     OMNotificationRepository().postNotification(_notice);

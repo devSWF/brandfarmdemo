@@ -1,5 +1,5 @@
 import 'package:BrandFarm/models/farm/farm_model.dart';
-import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/om_notification/om_notification_model.dart';
 import 'package:flutter/material.dart';
 
 class OMNotificationState {
@@ -10,13 +10,13 @@ class OMNotificationState {
   int currentSortColumn;
   bool isAscending;
 
-  List<NotificationNotice> notificationList;
-  List<NotificationNotice> notificationListFromDB;
+  List<OMNotificationNotice> notificationList;
+  List<OMNotificationNotice> notificationListFromDB;
 
   List<String> menu;
   int menuIndex;
   bool showDropdownMenu;
-  NotificationNotice notice;
+  OMNotificationNotice notice;
 
   OMNotificationState({
     @required this.isLoading,
@@ -58,12 +58,12 @@ class OMNotificationState {
     List<Farm> farmList,
     int currentSortColumn,
     bool isAscending,
-    List<NotificationNotice> notificationList,
-    List<NotificationNotice> notificationListFromDB,
+    List<OMNotificationNotice> notificationList,
+    List<OMNotificationNotice> notificationListFromDB,
     List<String> menu,
     int menuIndex,
     bool showDropdownMenu,
-    NotificationNotice notice,
+    OMNotificationNotice notice,
   }) {
     return OMNotificationState(
       isLoading: isLoading ?? this.isLoading,
@@ -87,12 +87,12 @@ class OMNotificationState {
     List<Farm> farmList,
     int currentSortColumn,
     bool isAscending,
-    List<NotificationNotice> notificationList,
-    List<NotificationNotice> notificationListFromDB,
+    List<OMNotificationNotice> notificationList,
+    List<OMNotificationNotice> notificationListFromDB,
     List<String> menu,
     int menuIndex,
     bool showDropdownMenu,
-    NotificationNotice notice,
+    OMNotificationNotice notice,
   }) {
     return copyWith(
       isLoading: isLoading,

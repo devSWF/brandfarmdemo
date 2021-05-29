@@ -1,5 +1,5 @@
 import 'package:BrandFarm/models/farm/farm_model.dart';
-import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/om_notification/om_notification_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OMNotificationRepository {
@@ -31,33 +31,32 @@ class OMNotificationRepository {
   }
 
   Future<void> postNotification(
-    NotificationNotice notice,
+    OMNotificationNotice notice,
   ) async {
     DocumentReference reference =
-        _firestore.collection('Notification').doc(notice.notid);
+        _firestore.collection('OMNotification').doc(notice.notid);
     await reference.set(notice.toDocument());
   }
 
-  Future<List<NotificationNotice>> getNotificationList(String farmID) async {
-    List<NotificationNotice> nlist = [];
+  Future<List<OMNotificationNotice>> getNotificationList() async {
+    List<OMNotificationNotice> nlist = [];
     QuerySnapshot _nlist = await _firestore
-        .collection('Notification')
-        .where('farmid', isEqualTo: farmID)
+        .collection('OMNotification')
         .orderBy('postedDate', descending: true)
         .get();
 
     _nlist.docs.forEach((ds) {
-      nlist.add(NotificationNotice.fromSnapshot(ds));
+      nlist.add(OMNotificationNotice.fromSnapshot(ds));
     });
 
     return nlist;
   }
 
   Future<void> updateNotice({
-    NotificationNotice obj,
+    OMNotificationNotice obj,
   }) async {
     DocumentReference reference =
-        _firestore.collection('Notification').doc(obj.notid);
+        _firestore.collection('OMNotification').doc(obj.notid);
     await reference.update(obj.toDocument());
   }
 

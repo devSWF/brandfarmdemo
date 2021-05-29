@@ -1,6 +1,5 @@
-import 'package:BrandFarm/models/comment/comment_model.dart';
 import 'package:BrandFarm/models/farm/farm_model.dart';
-import 'package:BrandFarm/models/notification/notification_model.dart';
+import 'package:BrandFarm/models/om_notification/om_notification_model.dart';
 import 'package:BrandFarm/models/om_plan/om_plan_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,7 +30,7 @@ class SetFarm extends OMNotificationEvent {
 }
 
 class PostNotification extends OMNotificationEvent {
-  final NotificationNotice obj;
+  final OMNotificationNotice obj;
 
   const PostNotification({
     @required this.obj,
@@ -60,7 +59,7 @@ class SetNotificationListOrder extends OMNotificationEvent {
 }
 
 class SetNotification extends OMNotificationEvent {
-  final NotificationNotice notice;
+  final OMNotificationNotice notice;
 
   const SetNotification({
     @required this.notice,
@@ -142,69 +141,5 @@ class PushPlanNotification extends OMNotificationEvent {
   @override
   String toString() => '''PushPlanNotification { 
     plan : $plan,
-  }''';
-}
-
-class PushSCommentNotification extends OMNotificationEvent {
-  final SubComment scmt;
-
-  const PushSCommentNotification({
-    @required this.scmt,
-  });
-
-  // @override
-  // List<Object> get props => [navTo];
-
-  @override
-  String toString() => '''PushSCommentNotification { 
-    scmt : $scmt,
-  }''';
-}
-
-class PostCommentNotification extends OMNotificationEvent {
-  final Comment cmt;
-
-  const PostCommentNotification({
-    @required this.cmt,
-  });
-
-  // @override
-  // List<Object> get props => [navTo];
-
-  @override
-  String toString() => '''PostCommentNotification { 
-    cmt : $cmt,
-  }''';
-}
-
-class PostIssueCommentNotice extends OMNotificationEvent {
-  final Comment cmt;
-
-  const PostIssueCommentNotice({
-    @required this.cmt,
-  });
-
-  // @override
-  // List<Object> get props => [navTo];
-
-  @override
-  String toString() => '''PostIssueCommentNotice { 
-    cmt : $cmt,
-  }''';
-}
-
-class PostIssueSCommentNotice extends OMNotificationEvent {
-  final SubComment scmt;
-
-  const PostIssueSCommentNotice({
-    @required this.scmt,
-  });
-
-  // @override
-  // List<Object> get props => [navTo];
-
-  @override
-  String toString() => '''PostIssueSCommentNotice { 
-    scmt : $scmt,
   }''';
 }
