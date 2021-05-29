@@ -46,8 +46,7 @@ class _FMCalendarState extends State<FMCalendar> {
     year = now.year;
     month = now.month;
     selectedIndex = monthList.indexWhere(
-            (element) =>
-        element.date == DateTime(now.year, now.month, now.day));
+        (element) => element.date == DateTime(now.year, now.month, now.day));
     DateTime today = monthList[selectedIndex].date;
     monthList.removeAt(selectedIndex);
     monthList.insert(
@@ -71,10 +70,9 @@ class _FMCalendarState extends State<FMCalendar> {
     if (firstWeekDayOfMonth < 7) {
       List<CalendarDate> prev = List.generate(
           firstWeekDayOfMonth,
-              (index) =>
-              CalendarDate(
-                  date: DateTime(
-                      date.year, date.month - 1, daysInPrevMonth - index)));
+          (index) => CalendarDate(
+              date: DateTime(
+                  date.year, date.month - 1, daysInPrevMonth - index)));
       prevMonthList = List.from(prev.reversed);
     } else {
       ;
@@ -84,20 +82,18 @@ class _FMCalendarState extends State<FMCalendar> {
     if (lastWeekDayOfMonth < 7) {
       nextMonthList = List.generate(
           6 - lastWeekDayOfMonth,
-              (index) =>
-              CalendarDate(
-                  date: DateTime(date.year, date.month + 1, index + 1)));
+          (index) => CalendarDate(
+              date: DateTime(date.year, date.month + 1, index + 1)));
     } else {
       nextMonthList = List.generate(
           6,
-              (index) =>
-              CalendarDate(
-                  date: DateTime(date.year, date.month + 1, index + 1)));
+          (index) => CalendarDate(
+              date: DateTime(date.year, date.month + 1, index + 1)));
     }
     // get current month
     List<CalendarDate> currMonthList = List.generate(
         daysInCurrentMonth,
-            (index) =>
+        (index) =>
             CalendarDate(date: DateTime(date.year, date.month, index + 1)));
     // get total month list
     List<CalendarDate> monthList;
@@ -123,7 +119,7 @@ class _FMCalendarState extends State<FMCalendar> {
   Widget _calendarBody(PlanState state) {
     List<List<Plan>> pListByField = sortPlanListByField(state);
     List<List<List<CalendarPlan>>> pListByDate =
-    sortPlanListByDate(pListByField);
+        sortPlanListByDate(pListByField);
     List<CalendarPlan> plist = getPlanList(pListByDate);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -131,13 +127,9 @@ class _FMCalendarState extends State<FMCalendar> {
       children: [
         Text(
           '${year}',
-          style: Theme
-              .of(context)
-              .textTheme
-              .bodyText2
-              .copyWith(
-            color: Color(0xB3000000),
-          ),
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                color: Color(0xB3000000),
+              ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -145,7 +137,7 @@ class _FMCalendarState extends State<FMCalendar> {
             IconButton(
               onPressed: () {
                 List<CalendarDate> mList =
-                getMonth(date: DateTime(year, month - 1, 1));
+                    getMonth(date: DateTime(year, month - 1, 1));
                 setState(() {
                   monthList = mList;
                   year = DateTime(year, month - 1, 1).year;
@@ -161,20 +153,16 @@ class _FMCalendarState extends State<FMCalendar> {
             ),
             Text(
               '${month}월',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText2
-                  .copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF333333),
-              ),
+              style: Theme.of(context).textTheme.bodyText2.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF333333),
+                  ),
             ),
             IconButton(
               onPressed: () {
                 List<CalendarDate> mList =
-                getMonth(date: DateTime(year, month + 1, 1));
+                    getMonth(date: DateTime(year, month + 1, 1));
                 setState(() {
                   monthList = mList;
                   year = DateTime(year, month + 1, 1).year;
@@ -193,18 +181,24 @@ class _FMCalendarState extends State<FMCalendar> {
         SizedBox(
           height: 50,
         ),
-        Row(children: List.generate(weekDays.length, (index) =>
-              Container(
-                width: 108,
+        Row(
+          children: List.generate(
+              weekDays.length,
+              (index) => Container(
+                  width: 108,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(weekDays[index],
+                      Text(
+                        weekDays[index],
                         style: TextStyle(
                           fontSize: 15,
                           color: Color(0xFF219653),
-                        ),),
-                      SizedBox(width: 10,),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
                     ],
                   ))),
         ),
@@ -214,8 +208,18 @@ class _FMCalendarState extends State<FMCalendar> {
         Stack(
           children: [
             _tableLayout(state),
-            Positioned(top: 0, right: 0, left: 0, child: _planBody(state, plist),),
-            Positioned(top: 0, right: 0, left: 0, child: _tableBody(state),),
+            Positioned(
+              top: 0,
+              right: 0,
+              left: 0,
+              child: _planBody(state, plist),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              left: 0,
+              child: _tableBody(state),
+            ),
           ],
         ),
       ],
@@ -224,7 +228,7 @@ class _FMCalendarState extends State<FMCalendar> {
 
   List<List<Plan>> sortPlanListByField(PlanState state) {
     List<List<Plan>> pListOfLists =
-    List.generate(state.fieldList.length, (col) {
+        List.generate(state.fieldList.length, (col) {
       List<Plan> plist = state.planList.where((element) {
         if (col == 0) {
           return element.farmID == state.farm.farmID && element.fid.isEmpty;
@@ -240,18 +244,15 @@ class _FMCalendarState extends State<FMCalendar> {
   List<List<List<CalendarPlan>>> sortPlanListByDate(
       List<List<Plan>> listByField) {
     List<List<List<CalendarPlan>>> pListByDate =
-    List.generate(listByField.length, (col) {
+        List.generate(listByField.length, (col) {
       int length = listByField[col].length;
       List<List<CalendarPlan>> plist = List.generate(length, (row) {
         DateTime startDate = listByField[col][row].startDate.toDate();
         DateTime endDate = listByField[col][row].endDate.toDate();
-        int period = endDate
-            .difference(startDate)
-            .inDays + 1;
+        int period = endDate.difference(startDate).inDays + 1;
         return List.generate(
             period,
-                (index) =>
-                CalendarPlan(
+            (index) => CalendarPlan(
                   date: DateTime(
                       startDate.year, startDate.month, startDate.day + index),
                   title: listByField[col][row].title,
@@ -296,51 +297,61 @@ class _FMCalendarState extends State<FMCalendar> {
         int current = (index1 == 0)
             ? 0
             : (index1 == 1)
-            ? 7
-            : (index1 == 2)
-            ? 14
-            : (index1 == 3)
-            ? 21
-            : 28;
+                ? 7
+                : (index1 == 2)
+                    ? 14
+                    : (index1 == 3)
+                        ? 21
+                        : 28;
         return TableRow(
-          children: List.generate(
-            7,
-                (index2) =>
-                Container(
-                  width: 96,
-                  height: 71,
-                  decoration: BoxDecoration(
-                    color: (monthList[index2 + current].date ==
+          children: List.generate(7, (index2) {
+            bool isThereOfficePlan = false;
+            for (int i = 0; i < state.cplist.length; i++) {
+              if (state.cplist[i].date
+                  .isAtSameMomentAs(monthList[index2 + current].date)) {
+                isThereOfficePlan = true;
+                break;
+              }
+            }
+            return Container(
+              width: 96,
+              height: 71,
+              decoration: BoxDecoration(
+                color: (monthList[index2 + current].date ==
                         DateTime(now.year, now.month, now.day))
-                        ? Colors.grey[200]
+                    ? Colors.grey[200]
+                    : (isThereOfficePlan)
+                        ? Color(0xFFD0F1DE)
                         : Colors.white,
-                    border: Border.all(
-                        width: 1,
-                        color: Color(0xFFD8D8D8)),
+                border: Border.all(width: 1, color: Color(0xFFD8D8D8)),
+              ),
+              padding: EdgeInsets.fromLTRB(0, 3, 3, 0),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  height: 19,
+                  width: 19,
+                  decoration: BoxDecoration(
+                    color: (monthList[index2 + current].isSelected)
+                        ? Color(0xFF15B85B)
+                        : Colors.white,
+                    shape: BoxShape.circle,
                   ),
-                  padding: EdgeInsets.fromLTRB(0, 3, 3, 0),
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      height: 19,
-                      width: 19,
-                      decoration: BoxDecoration(
-                        color: (monthList[index2 + current].isSelected)
-                            ? Color(0xFF15B85B) : Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text('${monthList[index2 + current].date.day}',
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  child: Center(
+                    child: Text(
+                      '${monthList[index2 + current].date.day}',
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(
                             fontWeight: FontWeight.w500,
                             color: (monthList[index2 + current].isSelected)
-                                ? Colors.white : Colors.black,
-                          ),),
-                      ),
+                                ? Colors.white
+                                : Colors.black,
+                          ),
                     ),
                   ),
                 ),
-          ),
+              ),
+            );
+          }),
         );
       }),
     );
@@ -353,68 +364,66 @@ class _FMCalendarState extends State<FMCalendar> {
         int current = (index1 == 0)
             ? 0
             : (index1 == 1)
-            ? 7
-            : (index1 == 2)
-            ? 14
-            : (index1 == 3)
-            ? 21
-            : 28;
+                ? 7
+                : (index1 == 2)
+                    ? 14
+                    : (index1 == 3)
+                        ? 21
+                        : 28;
         return TableRow(
           children: List.generate(
             7,
-                (index2) =>
-                InkResponse(
-                  onTap: () {
-                    _fmPlanBloc.add(SetDate(date: monthList[index2 + current].date));
-                    if (selectedIndex == 100) {
-                      setState(() {
-                        // update selected date
-                        CalendarDate curr = CalendarDate(
-                          date: monthList[index2 + current].date,
-                          isSelected: !monthList[index2 + current].isSelected,
-                        );
-                        monthList.removeAt(index2 + current);
-                        monthList.insert(index2 + current, curr);
-                        // update selected index
-                        selectedIndex = index2 + current;
-                      });
-                    } else if (selectedIndex != index2 + current) {
-                      // first check current index
-                      setState(() {
-                        // return previous selectedDate back to before
-                        CalendarDate prev = CalendarDate(
-                          date: monthList[selectedIndex].date,
-                          isSelected: !monthList[selectedIndex].isSelected,
-                        );
-                        monthList.removeAt(selectedIndex);
-                        monthList.insert(selectedIndex, prev);
-                        // update selected date
-                        CalendarDate curr = CalendarDate(
-                          date: monthList[index2 + current].date,
-                          isSelected: !monthList[index2 + current].isSelected,
-                        );
-                        monthList.removeAt(index2 + current);
-                        monthList.insert(index2 + current, curr);
-                        // update selected index
-                        selectedIndex = index2 + current;
-                      });
-                    }
-                  },
-                  child: Container(
-                    width: 96,
-                    height: 71,
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      border: Border.all(
-                          width: (monthList[index2 + current].isSelected)
-                              ? 3
-                              : 0,
-                          color: (monthList[index2 + current].isSelected)
-                              ? Color(0xFF15B85B)
-                              : Colors.transparent),
-                    ),
-                  ),
+            (index2) => InkResponse(
+              onTap: () {
+                _fmPlanBloc
+                    .add(SetDate(date: monthList[index2 + current].date));
+                if (selectedIndex == 100) {
+                  setState(() {
+                    // update selected date
+                    CalendarDate curr = CalendarDate(
+                      date: monthList[index2 + current].date,
+                      isSelected: !monthList[index2 + current].isSelected,
+                    );
+                    monthList.removeAt(index2 + current);
+                    monthList.insert(index2 + current, curr);
+                    // update selected index
+                    selectedIndex = index2 + current;
+                  });
+                } else if (selectedIndex != index2 + current) {
+                  // first check current index
+                  setState(() {
+                    // return previous selectedDate back to before
+                    CalendarDate prev = CalendarDate(
+                      date: monthList[selectedIndex].date,
+                      isSelected: !monthList[selectedIndex].isSelected,
+                    );
+                    monthList.removeAt(selectedIndex);
+                    monthList.insert(selectedIndex, prev);
+                    // update selected date
+                    CalendarDate curr = CalendarDate(
+                      date: monthList[index2 + current].date,
+                      isSelected: !monthList[index2 + current].isSelected,
+                    );
+                    monthList.removeAt(index2 + current);
+                    monthList.insert(index2 + current, curr);
+                    // update selected index
+                    selectedIndex = index2 + current;
+                  });
+                }
+              },
+              child: Container(
+                width: 96,
+                height: 71,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border.all(
+                      width: (monthList[index2 + current].isSelected) ? 3 : 0,
+                      color: (monthList[index2 + current].isSelected)
+                          ? Color(0xFF15B85B)
+                          : Colors.transparent),
                 ),
+              ),
+            ),
           ),
         );
       }),
@@ -428,48 +437,62 @@ class _FMCalendarState extends State<FMCalendar> {
         int current = (index1 == 0)
             ? 0
             : (index1 == 1)
-            ? 7
-            : (index1 == 2)
-            ? 14
-            : (index1 == 3)
-            ? 21
-            : 28;
+                ? 7
+                : (index1 == 2)
+                    ? 14
+                    : (index1 == 3)
+                        ? 21
+                        : 28;
         return TableRow(
           children: List.generate(
             7,
-                (index2) {
+            (index2) {
               int all;
               int f1;
               int f2;
               int f3;
               int f4;
               all = plist.indexWhere((element) =>
-              element.fid.isEmpty && element.date.isAtSameMomentAs(
-                  monthList[index2 + current].date)) ?? -1;
-              if(state.fieldList.length >= 2){
+                      element.fid.isEmpty &&
+                      element.date.isAtSameMomentAs(
+                          monthList[index2 + current].date)) ??
+                  -1;
+              if (state.fieldList.length >= 2) {
                 f1 = plist.indexWhere((element) =>
-                    element.fid == state.fieldList[1].fid &&
-                    element.date
-                        .isAtSameMomentAs(monthList[index2 + current].date)) ?? -1;
-              } else {f1 = -1;}
-              if(state.fieldList.length >= 3){
+                        element.fid == state.fieldList[1].fid &&
+                        element.date.isAtSameMomentAs(
+                            monthList[index2 + current].date)) ??
+                    -1;
+              } else {
+                f1 = -1;
+              }
+              if (state.fieldList.length >= 3) {
                 f2 = plist.indexWhere((element) =>
-                    element.fid == state.fieldList[2].fid &&
-                    element.date
-                        .isAtSameMomentAs(monthList[index2 + current].date)) ?? -1;
-              } else {f2 = -1;}
-              if(state.fieldList.length >= 4){
+                        element.fid == state.fieldList[2].fid &&
+                        element.date.isAtSameMomentAs(
+                            monthList[index2 + current].date)) ??
+                    -1;
+              } else {
+                f2 = -1;
+              }
+              if (state.fieldList.length >= 4) {
                 f3 = plist.indexWhere((element) =>
-                    element.fid == state.fieldList[3].fid &&
-                    element.date
-                        .isAtSameMomentAs(monthList[index2 + current].date)) ?? -1;
-              } else {f3 = -1;}
-              if(state.fieldList.length >= 5){
+                        element.fid == state.fieldList[3].fid &&
+                        element.date.isAtSameMomentAs(
+                            monthList[index2 + current].date)) ??
+                    -1;
+              } else {
+                f3 = -1;
+              }
+              if (state.fieldList.length >= 5) {
                 f4 = plist.indexWhere((element) =>
-                    element.fid == state.fieldList[4].fid &&
-                    element.date
-                        .isAtSameMomentAs(monthList[index2 + current].date)) ?? -1;
-              } else {f4 = -1;}
+                        element.fid == state.fieldList[4].fid &&
+                        element.date.isAtSameMomentAs(
+                            monthList[index2 + current].date)) ??
+                    -1;
+              } else {
+                f4 = -1;
+              }
               // print('${all} // ${f1} // ${f2} // ${f3} // ${f4}');
               return Container(
                 width: 96,
@@ -486,65 +509,82 @@ class _FMCalendarState extends State<FMCalendar> {
                           height: 5,
                           width: 130,
                           padding: EdgeInsets.zero,
-                          color: (all != -1) ? Colors.green : Colors.transparent,
+                          color:
+                              (all != -1) ? Colors.green : Colors.transparent,
                         ),
                         SizedBox(
                           height: 3,
                         ),
                       ],
                     ),
-                    (state.selectedField == 0 || state.selectedField == 1) ? Column(
-                      children: [
-                        Container(
-                          height: 5,
-                          width: 130,
-                          padding: EdgeInsets.zero,
-                          color: (f1 != -1) ? Colors.orange : Colors.transparent,
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                      ],
-                    ) : Container(),
-                    (state.selectedField == 0 || state.selectedField == 2) ? Column(
-                      children: [
-                        Container(
-                          height: 5,
-                          width: 130,
-                          padding: EdgeInsets.zero,
-                          color: (f2 != -1) ? Colors.yellow : Colors.transparent,
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                      ],
-                    ) : Container(),
-                    (state.selectedField == 0 || state.selectedField == 3) ? Column(
-                      children: [
-                        Container(
-                          height: 5,
-                          width: 130,
-                          padding: EdgeInsets.zero,
-                          color: (f3 != -1) ? Colors.blue : Colors.transparent,
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                      ],
-                    ) : Container(),
-                    (state.selectedField == 0 || state.selectedField == 4) ? Column(
-                      children: [
-                        Container(
-                          height: 5,
-                          width: 130,
-                          padding: EdgeInsets.zero,
-                          color: (f4 != -1) ? Colors.purple : Colors.transparent,
-                        ),
-                        SizedBox(
-                          height: 3,
-                        ),
-                      ],
-                    ) : Container(),
+                    (state.selectedField == 0 || state.selectedField == 1)
+                        ? Column(
+                            children: [
+                              Container(
+                                height: 5,
+                                width: 130,
+                                padding: EdgeInsets.zero,
+                                color: (f1 != -1)
+                                    ? Colors.orange
+                                    : Colors.transparent,
+                              ),
+                              SizedBox(
+                                height: 3,
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    (state.selectedField == 0 || state.selectedField == 2)
+                        ? Column(
+                            children: [
+                              Container(
+                                height: 5,
+                                width: 130,
+                                padding: EdgeInsets.zero,
+                                color: (f2 != -1)
+                                    ? Colors.yellow
+                                    : Colors.transparent,
+                              ),
+                              SizedBox(
+                                height: 3,
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    (state.selectedField == 0 || state.selectedField == 3)
+                        ? Column(
+                            children: [
+                              Container(
+                                height: 5,
+                                width: 130,
+                                padding: EdgeInsets.zero,
+                                color: (f3 != -1)
+                                    ? Colors.blue
+                                    : Colors.transparent,
+                              ),
+                              SizedBox(
+                                height: 3,
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    (state.selectedField == 0 || state.selectedField == 4)
+                        ? Column(
+                            children: [
+                              Container(
+                                height: 5,
+                                width: 130,
+                                padding: EdgeInsets.zero,
+                                color: (f4 != -1)
+                                    ? Colors.purple
+                                    : Colors.transparent,
+                              ),
+                              SizedBox(
+                                height: 3,
+                              ),
+                            ],
+                          )
+                        : Container(),
                   ],
                 ),
               );

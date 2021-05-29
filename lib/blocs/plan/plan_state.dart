@@ -1,5 +1,6 @@
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
+import 'package:BrandFarm/models/om_plan/om_plan_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,8 @@ class PlanState {
   bool isConfirmed;
   Plan newPlan;
 
+  List<OMCalendarPlan> cplist;
+
   PlanState({
     @required this.isLoading,
     @required this.farm,
@@ -44,6 +47,7 @@ class PlanState {
     @required this.wPlan,
     @required this.isConfirmed,
     @required this.newPlan,
+    @required this.cplist,
   });
 
   factory PlanState.empty() {
@@ -82,28 +86,31 @@ class PlanState {
       ),
       isConfirmed: false,
       newPlan: null,
+      cplist: [],
     );
   }
 
-  PlanState copyWith(
-      {bool isLoading,
-      Farm farm,
-      List<Field> fieldList,
-      Field field,
-      List<Plan> planList,
-      List<Plan> detailList,
-      List<Plan> todoPlanListShort,
-      List<CalendarPlan> detailListShort,
-      List<List<List<CalendarPlan>>> sortedList,
-      List<DateTime> fmHomeCalendarDateList,
-      int selectedIndex,
-      DateTime selectedDate,
-      int selectedField,
-      DateTime startDate,
-      DateTime endDate,
-      WaitingConfirmation wPlan,
-      bool isConfirmed,
-      Plan newPlan}) {
+  PlanState copyWith({
+    bool isLoading,
+    Farm farm,
+    List<Field> fieldList,
+    Field field,
+    List<Plan> planList,
+    List<Plan> detailList,
+    List<Plan> todoPlanListShort,
+    List<CalendarPlan> detailListShort,
+    List<List<List<CalendarPlan>>> sortedList,
+    List<DateTime> fmHomeCalendarDateList,
+    int selectedIndex,
+    DateTime selectedDate,
+    int selectedField,
+    DateTime startDate,
+    DateTime endDate,
+    WaitingConfirmation wPlan,
+    bool isConfirmed,
+    Plan newPlan,
+    List<OMCalendarPlan> cplist,
+  }) {
     return PlanState(
       isLoading: isLoading ?? this.isLoading,
       farm: farm ?? this.farm,
@@ -124,28 +131,31 @@ class PlanState {
       wPlan: wPlan ?? this.wPlan,
       isConfirmed: isConfirmed ?? this.isConfirmed,
       newPlan: newPlan ?? this.newPlan,
+      cplist: cplist ?? this.cplist,
     );
   }
 
-  PlanState update(
-      {bool isLoading,
-      Farm farm,
-      List<Field> fieldList,
-      Field field,
-      List<Plan> planList,
-      List<Plan> detailList,
-      List<Plan> todoPlanListShort,
-      List<CalendarPlan> detailListShort,
-      List<List<List<CalendarPlan>>> sortedList,
-      List<DateTime> fmHomeCalendarDateList,
-      int selectedIndex,
-      DateTime selectedDate,
-      int selectedField,
-      DateTime startDate,
-      DateTime endDate,
-      WaitingConfirmation wPlan,
-      bool isConfirmed,
-      Plan newPlan}) {
+  PlanState update({
+    bool isLoading,
+    Farm farm,
+    List<Field> fieldList,
+    Field field,
+    List<Plan> planList,
+    List<Plan> detailList,
+    List<Plan> todoPlanListShort,
+    List<CalendarPlan> detailListShort,
+    List<List<List<CalendarPlan>>> sortedList,
+    List<DateTime> fmHomeCalendarDateList,
+    int selectedIndex,
+    DateTime selectedDate,
+    int selectedField,
+    DateTime startDate,
+    DateTime endDate,
+    WaitingConfirmation wPlan,
+    bool isConfirmed,
+    Plan newPlan,
+    List<OMCalendarPlan> cplist,
+  }) {
     return copyWith(
       isLoading: isLoading,
       farm: farm,
@@ -165,6 +175,7 @@ class PlanState {
       wPlan: wPlan,
       isConfirmed: isConfirmed,
       newPlan: newPlan,
+      cplist: cplist,
     );
   }
 
@@ -189,6 +200,7 @@ class PlanState {
     wPlan: ${wPlan},
     isConfirmed: ${isConfirmed},
     newPlan: ${newPlan},
+    cplist: ${cplist.length},
     }
     ''';
   }

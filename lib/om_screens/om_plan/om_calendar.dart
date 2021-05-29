@@ -118,9 +118,9 @@ class _OMCalendarState extends State<OMCalendar> {
 
   Widget _calendarBody(OMPlanState state) {
     List<List<OMPlan>> pListByField = sortPlanListByField(state);
-    List<List<List<CalendarPlan>>> pListByDate =
+    List<List<List<OMCalendarPlan>>> pListByDate =
         sortPlanListByDate(pListByField);
-    List<CalendarPlan> plist = getPlanList(pListByDate);
+    List<OMCalendarPlan> plist = getPlanList(pListByDate);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -241,18 +241,18 @@ class _OMCalendarState extends State<OMCalendar> {
     return pListOfLists;
   }
 
-  List<List<List<CalendarPlan>>> sortPlanListByDate(
+  List<List<List<OMCalendarPlan>>> sortPlanListByDate(
       List<List<OMPlan>> listByField) {
-    List<List<List<CalendarPlan>>> pListByDate =
+    List<List<List<OMCalendarPlan>>> pListByDate =
         List.generate(listByField.length, (col) {
       int length = listByField[col].length;
-      List<List<CalendarPlan>> plist = List.generate(length, (row) {
+      List<List<OMCalendarPlan>> plist = List.generate(length, (row) {
         DateTime startDate = listByField[col][row].startDate.toDate();
         DateTime endDate = listByField[col][row].endDate.toDate();
         int period = endDate.difference(startDate).inDays + 1;
         return List.generate(
             period,
-            (index) => CalendarPlan(
+            (index) => OMCalendarPlan(
                   date: DateTime(
                       startDate.year, startDate.month, startDate.day + index),
                   title: listByField[col][row].title,
@@ -268,8 +268,9 @@ class _OMCalendarState extends State<OMCalendar> {
     return pListByDate;
   }
 
-  List<CalendarPlan> getPlanList(List<List<List<CalendarPlan>>> listByDate) {
-    List<CalendarPlan> plist = [];
+  List<OMCalendarPlan> getPlanList(
+      List<List<List<OMCalendarPlan>>> listByDate) {
+    List<OMCalendarPlan> plist = [];
     // List<List<CalendarPlan>> col = [];
     // List<CalendarPlan> row = [];
     for (int a = 0; a < listByDate.length; a++) {
@@ -420,7 +421,7 @@ class _OMCalendarState extends State<OMCalendar> {
     );
   }
 
-  Widget _planBody(OMPlanState state, List<CalendarPlan> plist) {
+  Widget _planBody(OMPlanState state, List<OMCalendarPlan> plist) {
     return Table(
       // border: TableBorder.all(width: 1, color: Color(0xFFD8D8D8)),
       children: List.generate(5, (index1) {

@@ -11,15 +11,15 @@ class OMPlanState {
   DateTime selectedDate;
   List<OMPlan> detailList;
   List<OMPlan> todoPlanListShort;
-  List<CalendarPlan> detailListShort;
-  List<List<List<CalendarPlan>>> sortedList;
+  List<OMCalendarPlan> detailListShort;
+  List<List<List<OMCalendarPlan>>> sortedList;
   List<DateTime> omHomeCalendarDateList;
   int selectedIndex;
 
   int selectedFarm;
   DateTime startDate;
   DateTime endDate;
-  WaitingConfirmation wPlan;
+  OMWaitingConfirmation wPlan;
   bool isConfirmed;
   OMPlan newPlan;
 
@@ -60,7 +60,7 @@ class OMPlanState {
       selectedFarm: 0,
       startDate: DateTime.now(),
       endDate: DateTime.now(),
-      wPlan: WaitingConfirmation(
+      wPlan: OMWaitingConfirmation(
         startDate: DateTime.now(),
         endDate: DateTime.now(),
         title: '',
@@ -80,15 +80,15 @@ class OMPlanState {
       List<OMPlan> planList,
       List<OMPlan> detailList,
       List<OMPlan> todoPlanListShort,
-      List<CalendarPlan> detailListShort,
-      List<List<List<CalendarPlan>>> sortedList,
+      List<OMCalendarPlan> detailListShort,
+      List<List<List<OMCalendarPlan>>> sortedList,
       List<DateTime> omHomeCalendarDateList,
       int selectedIndex,
       DateTime selectedDate,
       int selectedFarm,
       DateTime startDate,
       DateTime endDate,
-      WaitingConfirmation wPlan,
+      OMWaitingConfirmation wPlan,
       bool isConfirmed,
       OMPlan newPlan}) {
     return OMPlanState(
@@ -120,15 +120,15 @@ class OMPlanState {
       List<OMPlan> planList,
       List<OMPlan> detailList,
       List<OMPlan> todoPlanListShort,
-      List<CalendarPlan> detailListShort,
-      List<List<List<CalendarPlan>>> sortedList,
+      List<OMCalendarPlan> detailListShort,
+      List<List<List<OMCalendarPlan>>> sortedList,
       List<DateTime> omHomeCalendarDateList,
       int selectedIndex,
       DateTime selectedDate,
       int selectedFarm,
       DateTime startDate,
       DateTime endDate,
-      WaitingConfirmation wPlan,
+      OMWaitingConfirmation wPlan,
       bool isConfirmed,
       OMPlan newPlan}) {
     return copyWith(

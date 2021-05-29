@@ -428,7 +428,7 @@ class _OMAddPlanState extends State<OMAddPlan> {
           if (isEverythingFilledOut) {
             if (isDateOrderCorrect) {
               _omPlanBloc.add(SetWaitingPlan(
-                  wPlan: WaitingConfirmation(
+                  wPlan: OMWaitingConfirmation(
                 startDate: state.startDate,
                 endDate: state.endDate,
                 title: _title,

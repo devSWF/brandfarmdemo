@@ -1,5 +1,3 @@
-
-
 import 'package:BrandFarm/models/farm/farm_model.dart';
 import 'package:BrandFarm/models/field_model.dart';
 import 'package:BrandFarm/models/plan/plan_model.dart';
@@ -37,9 +35,11 @@ class PlanRepository {
     return fieldList;
   }
 
-  Future<void> postPlan(Plan plan,) async {
+  Future<void> postPlan(
+    Plan plan,
+  ) async {
     DocumentReference reference =
-    _firestore.collection('Plan').doc(plan.planID);
+        _firestore.collection('Plan').doc(plan.planID);
     await reference.set(plan.toDocument());
   }
 

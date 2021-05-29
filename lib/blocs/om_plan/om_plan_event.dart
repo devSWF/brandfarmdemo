@@ -18,7 +18,7 @@ class GetPlanList extends OMPlanEvent {}
 class PostNewPlan extends OMPlanEvent {}
 
 class SetWaitingPlan extends OMPlanEvent {
-  final WaitingConfirmation wPlan;
+  final OMWaitingConfirmation wPlan;
 
   const SetWaitingPlan({
     @required this.wPlan,
