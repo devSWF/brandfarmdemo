@@ -110,7 +110,11 @@ class _OMCommentsState extends State<OMComments> {
                                 color: Color(0xFFDFDFDF),
                               ),
                               Column(
-                                children: List.generate(10, (index) {
+                                children: List.generate(
+                                    (state.recentUpdateList.length > 10)
+                                        ? 10
+                                        : state.recentUpdateList.length,
+                                    (index) {
                                   if (state.recentUpdateList[index].notice !=
                                       null) {
                                     return _notice(state, index);
