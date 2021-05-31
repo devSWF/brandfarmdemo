@@ -192,7 +192,7 @@ class _OMNotificationScreenState extends State<OMNotificationScreen> {
                           (state.showDropdownMenu)
                               ? Positioned(
                                   top: y - 40,
-                                  left: x - 328,
+                                  left: x - 328 + 65,
                                   child: _searchMenuList(state))
                               : Container(),
                         ],
