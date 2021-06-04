@@ -65,7 +65,7 @@ class _FMContactScreenState extends State<FMContactScreen> {
                                 thickness: 1,
                                 color: Color(0x33000000),
                               ),
-                              _profileCard(state, 1000, 1000),
+                              _profileCard(state, 1000),
                             ],
                           ),
                           SizedBox(
@@ -77,30 +77,38 @@ class _FMContactScreenState extends State<FMContactScreen> {
                             thickness: 1,
                             color: Color(0x33000000),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(state.col, (col) {
-                              return Row(
-                                children: List.generate(state.row, (row) {
-                                  return Row(
-                                    children: [
-                                      Column(
-                                        children: [
-                                          _profileCard(state, col, row),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: 41,
-                                      ),
-                                    ],
-                                  );
-                                }),
-                              );
-                            }),
+                          Container(
+                            width: 539,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List.generate(state.contactList.length,
+                                  (index) {
+                                return _profileCard(state, index);
+                              }),
+
+                              // List.generate(state.col, (col) {
+                              //   return Row(
+                              //     children: List.generate(state.row, (row) {
+                              //       return Row(
+                              //         children: [
+                              //           Column(
+                              //             children: [
+                              //               _profileCard(state, col, row),
+                              //               SizedBox(
+                              //                 height: 20,
+                              //               ),
+                              //             ],
+                              //           ),
+                              //           SizedBox(
+                              //             width: 41,
+                              //           ),
+                              //         ],
+                              //       );
+                              //     }),
+                              //   );
+                              // }),
+                            ),
                           )
                         ],
                       ),
@@ -141,7 +149,7 @@ class _FMContactScreenState extends State<FMContactScreen> {
     );
   }
 
-  Widget _profileCard(FMContactState state, int col, int row) {
+  Widget _profileCard(FMContactState state, int index) {
     return Container(
       height: 82,
       width: 249,
@@ -155,17 +163,17 @@ class _FMContactScreenState extends State<FMContactScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _profileAvatar(state, col, row),
+          _profileAvatar(state, index),
           SizedBox(
             width: 14,
           ),
-          _detailInfo(state, col, row),
+          _detailInfo(state, index),
         ],
       ),
     );
   }
 
-  Widget _profileAvatar(FMContactState state, int col, int row) {
+  Widget _profileAvatar(FMContactState state, int index) {
     return Container(
       height: 50,
       width: 50,
@@ -181,13 +189,13 @@ class _FMContactScreenState extends State<FMContactScreen> {
               color: Colors.lightGreen,
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: (col == 1000 && UserUtil.getUser().imgUrl.isNotEmpty)
+                image: (index == 1000 && UserUtil.getUser().imgUrl.isNotEmpty)
                     ? CachedNetworkImageProvider(UserUtil.getUser().imgUrl)
-                    : (col == 1000 && UserUtil.getUser().imgUrl.isEmpty)
+                    : (index == 1000 && UserUtil.getUser().imgUrl.isEmpty)
                         ? AssetImage('assets/profile.png')
-                        : (state.cList[col][row].imgUrl.isNotEmpty)
+                        : (state.contactList[index].imgUrl.isNotEmpty)
                             ? CachedNetworkImageProvider(
-                                state.cList[col][row].imgUrl,
+                                state.contactList[index].imgUrl,
                               )
                             : AssetImage('assets/profile.png'),
                 fit: BoxFit.fitWidth,
@@ -197,13 +205,15 @@ class _FMContactScreenState extends State<FMContactScreen> {
     );
   }
 
-  Widget _detailInfo(FMContactState state, int col, int row) {
-    String name =
-        (col == 1000) ? UserUtil.getUser().name : state.cList[col][row].name;
-    String position = (col == 1000) ? '필드매니저' : state.cList[col][row].position;
-    String phoneNum = (col == 1000)
+  Widget _detailInfo(FMContactState state, int index) {
+    String name = (index == 1000)
+        ? UserUtil.getUser().name
+        : state.contactList[index].name;
+    String position =
+        (index == 1000) ? '필드매니저' : state.contactList[index].position;
+    String phoneNum = (index == 1000)
         ? UserUtil.getUser().phone
-        : state.cList[col][row].phoneNum;
+        : state.contactList[index].phoneNum;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
